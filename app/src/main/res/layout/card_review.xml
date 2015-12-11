@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+            android:id="@+id/cardBasicReview"
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:text="Comment"
+                    android:id="@+id/txtCommentReviewBasicCard"
+                    android:textColor="@color/text_primary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/imgUserImgReviewBasicCard"
+                    android:layout_toStartOf="@+id/imgUserImgReviewBasicCard"
+                    android:paddingRight="15dp"
+                    android:gravity="center_vertical|right"
+                    android:textSize="14dp"/>
+            <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:id="@+id/imgUserImgReviewBasicCard"
+                    android:scaleType="centerCrop"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+        <ImageView android:layout_width="match_parent"
+                   android:layout_height="1dp"
+                   android:paddingLeft="5dp"
+                   android:paddingStart="5dp"
+                   android:paddingRight="5dp"
+                   android:paddingEnd="5dp"
+                   android:background="#88dddddd"/>
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

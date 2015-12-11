@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        ashojash {
+            keyAlias 'ashojash'
+            keyPassword 'Lifeissohappy95'
+            storeFile file('E:/programming/android/project/Ashojash/keystore.jks')
+            storePassword 'Lifeissohappy95'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "22.0.1"
+    defaultConfig {
+        applicationId "com.ashojash.android"
+        minSdkVersion 11
+        targetSdkVersion 23
+        versionCode 1
+        versionName "0.9.0"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.ashojash
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+    }
+    // Resolve dependency differences between app and tests
+    configurations.all {
+        resolutionStrategy.force 'com.android.support:support-annotations:23.0.1'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile('com.mikepenz:materialdrawer:4.5.7@aar') {
+        transitive = true
+    }
+    // Dependency for Google Sign-In
+    //    compile 'com.google.android.gms:play-services-auth:8.4.0'
+    //    compile 'com.google.android.gms:play-services-identity:8.4.0'
+    //    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    //    multiDex
+    //    google analytics
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+    compile 'com.mikepenz:iconics-core:2.5.1@aar'
+    compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.android.gms:play-services-analytics:8.4.0'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'com.google.android.gms:play-services-identity:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+}
+apply plugin: 'com.google.gms.google-services'

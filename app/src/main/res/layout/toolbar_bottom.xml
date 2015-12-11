@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:local="http://schemas.android.com/tools"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorBottomMenu"
+        android:gravity="center"
+        local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        local:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:layout_collapseMode="pin">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="match_parent">
+        <LinearLayout android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:gravity="center"
+
+                      android:background="@drawable/focusable"
+                      android:id="@+id/toolbarBottomList"
+                      android:orientation="vertical" android:clickable="true" android:paddingTop="5dp">
+            <ImageView android:layout_width="25dp"
+                       android:layout_height="25dp"
+                       android:id="@+id/imgToolbarBottomList"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall"
+                      android:textColor="@color/text_primary"
+                      android:id="@+id/txtToolbarBottomList"
+                      android:text="@string/action_list"/>
+        </LinearLayout>
+        <!--<LinearLayout android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:gravity="center"
+
+                      android:background="@drawable/focusable"
+                      android:id="@+id/toolbarBottomSearch"
+                      android:orientation="vertical" android:clickable="true" android:paddingTop="5dp">
+            <ImageView android:layout_width="25dp"
+                       android:layout_height="25dp"
+                       android:id="@+id/imgToolbarBottomSearch"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/text_primary"
+                      android:textAppearance="?android:attr/textAppearanceSmall"
+                      android:id="@+id/txtToolbarBottomSearch"
+                      android:text="@string/action_search"/>
+        </LinearLayout>-->
+        <LinearLayout android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:gravity="center"
+                      android:background="@drawable/focusable"
+                      android:id="@+id/toolbarBottomProfile"
+                      android:orientation="vertical" android:clickable="true" android:paddingTop="5dp">
+            <ImageView android:layout_width="25dp"
+                       android:layout_height="25dp"
+                       android:id="@+id/imgToolbarBottomProfile"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/text_primary"
+                      android:textAppearance="?android:attr/textAppearanceSmall"
+                      android:id="@+id/txtToolbarBottomProfile"
+                      android:text="@string/action_profile"/>
+        </LinearLayout>
+
+        <!-- This is a centered logo -->
+
+        <!-- This is a centered title -->
+        <!--
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="?attr/actionBarSize"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            />
+            -->
+
+        <!-- This is a custom left side button -->
+        <!--
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginRight="?attr/actionBarSize"
+            android:layout_gravity="start|center_vertical"
+            android:visibility="invisible"
+            android:src="@drawable/ic_settings_white_24dp"
+            style="@style/Widget.AppCompat.ActionButton" />
+            -->
+
+        <!-- This is a custom right side button -->
+        <!--
+        <ImageButton
+            android:id="@+id/btn_search"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_magnify_white_24dp"
+            style="@style/Widget.AppCompat.ActionButton" />
+            -->
+
+    </LinearLayout>
+</android.support.v7.widget.Toolbar>

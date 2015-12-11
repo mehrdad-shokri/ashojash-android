@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent" android:layout_height="200dp"
+                android:id="@+id/menuRootLayoutVenueMenuFragment"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+    <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@android:drawable/divider_horizontal_dark"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:scaleType="fitXY"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="1dp"
+            android:background="#d0d0d0"
+            android:id="@+id/imgDivider"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/title_sample_menus"
+            android:textColor="#444"
+            android:id="@+id/txtVenueMenuFragmentTitle" android:layout_alignParentTop="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentEnd="false"
+            android:layout_margin="15dp" android:layout_alignParentLeft="false"
+            android:layout_alignParentBottom="false" android:layout_centerHorizontal="true"
+            android:layout_below="@+id/imgDivider"/>
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewMenusVenueMenuFragment"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:clipToPadding="false"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            android:layout_below="@+id/txtVenueMenuFragmentTitle"
+            android:layout_above="@+id/btnSellAllVenueMenuFragment">
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/venue_see_all_reviews"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#fff"
+            android:background="@drawable/see_all_button"
+            android:id="@+id/btnSellAllVenueMenuFragment"
+            android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" android:minWidth="200dp"
+            android:visibility="gone"
+            />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:id="@+id/errorViewVenueMenuFragment"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content" android:visibility="gone">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/error_retrieving_data"
+                android:textColor="@color/text_secondary"
+                android:id="@+id/txtErrorVenueBasicMenuFragment"/>
+    </LinearLayout>
+    <ProgressBar
+            android:id="@+id/prgNearbyFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true" android:layout_centerHorizontal="true" android:visibility="visible"/>
+</RelativeLayout>

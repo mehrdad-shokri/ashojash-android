@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_id": "ashojash-1084",
+    "project_number": "346904023124",
+    "name": "Ashojash"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346904023124:android:4f6bf8f44867aba2",
+        "client_id": "android:com.ashojash.android",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.ashojash.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346904023124-lehbs8510nibuq5ci125h8mu6u2ir4q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ashojash.android",
+            "certificate_hash": "6253CC5DAD89FBFB1B9F24E1D05C9B89884FF67B"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346904023124:android:27d689d63f1b7a06",
+        "client_id": "android:com.google.samples.quickstart.signin",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.google.samples.quickstart.signin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

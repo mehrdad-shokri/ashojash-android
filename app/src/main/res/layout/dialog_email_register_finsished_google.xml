@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" android:padding="30dp">
+    <com.mikepenz.iconics.view.IconicsImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            app:iiv_color="@color/md_light_green_A700"
+            app:iiv_icon="gmd-check-circle"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_marginBottom="20dp"
+            android:text="@string/check_main_to_verify_sentence"
+            android:textColor="#333"
+            android:id="@+id/txtReviewTitle" android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#666"
+            android:layout_marginBottom="10dp"
+            android:text="@string/check_spam_sentence"
+            android:id="@+id/textView3" android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="60dp"
+                  android:background="@drawable/continue_in_browser_btn"
+                  android:id="@+id/btnContinueInBrowser"
+                  android:gravity="center"
+
+                  android:orientation="horizontal">
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  android:textColor="#333"
+                  android:text="@string/continue_in_browser"
+                  android:layout_marginRight="5dp"
+                  android:textSize="15dp"/>
+        <com.mikepenz.iconics.view.IconicsImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                app:iiv_color="@color/green_normal"
+                app:iiv_icon="gmd_open_in_browser" android:scaleType="centerInside"/>
+    </LinearLayout>
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:text="@string/ok"
+            android:textSize="20dp"
+            android:textColor="#333"
+            android:id="@+id/btnVerifyEmail"/>
+</LinearLayout>

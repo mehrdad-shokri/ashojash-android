@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:id="@+id/fragmentGoogleRegisterRootLayout"
+              android:orientation="vertical"
+              android:gravity="center_horizontal">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/ashojash_registration"
+            android:textSize="20dp"
+            android:textColor="@color/bg_register_btn"
+            android:layout_marginBottom="20dp"/>
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/ashojash_registration_desc"
+            android:textSize="20dp"
+            android:textColor="@color/colorAshojashRegistration" android:layout_marginBottom="20dp"/>
+    <com.google.android.gms.common.SignInButton
+            android:id="@+id/btnRegisterGoogle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+</LinearLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:card_view="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="200dp">
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="2dp"
+            android:id="@+id/cardVenueBasicInfo"
+            android:layout_margin="18dp">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <RelativeLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight=".6">
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:id="@+id/venueMap"
+                          android:layout_alignParentLeft="true"
+                          android:layout_alignParentStart="true"
+                          android:name="com.google.android.gms.maps.SupportMapFragment"/>
+                <View xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:id="@+id/venueMapOverlap"
+                      android:layout_alignParentLeft="true"
+                      android:layout_alignParentStart="true"
+                      android:background="@drawable/venue_basic_map_gradient"
+                      android:name="com.google.android.gms.maps.SupportMapFragment"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/more"
+                        android:textColor="@color/colorMapBtnMore"
+                        android:id="@+id/btnVenueMoreInfoVenueBasicFragment" android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+                        android:layout_marginBottom="25dp" android:layout_marginLeft="25dp"/>
+            </RelativeLayout>
+            <RelativeLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight=".4">
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtVenueNameVenueBasicFragment"
+                        android:text="اسم رستوران"
+                        android:textDirection="rtl"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="#444"
+                        android:textSize="20dp"
+                        android:gravity="right"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true" android:layout_alignParentEnd="true"/>
+                <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="price"
+                          android:textDirection="rtl"
+                          android:textColor="#19590a"
+                          android:textSize="13dp"
+                          android:layout_marginRight="5dp"
+                          android:layout_marginEnd="5dp"
+                          android:gravity="right" android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                          android:id="@+id/txtVenuePriceVenueBasicFragment"
+                          android:layout_below="@+id/txtVenueNameVenueBasicFragment"
+                          android:layout_alignParentRight="true" android:layout_alignParentEnd="true"
+                          android:layout_marginTop="15dp"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

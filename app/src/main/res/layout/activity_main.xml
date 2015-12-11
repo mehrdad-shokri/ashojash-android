@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <LinearLayout
+            android:id="@+id/container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <include
+                android:id="@+id/toolbarTop"
+                layout="@layout/toolbar_top"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottomMenuContainerMainActivity"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+        <include
+                android:id="@+id/toolbarBottomMainActivity"
+                layout="@layout/toolbar_bottom"/>
+    </LinearLayout>
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:fillViewport="false"
+            android:descendantFocusability="beforeDescendants"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container_toolbar"
+            android:layout_above="@+id/bottomMenuContainerMainActivity"
+            android:focusable="false">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:focusableInTouchMode="true"
+
+                      android:orientation="vertical">
+
+            <FrameLayout
+                    android:id="@+id/fragmentHeroContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    >
+            </FrameLayout>
+            <FrameLayout
+                    android:id="@+id/fragmentNearbyContainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="270dp">
+            </FrameLayout>
+            <FrameLayout android:id="@+id/fragmentTopVenuesContainer" android:layout_width="fill_parent"
+                         android:layout_height="270dp"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
