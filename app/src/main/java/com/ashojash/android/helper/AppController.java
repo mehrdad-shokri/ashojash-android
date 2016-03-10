@@ -24,6 +24,8 @@ import com.ashojash.android.utils.LruBitmapCache;
 import com.ashojash.android.utils.ObscuredSharedPrefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.Iconics;
 
 public class AppController extends MultiDexApplication {
     public static final String TAG = "ashojash";
@@ -44,6 +46,7 @@ public class AppController extends MultiDexApplication {
     public static int widthDp;
     public static int heightDp;
     private Tracker mTracker;
+    public static final int ANDROID_VERSION = Build.VERSION.SDK_INT;
 
     @Override
 
@@ -56,6 +59,9 @@ public class AppController extends MultiDexApplication {
         LangHelper.setLang("fa");
         initializeSharedPrefs();
         initializePhoneDimes();
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+//        ANDROID_VERSION = Build.VERSION.SDK_INT;
     }
 
     private void initializePhoneDimes() {
@@ -127,6 +133,7 @@ public class AppController extends MultiDexApplication {
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
+     *
      * @return tracker
      */
     synchronized public Tracker getDefaultTracker() {

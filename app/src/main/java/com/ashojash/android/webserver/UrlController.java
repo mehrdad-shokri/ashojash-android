@@ -6,7 +6,7 @@ import com.android.volley.Request;
 public final class UrlController {
 
     private static final String SCHEME = "http";
-    private static final String AUTHORITY = "www.ashojash.com";
+    private static final String AUTHORITY = "www.site.mil";
     private static final String API_NAME = "api";
     private static final String API_VERSION = "v1";
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:id="@+id/imageView"
+            android:alpha=".5"
+            android:src="@drawable/ashojash_error"
+            android:layout_centerInParent="true"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtGoogleSignInPermissionDenied"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/google_sign_permission_denied"
+                android:textColor="#444"
+                android:gravity="center"
+                android:layout_centerInParent="true"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/give_permission"
+            android:textColor="#eee"
+            android:id="@+id/btnGetUserAccountsPermission"
+            android:background="@drawable/btn_more"
+            android:width="120dp"
+            android:layout_centerHorizontal="true" android:layout_marginBottom="30dp"
+            android:layout_alignBottom="@+id/imageView"/>
+</RelativeLayout>

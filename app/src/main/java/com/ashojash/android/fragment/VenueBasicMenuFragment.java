@@ -44,7 +44,6 @@ public class VenueBasicMenuFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 //        do stuff
-        super.onActivityCreated(savedInstanceState);
         slug = getActivity().getIntent().getStringExtra("slug");
         if (slug == null)
             getActivity().getFragmentManager().popBackStack();

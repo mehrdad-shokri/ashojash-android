@@ -73,7 +73,7 @@
     <string name="name">نام کامل</string>
     <string name="ashojash">آشوجاش</string>
     <string name="ashojash_registration_desc">
-        پیدا کردن بهترین رستوران‌های اطرافتان و بسیاری امکانات دیگر با آشوجاش.
+        پیدا کردن بهترین رستوران‌های اطرافتان و بسیاری امکانات دیگر با آشوجاش
     </string>
     <string name="register_using_google">ورود از طریق گوگل</string>
     <string name="register_using_email">ثبت نام با ایمیل</string>
@@ -83,7 +83,11 @@
     <string name="btn_logout_from_google">Logout from Google</string>
     <string name="btn_revoke_access">Revoke Access</string>
     <string name="install_google_play_services">برای ورود با گوگل google play servies را نصب نمائید</string>
-    <string name="server_client_id">346904023124-73h70s03c0dipla8ltcbcd2ko076ft43.apps.googleusercontent.com</string>
+    <!-- Production client id-->
+    <string name="server_client_id">346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com</string>
+
+    <!--Development client id-->
+    <!--<string name="server_client_id">346904023124-73h70s03c0dipla8ltcbcd2ko076ft43.apps.googleusercontent.com</string>-->
     <string name="title_google_registeration_finished">پایان ثبت نام!</string>
     <string name="message_registration_finished_google">حساب کاربری‌تان با موفقیت ساخته شد. \nیک دنیا غذا و نوشیدنی
         منتظر شماست!
@@ -110,7 +114,7 @@
     <string name="item_price">{{itemPrice}} تومان</string>
     <string name="no_photo_item_yet">تصویری هنوز اضافه نشده :(</string>
     <string name="title_photos">تصاویر</string>
-    <string name="review_count_not_enough">تعداد آرا هنوز آرا کافی نیست</string>
+    <string name="review_count_not_enough">تعداد آرا هنوز کافی نیست</string>
     <string name="review_based_on_count">"بر اساس {{venueReviewCount}} رأی"</string>
     <string name="review_venue_title">نقد {{venueName}}!</string>
     <string name="add_venue_photo_title">افزودن عکس برای {{venueName}} !</string>
@@ -143,4 +147,7 @@
     <string name="phone">تلفن</string>
     <string name="title_price">قیمت</string>
     <string name="review_added_successfully">مرور شما با موفقیت اضافه شد!</string>
+    <string name="google_sign_permission_denied">برای ورود با گوگل باید اجازه‌ی مشاهده حساب‌های دستگاه را داشته باشیم.
+    </string>
+    <string name="give_permission">دادن اجازه</string>
 </resources>

@@ -4,15 +4,7 @@
               android:id="@+id/fragmentGoogleRegisterRootLayout"
               android:orientation="vertical"
               android:gravity="center_horizontal">
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/ashojash_registration"
-            android:textSize="20dp"
-            android:textColor="@color/bg_register_btn"
-            android:layout_marginBottom="20dp"/>
+
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,0 +1,40 @@
+Variant: releaseUnitTest
+Config: ashojash
+Store: E:\programming\android\project\Ashojash\keystore.jks
+Alias: ashojash
+MD5: 41:04:35:3D:0A:0D:78:F6:07:80:BD:20:29:63:F7:63
+SHA1: BC:9F:77:77:B0:92:DD:E9:C9:8E:7D:42:F7:D4:83:1A:1D:E1:2F:0B
+Valid until: Tuesday, January 28, 2116
+----------
+Variant: debugAndroidTest
+Config: debug
+Store: E:\programming\android\sdk\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 66:6C:5D:62:2A:A4:ED:E8:D4:A1:12:1E:CF:0F:19:2C
+SHA1: 62:53:CC:5D:AD:89:FB:FB:1B:9F:24:E1:D0:5C:9B:89:88:4F:F6:7B
+Valid until: Tuesday, November 21, 2045
+----------
+Variant: release
+Config: ashojash
+Store: E:\programming\android\project\Ashojash\keystore.jks
+Alias: ashojash
+MD5: 41:04:35:3D:0A:0D:78:F6:07:80:BD:20:29:63:F7:63
+SHA1: BC:9F:77:77:B0:92:DD:E9:C9:8E:7D:42:F7:D4:83:1A:1D:E1:2F:0B
+Valid until: Tuesday, January 28, 2116
+----------
+Variant: debugUnitTest
+Config: debug
+Store: E:\programming\android\sdk\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 66:6C:5D:62:2A:A4:ED:E8:D4:A1:12:1E:CF:0F:19:2C
+SHA1: 62:53:CC:5D:AD:89:FB:FB:1B:9F:24:E1:D0:5C:9B:89:88:4F:F6:7B
+Valid until: Tuesday, November 21, 2045
+----------
+Variant: debug
+Config: debug
+Store: E:\programming\android\sdk\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 66:6C:5D:62:2A:A4:ED:E8:D4:A1:12:1E:CF:0F:19:2C
+SHA1: 62:53:CC:5D:AD:89:FB:FB:1B:9F:24:E1:D0:5C:9B:89:88:4F:F6:7B
+Valid until: Tuesday, November 21, 2045
+----------

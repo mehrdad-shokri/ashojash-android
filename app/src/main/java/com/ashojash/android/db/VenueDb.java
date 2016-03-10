@@ -2,14 +2,12 @@ package com.ashojash.android.db;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
-import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.struct.StructVenue;
 
 import java.util.List;
 
 public class VenueDb {
-    static String TAG = AppController.TAG;
 
     public static void createOrUpdate(List<StructVenue> venues) {
         try {
@@ -30,7 +28,7 @@ public class VenueDb {
                 .executeSingle();
         if (venue == null) {
             venue = new Venue();
-            venue.slug=structVenue.getSlug();
+            venue.slug = structVenue.getSlug();
         }
         venue.address = structVenue.getAddress();
         venue.cost = structVenue.getCost();

@@ -29,9 +29,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NearbyFragment extends Fragment {
     private ProgressBar nearbyProgressbar;
     private TextView txtNearbyError;
@@ -44,14 +41,12 @@ public class NearbyFragment extends Fragment {
     private List<StructVenue> venueList;
 
     public NearbyFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_nearby_venues, container, false);
     }
 
@@ -59,7 +54,6 @@ public class NearbyFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViews();
-
         Bundle bundle = getArguments();
         if (bundle != null) {
             citySlug = bundle.getString("current_city_slug");
@@ -138,8 +132,15 @@ public class NearbyFragment extends Fragment {
                 AppController.getInstance().addToRequestQueue(jsonObjectRequest, "NEARBY_FRAGMENT");
             }
         };
+        String TAG = "LOCATION";
         locationUtil = new LocationUtil();
-        locationUtil.getLocation(AppController.currentActivity, locationResult);
+        boolean isGetLocationSuccess = locationUtil.getLocation(AppController.context, locationResult);
+        if (!isGetLocationSuccess) {
+//            check for permission
+
+//            check if location is on
+        }
+//        Log.d(TAG, "getUserLocation: " + locationUtil.getLocation(AppController.context, locationResult));
     }
 
     private void showErrorViews() {

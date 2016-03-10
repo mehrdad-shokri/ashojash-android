@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,121 +17,118 @@ public class LocationUtil {
     boolean gps_enabled = false;
     boolean network_enabled = false;
 
-    public boolean getLocation(Context context, LocationResult result) {
-        try {
-            locationResult = result;
-            if (lm == null)
-                lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    public boolean getLocation(Context context, LocationResult result) throws SecurityException {
+        locationResult = result;
+        if (lm == null)
+            lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-            //exceptions will be thrown if provider is not permitted.
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            //don't start listeners if no provider is enabled
-            if (!gps_enabled && !network_enabled)
-                return false;
+        //don't start listeners if no provider is enabled
+        if (!gps_enabled && !network_enabled) {
+            Log.d("LOCATION", "getLocation: non are enabled");
 
-            if (gps_enabled)
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-            if (network_enabled)
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
-            timer = new Timer();
-            timer.schedule(new GetLastLocation(), 20000);
-            return true;
-        } catch (SecurityException e) {
             return false;
         }
+        if (gps_enabled)
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsLocationListener);
+        if (network_enabled)
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, networkLocationListener);
+        timer = new Timer();
+        timer.schedule(new LastLocationGetter(), 20000);
+        return true;
     }
 
-    LocationListener locationListenerGps = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            try {
-                timer.cancel();
-                locationResult.gotLocation(location);
-                lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerNetwork);
-            } catch (SecurityException e) {
-            }
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
-
-    LocationListener locationListenerNetwork = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            try {
-                timer.cancel();
-                locationResult.gotLocation(location);
-                lm.removeUpdates(this);
-                lm.removeUpdates(locationListenerGps);
-            } catch (SecurityException e) {
-            }
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
-
-    class GetLastLocation extends TimerTask {
+    class LastLocationGetter extends TimerTask {
         @Override
-        public void run() {
-            try {
-                lm.removeUpdates(locationListenerGps);
-                lm.removeUpdates(locationListenerNetwork);
-                Location net_loc = null, gps_loc = null;
-                if (gps_enabled)
-                    gps_loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (network_enabled)
-                    net_loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        public void run() throws SecurityException {
+            lm.removeUpdates(gpsLocationListener);
+            lm.removeUpdates(networkLocationListener);
+            Location networkLocation = null, gpsLocation = null;
+            if (gps_enabled)
+                gpsLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (network_enabled)
+                networkLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-                //if there are both values use the latest one
-                if (gps_loc != null && net_loc != null) {
-                    if (gps_loc.getTime() > net_loc.getTime())
-                        locationResult.gotLocation(gps_loc);
-                    else
-                        locationResult.gotLocation(net_loc);
-                    return;
-
-                }
-
-                if (gps_loc != null) {
-                    locationResult.gotLocation(gps_loc);
-                    return;
-                }
-                if (net_loc != null) {
-                    locationResult.gotLocation(net_loc);
-                    return;
-                }
-                locationResult.gotLocation(null);
-            } catch (SecurityException e) {
+            //if there are both values use the latest one
+            if (gpsLocation != null && networkLocation != null) {
+                if (gpsLocation.getTime() > networkLocation.getTime())
+                    locationResult.gotLocation(gpsLocation);
+                else
+                    locationResult.gotLocation(networkLocation);
+                return;
             }
+
+            if (gpsLocation != null) {
+                locationResult.gotLocation(gpsLocation);
+                return;
+            }
+            if (networkLocation != null) {
+                locationResult.gotLocation(networkLocation);
+                return;
+            }
+            locationResult.gotLocation(null);
         }
     }
 
-    public void cancelTimer() {
+    public void cancelTimer() throws SecurityException {
         if (timer != null)
             timer.cancel();
-        try {
-            lm.removeUpdates(locationListenerGps);
-            lm.removeUpdates(locationListenerNetwork);
-        } catch (SecurityException e) {
-        }
+        lm.removeUpdates(gpsLocationListener);
+        lm.removeUpdates(networkLocationListener);
     }
 
     public static abstract class LocationResult {
         public abstract void gotLocation(Location location);
     }
+
+    /*
+    * INSTANCE VARIABLES
+    * */
+    LocationListener gpsLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) throws SecurityException {
+            timer.cancel();
+            locationResult.gotLocation(location);
+            lm.removeUpdates(this);
+            lm.removeUpdates(networkLocationListener);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+    LocationListener networkLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) throws SecurityException {
+            timer.cancel();
+            locationResult.gotLocation(location);
+            lm.removeUpdates(this);
+            lm.removeUpdates(gpsLocationListener);
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
 }

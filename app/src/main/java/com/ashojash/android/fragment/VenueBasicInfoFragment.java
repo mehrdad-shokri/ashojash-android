@@ -70,16 +70,14 @@ public class VenueBasicInfoFragment extends Fragment {
                 if (mMap != null) {
                     Log.d(TAG, "onActivityCreated: fragment is not null");
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                    Marker hamburg = mMap.addMarker(new MarkerOptions().position(venueLatLng)
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(venueLatLng)
                             .icon(BitmapDescriptorFactory.fromBitmap(new IconicsDrawable(AppController.context)
                                     .icon(GoogleMaterial.Icon.gmd_local_dining)
                                     .color(getResources().getColor(R.color.colorMapIcon))
                                     .sizeDp(24).toBitmap())));
-                    hamburg.setFlat(true);
-                    // Move the camera instantly to hamburg with a zoom of 15.
+                    marker.setFlat(true);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(venueLatLng, 10));
                     mMap.getUiSettings().setAllGesturesEnabled(false);
-                    // Zoom in, animating the camera.
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
@@ -98,7 +96,6 @@ public class VenueBasicInfoFragment extends Fragment {
             }
         };
         getChildFragmentManager().beginTransaction().add(R.id.venueMap, mMapFragment).commit();
-
     }
 
     private void setupViews() {
