@@ -148,6 +148,11 @@ public class WebServer {
         } catch (JSONException e) {
             return null;
         }
+    }
 
+    public static JsonObjectRequest searchVenues(String citySlug, String query, int limit, Response.Listener<JSONObject> onSuccess, Response.ErrorListener onError) {
+        JsonObjectRequest request = new JsonObjectRequest(UrlController.getVenuePhotosMethod(), UrlController.getSearchVenuesUrl(citySlug, query, limit), onSuccess, onError);
+        request.setRetryPolicy(retryPolicy);
+        return request;
     }
 }

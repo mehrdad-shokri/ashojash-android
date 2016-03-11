@@ -79,7 +79,7 @@ public class BottomToolbarActivity extends NavigationDrawerActivity {
 
     protected void setupBottomToolbarLayoutActive(int which) {
 //        ImageView imgSearch = (ImageView) findViewById(R.id.imgToolbarBottomSearch);
-//        imgSearch.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).color(getResources().getColor(R.color.text_secondary)));
+//        imgSearch.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).color(getResources().getVenue(R.color.text_secondary)));
         ImageView imgProfile = (ImageView) findViewById(R.id.imgToolbarBottomProfile);
         imgProfile.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_account_circle).color(getResources().getColor(R.color.text_secondary)));
 

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.struct.StructUser;
+import com.ashojash.android.utils.AuthUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -42,7 +44,7 @@ public class NavigationDrawerActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         setupTopToolbar();
-        setupNavigationDrawer2();
+//        setupNavigationDrawer2();
 //        setupNavigationDrawer();
     }
 
@@ -62,7 +64,7 @@ public class NavigationDrawerActivity extends BaseActivity {
 
             }
         });
-        /*if (AuthUtils.isUserLoggedIn()) {
+        if (AuthUtils.isUserLoggedIn()) {
             StructUser user = AuthUtils.getAuthUser();
             AccountHeader headerResult = new AccountHeaderBuilder()
                     .withActivity(this)
@@ -100,7 +102,7 @@ public class NavigationDrawerActivity extends BaseActivity {
                         }
                     })
                     .build();
-        }*/
+        }
     }
 /*
     @Override
@@ -129,9 +131,10 @@ public class NavigationDrawerActivity extends BaseActivity {
 
     private void setupTopToolbar() {
         toolbarTop = (Toolbar) findViewById(R.id.toolbarTop);
+        toolbarTop.setTitle("");
         setSupportActionBar(toolbarTop);
         try {
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         } catch (NullPointerException e) {
 

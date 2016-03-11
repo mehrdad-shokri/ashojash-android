@@ -61,7 +61,6 @@ public class CityListFragment extends Fragment {
                     adapter = new CityAdapter(listCityStruct, AppController.context, intent);
                     recyclerView.setAdapter(adapter);
                 } catch (JSONException e) {
-
                 } finally {
                     progressBar.setVisibility(View.GONE);
                 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--<color name="colorPrimary">#5C0011</color>-->
-    <color name="colorPrimary">#89001a</color>
-    <color name="colorPrimaryDark">#4c000e</color>
-    <color name="colorAccent">#89001a</color>
-    <color name="colorPrimaryNavigationDrawer">#6a0014</color>
-
+    <color name="colorPrimary">#cb202e</color>
+    <color name="colorPrimaryDark">#bc212d</color>
+    <color name="colorAccent">#cb202e</color>
+    <color name="colorPrimaryNavigationDrawer">#cb202e</color>
+    <color name="gray">#777</color>
     <color name="colorBottomMenu">#fbfbfb</color>
     <color name="colorToolbarBottomFocused">#d9d6d6</color>
     <color name="colorWindowBackground">#FFFFFF</color>
@@ -74,4 +74,5 @@
     <color name="colorDollarSign">#2c8019</color>
     <color name="default_white">#fafafa</color>
     <color name="level_0">#c1c1c1</color>
+    <color name="black">#000000</color>
 </resources>

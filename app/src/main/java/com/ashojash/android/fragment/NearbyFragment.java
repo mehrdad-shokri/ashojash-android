@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,13 +135,12 @@ public class NearbyFragment extends Fragment {
         };
         String TAG = "LOCATION";
         locationUtil = new LocationUtil();
-        boolean isGetLocationSuccess = locationUtil.getLocation(AppController.context, locationResult);
-        if (!isGetLocationSuccess) {
-//            check for permission
-
-//            check if location is on
+        try {
+            boolean isGetLocationSuccess = locationUtil.getLocation(AppController.context, locationResult);
+            Log.d(TAG, "getUserLocation: in try : " + isGetLocationSuccess);
+        } catch (SecurityException e) {
+            Log.d(TAG, "getUserLocation: securityException");
         }
-//        Log.d(TAG, "getUserLocation: " + locationUtil.getLocation(AppController.context, locationResult));
     }
 
     private void showErrorViews() {

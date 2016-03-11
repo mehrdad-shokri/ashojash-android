@@ -1,4 +1,150 @@
 <resources>
+    <string name="check_main_to_verify_sentence">
+        لطفا برای فعال سازی حساب کاربری خود، لینک درون ایمیلتان را کلیک کنید.
+    </string>
+    <string name="check_spam_sentence">
+        اگر نامه‌ای از طرف آشوجاش نیافتید، شاخهٔ هرزنامه (spam) ایمیل‌تان را نیز چک کنید.
+    </string>
+    <string name="ok">خُب</string>
+    <string name="registering">ساخت حساب...</string>
+    <string name="name_under_limit">نام کاربری نباید کمتر از 4 کاراکتر باشد.</string>
+    <string name="username_under_limit">نام نباید کمتر از 4 کاراکتر باشد.</string>
+    <string name="email_field_required">فیلد ایمیل الزامی است.</string>
+    <string name="password_field_required">فیلد پسورد الزامی است.</string>
+    <string name="name_field_required">فیلد نام الزامی است.</string>
+    <string name="username_field_required">فیلد نام‌کاربری الزامی است.</string>
+    <string name="review_field_required">نیاز است چیزی بنویسید!</string>
+    <string name="name_reg_not_match">نام خود را به زبان فارسی و با خط فارسی وارد کنید.</string>
+    <string name="username_reg_not_match">تنها اعداد،حروف انگلیسی و - مجاز است.</string>
+    <string name="password_under_limit">طول پسورد حداقل 6 کاراکتر است.</string>
+    <string name="email_not_valid">ایمیل معتبر نیست.</string>
+    <string name="ashojash_registration">ثبت نام آشوجاش!</string>
+    <!---->
+    <string name="action_settings">تنظیمات</string>
+    <string name="action_search">جست‌وجو</string>
+    <string name="drawer_open">باز کردن</string>
+    <string name="drawer_close">بستن</string>
 
+    <string name="nav_item_home">خانه</string>
+    <string name="nav_item_friends">دوستان</string>
+    <string name="nav_item_notifications">پیام‌ها</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_friends</item>
+        <item>@string/nav_item_notifications</item>
+    </string-array>
+
+    <string name="title_messages">Messages</string>
+    <string name="title_friends">Friends</string>
+    <string name="title_home">Home</string>
+    <string name="error_retrieving_data">خطا در دریافت اطلاعات</string>
+    <string name="error_connecting_to_google">خطا در اتصال به گوگل</string>
+    <string name="error_retrieving_location">خطا در دریافت موقعیت شما</string>
+
+    <string name="try_again">تلاش دوباره</string>
+    <string name="no_nearby_venues">مکانی در اطراف شما یافت نشد!</string>
+    <string name="nearest">نزدیکترین‌ها</string>
+    <string name="price">قیمت:</string>
+    <string name="top_venues">برترین رستوران‌ها</string>
+    <string name="selected">منتخب‌ها</string>
+    <string name="action_profile">پروفایل</string>
+    <string name="action_list">لیست</string>
+    <string name="signup">ثبت‌نام</string>
+    <string name="signin">ورود</string>
+    <string name="hint_email">ایمیل</string>
+    <string name="hint_password">پسورد</string>
+    <string name="hint_name">نام کامل شما</string>
+    <string name="hint_username">نام کاربری</string>
+    <string name="btn_login">ورود</string>
+    <string name="btn_register">ثبت نام</string>
+    <string name="title_register_or_login">ورود/ثبت نام</string>
+    <string name="btn_link_to_register">عضو نیستید؟ ثبت نام کنید.</string>
+    <string name="btn_link_to_login">قبلا ثبت نام کرده‌اید؟ وارد شوید!</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">خروج</string>
+    <string name="name">نام کامل</string>
+    <string name="ashojash">آشوجاش</string>
+    <string name="ashojash_registration_desc">
+        پیدا کردن بهترین رستوران‌های اطرافتان و بسیاری امکانات دیگر با آشوجاش
+    </string>
+    <string name="register_using_google">ورود از طریق گوگل</string>
+    <string name="register_using_email">ثبت نام با ایمیل</string>
+    <string name="or">یا</string>
+
+    <!-- Button text -->
+    <string name="btn_logout_from_google">Logout from Google</string>
+    <string name="btn_revoke_access">Revoke Access</string>
+    <string name="install_google_play_services">برای ورود با گوگل google play servies را نصب نمائید</string>
+    <!-- Production client id-->
+    <string name="server_client_id">346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com</string>
+
+    <!--Development client id-->
+    <!--<string name="server_client_id">346904023124-73h70s03c0dipla8ltcbcd2ko076ft43.apps.googleusercontent.com</string>-->
+    <string name="title_google_registeration_finished">پایان ثبت نام!</string>
+    <string name="message_registration_finished_google">حساب کاربری‌تان با موفقیت ساخته شد. \nیک دنیا غذا و نوشیدنی
+        منتظر شماست!
+    </string>
+    <string name="error_connecting_to_server">خطا در ارتباط با سرور</string>
+    <string name="hint_email_or_username">ایمیل یا نام‌کاربری</string>
+    <string name="login_field_required">مشخصات ورود الزامی است.</string>
+    <string name="password_exceed_limit">طول پسورد حداکثر 255 کاراکتر است.</string>
+    <string name="logging_in">ورود به حساب...</string>
+    <string name="action_me">من</string>
+    <string name="continue_in_browser">ادامه در مرورگر</string>
+    <string name="add_review">افزودن مرور</string>
+    <string name="add_pic">افزودن عکس</string>
+    <string name="lorem_ipsum">lorem ipsum</string>
+    <string name="temp_venue_name">اسم رستوران</string>
+    <string name="title_activity_sample">Map</string>
+    <string name="more">بیشتر</string>
+    <string name="venue_see_all_reviews">دیدن همه {{venueReviewsCount}} مرور</string>
+    <string name="venue_see_all_menus">دیدن همه {{venueMenusCount}} آیتم</string>
+    <string name="what_you_need_to_know">چی باید بدونید</string>
+    <string name="no_reviews_added_yet">هنوز مروری برای اینجا اضافه نشده :(</string>
+    <string name="no_menu_item_yet">منویی برای اینجا اضافه نشده :(</string>
+    <string name="title_sample_menus">منو</string>
+    <string name="item_price">{{itemPrice}} تومان</string>
+    <string name="no_photo_item_yet">تصویری هنوز اضافه نشده :(</string>
+    <string name="title_photos">تصاویر</string>
+    <string name="review_count_not_enough">تعداد آرا هنوز کافی نیست</string>
+    <string name="review_based_on_count">"بر اساس {{venueReviewCount}} رأی"</string>
+    <string name="review_venue_title">نقد {{venueName}}!</string>
+    <string name="add_venue_photo_title">افزودن عکس برای {{venueName}} !</string>
+
+    <string name="cost_medium">متناسب</string>
+    <string name="cost_low">اقتصادی</string>
+    <string name="cost_very_low">کاملا اقتصادی</string>
+    <string name="cost_high">گران</string>
+    <string name="cost_very_high">خیلی گران</string>
+    <string name="cost">قیمت</string>
+    <string name="quality">کیفیت</string>
+    <string name="decor">دکور</string>
+    <string name="adding_review_title">مرور شما</string>
+    <string name="adding_review_hint">یک مرور عالی شامل غذا، سرویس و محیط می شود.
+        توصیه ای برای غذا یا نوشیدنی مورد علاقه تان دارید؟ یا چیزی که هرکس باید اینجا امتحان کند؟ آن را هم ذکر کنید!
+        و به یاد داشته باشید مرور شما حداقل باید ۳۵ کاراکتر باشد :)
+    </string>
+    <string name="publish_review">منتشر کن!</string>
+    <string name="error_enter_review_in_persian">مرورتان را به با خط فارسی بنویسید!</string>
+    <string name="just_a_while">چند لحظه...</string>
+    <string name="review_under_limit">حداقل طول مرور ۳۵ کاراکتر است!</string>
+    <string name="camera_not_supported">برای گرفتن عکس باید گوشی شما دارای دوربین باشد!</string>
+    <string name="upload">آپلود</string>
+    <string name="select_some_files_to_upload">فایلی برای آپلود عکس انتخاب نشده!</string>
+    <string name="photo_added_already">فایل قبلا انتخاب شده.</string>
+    <string name="txtAshojashRocks">با آشوجاش بهترین طعم های اطرافتان را پیدا کنید و جاهایی را که آنجا بودید را نقد
+        کنید!
+    </string>
+    <string name="address">آدرس</string>
+    <string name="phone">تلفن</string>
+    <string name="title_price">قیمت</string>
+    <string name="review_added_successfully">مرور شما با موفقیت اضافه شد!</string>
+    <string name="google_sign_permission_denied">برای ورود با گوگل باید اجازه‌ی مشاهده حساب‌های دستگاه را داشته باشیم.
+    </string>
+    <string name="give_permission">دادن اجازه</string>
+    <string name="menu.clear">پاک کردن</string>
+    <string name="search_enter_min_three_char_to_start_search">برای شروع جست‌وجو حداقل 3 کاراکتر وارد کنید.</string>
 
 </resources>

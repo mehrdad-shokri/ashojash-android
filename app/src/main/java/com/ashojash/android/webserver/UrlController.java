@@ -1,12 +1,13 @@
 package com.ashojash.android.webserver;
 
 import android.net.Uri;
+import android.util.Log;
 import com.android.volley.Request;
 
 public final class UrlController {
 
     private static final String SCHEME = "http";
-    private static final String AUTHORITY = "www.site.mil";
+    private static final String AUTHORITY = "www.ashojash.com";
     private static final String API_NAME = "api";
     private static final String API_VERSION = "v1";
 
@@ -22,6 +23,7 @@ public final class UrlController {
     private static final int VENUE_REVIEWS_METHOD = Request.Method.GET;
     private static final int VENUE_MENUS_METHOD = Request.Method.GET;
     private static final int VENUE_PHOTOS_METHOD = Request.Method.GET;
+    private static final int VENUE_SEARCH_METHOD = Request.Method.GET;
     private static final int VENUE_UPLOAD_REVIEW_METHOD = Request.Method.POST;
 
     public static int getCityTopVenuesMethod() {
@@ -73,6 +75,9 @@ public final class UrlController {
         return VENUE_PHOTOS_METHOD;
     }
 
+    public static int getVenuesSearchMethod() {
+        return VENUE_SEARCH_METHOD;
+    }
 
     public static String getCityListURL() {
         Uri.Builder builder = new Uri.Builder();
@@ -262,6 +267,23 @@ public final class UrlController {
                 .appendPath("review")
                 .appendPath("add")
                 .build();
+        return builder.toString();
+    }
+
+    public static String getSearchVenuesUrl(String citySlug, String query,int limit) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME)
+                .authority(AUTHORITY)
+                .appendPath(API_NAME)
+                .appendPath(API_VERSION)
+                .appendPath("venue")
+                .appendPath("search")
+                .appendPath("city")
+                .appendPath(citySlug)
+                .appendQueryParameter("q", query)
+                .appendQueryParameter("l", String.valueOf(limit))
+                .build();
+        Log.d("URL", ""+builder.toString());
         return builder.toString();
     }
 }

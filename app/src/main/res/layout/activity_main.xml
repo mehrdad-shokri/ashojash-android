@@ -1,52 +1,73 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:id="@+id/rootView"
+             android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+            android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-    <LinearLayout
-            android:id="@+id/container_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <include
-                android:id="@+id/toolbarTop"
-                layout="@layout/toolbar_top"/>
-    </LinearLayout>
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottomMenuContainerMainActivity"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
-        <include
-                android:id="@+id/toolbarBottomMainActivity"
-                layout="@layout/toolbar_bottom"/>
-    </LinearLayout>
-    <ScrollView
-            android:layout_width="fill_parent"
-            android:fillViewport="false"
-            android:descendantFocusability="beforeDescendants"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/container_toolbar"
-            android:layout_above="@+id/bottomMenuContainerMainActivity"
-            android:focusable="false">
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:focusableInTouchMode="true"
-
-                      android:orientation="vertical">
-
-            <FrameLayout
-                    android:id="@+id/fragmentHeroContainer"
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
-                    >
-            </FrameLayout>
-            <FrameLayout
-                    android:id="@+id/fragmentNearbyContainer"
-                    android:layout_width="fill_parent"
-                    android:layout_height="270dp">
-            </FrameLayout>
-            <FrameLayout android:id="@+id/fragmentTopVenuesContainer" android:layout_width="fill_parent"
-                         android:layout_height="270dp"/>
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomMenuContainerMainActivity"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+            <include
+                    android:id="@+id/toolbarBottomMainActivity"
+                    layout="@layout/toolbar_bottom"/>
         </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+        <ScrollView
+                android:layout_width="fill_parent"
+                android:fillViewport="false"
+                android:descendantFocusability="beforeDescendants"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/bottomMenuContainerMainActivity"
+                android:focusable="false">
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:focusableInTouchMode="true"
+                          android:orientation="vertical">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" android:id="@+id/topMenuContainerMainActivity"
+                        android:visibility="invisible">
+                    <include android:id="@+id/toolbarTop"
+                             layout="@layout/toolbar_top"/>
+                </LinearLayout>
+                <FrameLayout
+                        android:id="@+id/fragmentHeroContainer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="200dp"
+                >
+                </FrameLayout>
+                <FrameLayout
+                        android:id="@+id/fragmentNearbyContainer"
+                        android:layout_width="fill_parent"
+                        android:layout_height="270dp">
+                </FrameLayout>
+                <FrameLayout android:id="@+id/fragmentTopVenuesContainer" android:layout_width="fill_parent"
+                             android:layout_height="270dp"/>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <include android:id="@+id/toolbarTop"
+                     layout="@layout/toolbar_search_background"/>
+        </LinearLayout>
+        <com.mypopsy.widget.FloatingSearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="6dp"
+                android:paddingLeft="6dp"
+                android:background="#90000000"
+                app:fsv_cornerRadius="5dp"
+                android:hint="@string/search_hint"
+                app:fsv_menu="@menu/search"
+                app:theme="@style/CustomFloatingSearchViewTheme"/>
+    </RelativeLayout>
+</FrameLayout>
+

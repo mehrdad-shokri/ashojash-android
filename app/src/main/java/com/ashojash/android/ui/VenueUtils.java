@@ -43,7 +43,7 @@ public final class VenueUtils {
         if (score < 1 || score > 5)
             return Color.parseColor("#c1c1c1");
         if (score < 1.25)
-            return Color.parseColor("cb202d");
+            return Color.parseColor("#cb202d");
         if (score < 1.75)
             return Color.parseColor("#de1d0f");
         if (score < 2.25)

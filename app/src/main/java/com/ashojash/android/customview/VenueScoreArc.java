@@ -60,7 +60,7 @@ public class VenueScoreArc extends ImageView {
         /*mPath.reset();
         mPath.moveTo(0, getHeight());
         mPath.cubicTo(0, getHeight(), getWidth() / 2, (80 * getHeight() / 100), getWidth(), getHeight()); *//*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more *//*
-        paint.setColor(getResources().getColor(R.color.default_white));
+        paint.setColor(getResources().getVenue(R.color.default_white));
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPath(mPath, paint);*/
     }
