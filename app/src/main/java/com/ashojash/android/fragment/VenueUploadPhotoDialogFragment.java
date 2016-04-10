@@ -70,11 +70,9 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
         dialogBuilder.setView(R.layout.dialog_add_photo);
         dialog = dialogBuilder.create();
         dialog.show();
-        Log.d(TAG, "onCreateDialog: height" + dialog.getWindow().getDecorView().getHeight());
         if (files == null)
             files = new ArrayList<>();
         if (adapter == null) {
-            Log.d(TAG, "onResume: instanciated adapter");
             adapter = new VenuePhotoUploadAdapter(files, AppController.context);
         }
         setupViews(dialog);
@@ -85,8 +83,6 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated:) " + (venuePhotosRecyclerView.getWidth() + " " + venuePhotosRecyclerView.getHeight()));
-        Log.d(TAG, "onActivityCreated: " + btnAddVenuePhotoCamera.getHeight());
     }
 
 
@@ -94,7 +90,6 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
     private RecyclerView venuePhotosRecyclerView;
 
     private void setupViews(AlertDialog dialog) {
-        Log.d(TAG, "setupViews: " + dialog.getWindow().getDecorView().getWidth());
         TextView txtVenueTitle = (TextView) dialog.findViewById(R.id.txtAddPhotoTitle);
         txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venue.name));
         btnUploadVenuePhotos = (Button) dialog.findViewById(R.id.btnUploadVenuePhotos);
@@ -133,11 +128,10 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 final ArrayList<String> checkedItems = adapter.getCheckedFilesPath();
-                Log.d(TAG, "onClick: checkItems count " + checkedItems.size());
                 if (checkedItems.size() != 0) {
                     UploadVenuePhotosTask task = new UploadVenuePhotosTask();
                     task.execute(new UploadVenuePhotosTask.VenueAddPhotoRequest(venue.slug, checkedItems));
-
+                    dismiss();
                 } else {
                     Snackbar.make(getActivity().findViewById(R.id.venueActivityRootLayout), R.string.select_some_files_to_upload, Snackbar.LENGTH_LONG).show();
                 }
@@ -274,8 +268,6 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
             });
             thread2.run();
             mCurrentPhotoPath = null;
-
-
         }
     }
 

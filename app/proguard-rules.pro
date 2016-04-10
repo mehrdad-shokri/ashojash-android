@@ -60,3 +60,7 @@
 -dontwarn com.google.android.gms.**
 -dontwarn com.google.common.cache.**
 -dontwarn com.google.common.primitives.**
+-assumenosideeffects class android.util.Log {
+ public static int d(...);
+ public static int v(...);
+}

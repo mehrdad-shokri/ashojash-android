@@ -51,6 +51,8 @@
     <string name="selected">منتخب‌ها</string>
     <string name="action_profile">پروفایل</string>
     <string name="action_list">لیست</string>
+    <string name="no_results_found">موردی یافت نشد</string>
+    <string name="search_hint">اسم رستوران, آدرس, خوراک...</string>
     <string name="signup">ثبت‌نام</string>
     <string name="signin">ورود</string>
     <string name="hint_email">ایمیل</string>

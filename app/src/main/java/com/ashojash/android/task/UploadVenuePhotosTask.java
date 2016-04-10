@@ -4,13 +4,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.webserver.WebServer;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,7 +16,10 @@ import java.util.ArrayList;
 public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.VenueAddPhotoRequest, Void, Void> {
 
     String TAG = AppController.TAG;
-
+    private final int venuePhotoNotificationId = 1001;
+    private NotificationManager notificationManager = (NotificationManager) AppController.context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(AppController.context);
+    private int filesCount;
 
     @Override
     protected Void doInBackground(VenueAddPhotoRequest... venueAddPhotoRequests) {
@@ -27,43 +28,25 @@ public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.Venue
             ArrayList<String> checkedItems = request.checkedItems;
             String venueSlug = request.venueSlug;
             File[] files = getFilesFromPath(checkedItems);
+            filesCount = files.length;
+
             for (int i = 0; i < files.length; i++) {
-                final int finalI = i;
                 WebServer.UploadVenuePhoto(venueSlug, files[i], new AsyncHttpResponseHandler() {
-                    int id = finalI;
+
 
                     @Override
-                    public void onStart() {
-                        super.onStart();
-                        notificationBuilder.setContentTitle("My app")
-                                .setSmallIcon(R.drawable.ic_action_search)
-                                .setContentText("Download in progress");
-                        notificationBuilder.setProgress(100, 0, false);
-                        notificationManager.notify(id, notificationBuilder.build());
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
                     }
 
                     @Override
-                    public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                        Log.d(TAG, "onSuccess:");
-                        notificationManager.cancel(id);
-                    }
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
-                    @Override
-                    public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                        Log.d(TAG, "onFailure: " + i + " " + throwable.getMessage());
-                    }
-
-                    @Override
-                    public void onProgress(long bytesWritten, long totalSize) {
-                        super.onProgress(bytesWritten, totalSize);
-                        Log.d(TAG, "onProgress: " + (100 * (bytesWritten / totalSize)));
-                        notificationBuilder.setProgress(100, (int) (100 * (bytesWritten / totalSize)), false);
                     }
                 });
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Log.d(TAG, "file not found: ");
         } finally {
             return null;
         }
@@ -72,19 +55,31 @@ public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.Venue
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        showNotification();
+        notificationBuilder.setContentTitle(AppController.context.getResources().getString(R.string.photo_upload))
+                .setSmallIcon(R.drawable.ic_stat_ashojash_logo_final)// change icon to notification icon
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText(AppController.context.getResources().getString(R.string.uploading_photos));
+        notificationBuilder.setProgress(100, 0, true);
+        notificationManager.notify(venuePhotoNotificationId, notificationBuilder.build());
     }
 
-    private NotificationManager notificationManager = (NotificationManager) AppController.context.getSystemService(Context.NOTIFICATION_SERVICE);
-    private NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-            AppController.context);
-
-    private void showNotification() {
-
-        // Issues the notification
-
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        notificationBuilder.setProgress(0, 0, true);
+        notificationManager.notify(venuePhotoNotificationId, notificationBuilder.build());
+        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(AppController.context);*/
+        notificationBuilder.setContentTitle(AppController.context.getResources().getString(R.string.finished))
+                .setSmallIcon(R.drawable.ic_stat_ashojash_logo_final)// change icon to notification icon
+                .setOngoing(false)
+                .setProgress(0,0,false)
+                .setSmallIcon(R.drawable.ic_stat_ashojash_logo_final)// change icon to notification icon
+                .setContentText(AppController.context.getResources().getString(R.string.uploading_photos_finished));
+        if (filesCount == 1)
+            notificationBuilder.setContentText(AppController.context.getResources().getString(R.string.uploading_photo_finished));
+        notificationManager.notify(venuePhotoNotificationId, notificationBuilder.build());
     }
-
 
     public final static class VenueAddPhotoRequest {
         String venueSlug;

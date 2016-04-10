@@ -56,7 +56,6 @@ public class AppController extends MultiDexApplication {
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         instance = this;
         ActiveAndroid.initialize(this);
-        LangHelper.setLang("fa");
         initializeSharedPrefs();
         initializePhoneDimes();
         Iconics.init(getApplicationContext());

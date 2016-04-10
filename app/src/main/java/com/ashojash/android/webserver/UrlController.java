@@ -1,13 +1,13 @@
 package com.ashojash.android.webserver;
 
 import android.net.Uri;
-import android.util.Log;
 import com.android.volley.Request;
 
 public final class UrlController {
 
     private static final String SCHEME = "http";
     private static final String AUTHORITY = "www.ashojash.com";
+//    private static final String AUTHORITY = "http://192.168.1.4/";
     private static final String API_NAME = "api";
     private static final String API_VERSION = "v1";
 
@@ -270,7 +270,7 @@ public final class UrlController {
         return builder.toString();
     }
 
-    public static String getSearchVenuesUrl(String citySlug, String query,int limit) {
+    public static String getSearchVenuesUrl(String citySlug, String query, int limit) {
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME)
                 .authority(AUTHORITY)
@@ -283,7 +283,6 @@ public final class UrlController {
                 .appendQueryParameter("q", query)
                 .appendQueryParameter("l", String.valueOf(limit))
                 .build();
-        Log.d("URL", ""+builder.toString());
         return builder.toString();
     }
 }
