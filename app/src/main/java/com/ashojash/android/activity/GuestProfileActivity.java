@@ -4,19 +4,21 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.ViewpagerAdapter;
 import com.ashojash.android.fragment.LoginFragment;
 import com.ashojash.android.fragment.RegisterFragment;
-import com.ashojash.android.helper.AppController;
 
+/*
+* Checked for bus and json
+* */
 public class GuestProfileActivity extends BottomToolbarActivity {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private static final String TAG = "GuestProfileActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +31,6 @@ public class GuestProfileActivity extends BottomToolbarActivity {
         setupRegisterViewpager(viewPager, savedInstanceState);
         tabLayout = (TabLayout) findViewById(R.id.tabsProfileActivity);
         tabLayout.setupWithViewPager(viewPager);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
 
@@ -51,10 +48,8 @@ public class GuestProfileActivity extends BottomToolbarActivity {
         adapter.addFragment(loginFragment, getResources().getString(R.string.signin));
         adapter.addFragment(registerFragment, getResources().getString(R.string.signup));
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Log.d(AppController.TAG, "setupRegisterViewpager: " + extras.getInt("current_viewpager_tab", 0));
+        if (extras != null)
             viewPager.setCurrentItem(extras.getInt("current_viewpager_tab", 0));
-        }
         viewPager.setAdapter(adapter);
 
     }

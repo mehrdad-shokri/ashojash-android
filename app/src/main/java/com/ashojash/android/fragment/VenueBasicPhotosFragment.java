@@ -6,21 +6,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.activity.VenueMenusActivity;
 import com.ashojash.android.activity.VenuePhotosActivity;
-import com.ashojash.android.adapter.VenueBasicPhotosAdapter;
-import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructPhoto;
-import com.ashojash.android.webserver.JsonParser;
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.ashojash.android.adapter.OnCardClickListener;
+import com.ashojash.android.adapter.VenuePhotosAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
+import com.ashojash.android.model.Photo;
+import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.utils.BusProvider;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -53,11 +56,11 @@ public class VenueBasicPhotosFragment extends Fragment {
 
     private void setupViews() {
         rootLayout = (ViewGroup) getView().findViewById(R.id.rootLayoutVenueBasicPhotosFragment);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         errorRootLayout = (ViewGroup) getView().findViewById(R.id.errorViewVenueBasicPicsFragment);
         txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicPicsFragment);
         progressbar = (ProgressBar) getView().findViewById(R.id.progressbar);
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewVenueBasicPicsFragment);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         btnSeeMore = (Button) getView().findViewById(R.id.btnSeeMorePicsVenueBasicsPicsFragment);
         btnSeeMore.setOnClickListener(new View.OnClickListener() {
@@ -74,31 +77,54 @@ public class VenueBasicPhotosFragment extends Fragment {
         startActivity(intent);
     }
 
-    public void onDataReceived(JSONArray response) {
-        try {
-            if (response == null)
-                throw new JSONException("json parsing exception");
-            List<StructPhoto> structPhotoList = JsonParser.parseVenuePhotos(response);
-            if (structPhotoList.size() == 0)
-                throw new IllegalArgumentException("no photos added yet :(");
-//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / structPhotoList.size() + UiUtils.convertDpToPixel(15 + 15 + 1 + 23)));
-//            rootLayout.setLayoutParams(layoutParams);
-            Intent intent = new Intent(getActivity(), VenueMenusActivity.class);
-            RecyclerView.Adapter adapter = new VenueBasicPhotosAdapter(structPhotoList, AppController.context, intent);
-            recyclerView.setAdapter(adapter);
-            btnSeeMore.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            hideErrorViews();
-        } catch (JSONException e) {
-            showErrorViews();
-            txtError.setText(R.string.error_retrieving_data);
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
 
-        } catch (IllegalArgumentException e) {
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        Log.d(TAG, "onEvent: " + event.error.message);
+        showErrorViews();
+        txtError.setText(R.string.error_retrieving_data);
+    }
+
+    private static final String TAG = "Ashojash";
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
+        progressbar.setVisibility(View.GONE);
+
+        List<Photo> photoList = event.venue.photos;
+        int photosCount = photoList.size();
+        if (photosCount == 0) {
             txtError.setText(R.string.no_photo_item_yet);
+            btnSeeMore.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
             showErrorViews();
-        } finally {
-            progressbar.setVisibility(View.GONE);
+            getView().findViewById(R.id.rootLayoutVenueBasicPhotosFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            return;
         }
+//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / photoList.size() + UiUtils.convertDpToPixel(15 + 15 + 1 + 23)));
+//            rootLayout.setLayoutParams(layoutParams);
+        VenuePhotosAdapter adapter = new VenuePhotosAdapter(photoList);
+        adapter.setOnItemClickListener(new OnCardClickListener() {
+            @Override
+            public void onClick(Object model) {
+                startVenuePhotosActivity();
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        btnSeeMore.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        hideErrorViews();
     }
 
     private void showErrorViews() {

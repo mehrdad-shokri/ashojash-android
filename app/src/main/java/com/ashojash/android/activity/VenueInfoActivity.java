@@ -3,23 +3,13 @@ package com.ashojash.android.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.fragment.VenueInfoFragment;
 import com.ashojash.android.fragment.VenueMapFragment;
-import com.ashojash.android.struct.StructUser;
-import com.ashojash.android.utils.AuthUtils;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-
+/*
+* Completed
+* */
 public class VenueInfoActivity extends BaseActivity {
     private AccountHeader headerResult;
     protected Toolbar toolbar;
@@ -32,14 +22,13 @@ public class VenueInfoActivity extends BaseActivity {
         if (slug == null) finish();
         setContentView(R.layout.activity_venue_info);
         setupViews();
-        setupNavigationDrawer();
         Fragment venueMapFragment = new VenueMapFragment();
         addFragment(R.id.fragmentMapContainer, venueMapFragment);
         Fragment venueLocationFragment=new VenueInfoFragment();
         addFragment(R.id.fragmentInfoContainer,venueLocationFragment);
     }
 
-    private void setupNavigationDrawer() {
+    /*private void setupNavigationDrawer() {
         if (AuthUtils.isUserLoggedIn()) {
             StructUser user = AuthUtils.getAuthUser();
             headerResult = new AccountHeaderBuilder()
@@ -81,10 +70,10 @@ public class VenueInfoActivity extends BaseActivity {
                     })
                     .build();
         }
-    }
+    }*/
 
     private void setupViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbarTop);
-        toolbar.setTitle("Venue name");
+        toolbar.setTitle("VenueOrm name");
     }
 }

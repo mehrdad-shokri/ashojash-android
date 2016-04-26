@@ -10,16 +10,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueMenusActivity;
-import com.ashojash.android.adapter.VenueBasicMenuAdapter;
+import com.ashojash.android.adapter.OnCardClickListener;
+import com.ashojash.android.adapter.VenueMenusAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructMenu;
+import com.ashojash.android.model.Menu;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.webserver.JsonParser;
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.ashojash.android.utils.BusProvider;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -43,7 +49,6 @@ public class VenueBasicMenuFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        do stuff
         slug = getActivity().getIntent().getStringExtra("slug");
         if (slug == null)
             getActivity().getFragmentManager().popBackStack();
@@ -72,38 +77,59 @@ public class VenueBasicMenuFragment extends Fragment {
 
     private void startVenueMenusActivity() {
         Intent intent = new Intent(getActivity(), VenueMenusActivity.class);
+        Log.d(TAG, "startVenueMenusActivity: "+slug);
         intent.putExtra("slug", slug);
         startActivity(intent);
     }
 
-    public void onDataReceived(JSONArray response, int menusCount) {
-        try {
-            if (response == null)
-                throw new JSONException("json parsing exception");
-            List<StructMenu> menuList = JsonParser.parseVenueMenus(response);
-            if (menusCount == 0)
-                throw new IllegalArgumentException("no menus added yet :(");
+    private static final String TAG = "VenueBasicMenuFragment";
 
-            btnSeeAllMenus.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
-            String TAG = AppController.TAG;
-            Log.d(TAG, "onDataReceived: height " + recyclerView.getLayoutParams().height);
-            Intent intent = new Intent(getActivity(), VenueMenusActivity.class);
-            RecyclerView.Adapter adapter = new VenueBasicMenuAdapter(menuList, AppController.context, intent);
-            recyclerView.setAdapter(adapter);
-            rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(menuList.size() * 65 + 90)));
-            btnSeeAllMenus.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            hideErrorViews();
-        } catch (JSONException e) {
-            showErrorViews();
-            txtError.setText(R.string.error_retrieving_data);
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
 
-        } catch (IllegalArgumentException e) {
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
+        Log.d(TAG, "onVenueInfoReceived: received");
+        Venue venue = event.venue;
+        int menusCount = venue.menusCount;
+        List<Menu> menuList = venue.menus;
+        progressbar.setVisibility(View.GONE);
+        if (menusCount == 0) {
             txtError.setText(R.string.no_menu_item_yet);
             showErrorViews();
-        } finally {
-            progressbar.setVisibility(View.GONE);
+            btnSeeAllMenus.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            getView().findViewById(R.id.menuRootLayoutVenueMenuFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            return;
         }
+        btnSeeAllMenus.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
+        VenueMenusAdapter adapter = new VenueMenusAdapter(menuList);
+        adapter.setOnItemClickLister(new OnCardClickListener() {
+            @Override
+            public void onClick(Object model) {
+                startVenueMenusActivity();
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(menuList.size() * 65 + 90)));
+        btnSeeAllMenus.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        hideErrorViews();
+    }
+
+    @Subscribe
+    public void onError(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtError.setText(R.string.error_retrieving_data);
     }
 
     private void showErrorViews() {

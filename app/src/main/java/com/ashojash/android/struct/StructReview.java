@@ -1,5 +1,5 @@
 package com.ashojash.android.struct;
-
+@Deprecated
 public class StructReview {
     private String comment;
     private int cost;

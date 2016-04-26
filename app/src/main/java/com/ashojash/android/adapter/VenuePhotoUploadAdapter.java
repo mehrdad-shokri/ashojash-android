@@ -21,16 +21,14 @@ import java.util.Map;
 public class VenuePhotoUploadAdapter extends RecyclerView.Adapter<VenuePhotoUploadAdapter.ViewHolder> {
 
 
-    private Context context;
+    private static final Context CONTEXT = AppController.context;
     private Map<String, Boolean> filesPathMap;
     private ArrayList<String> filesPath;
 
-    public VenuePhotoUploadAdapter(ArrayList<String> filesPath, Context context) {
+    public VenuePhotoUploadAdapter(ArrayList<String> filesPath) {
         super();
         this.filesPath = filesPath;
         initializeFilesPath(filesPath);
-        Log.d(TAG, "VenuePhotoUploadAdapter: constructor" + filesPathMap.size());
-        this.context = context;
     }
 
     private void initializeFilesPath(ArrayList<String> filesPath) {
@@ -51,9 +49,7 @@ public class VenuePhotoUploadAdapter extends RecyclerView.Adapter<VenuePhotoUplo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String filePath = new ArrayList<>(filesPathMap.keySet()).get(position);
-        Log.d(TAG, "onBindViewHolder: current File path " + filePath);
         boolean isChecked = new ArrayList<>(filesPathMap.values()).get(position);
-        Log.d(TAG, "onBindViewHolder: is Checked " + isChecked);
         holder.checkBox.setChecked(isChecked);
         Thread thread = new Thread(new Runnable() {
             @Override

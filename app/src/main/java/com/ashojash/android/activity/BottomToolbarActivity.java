@@ -13,7 +13,10 @@ import com.ashojash.android.utils.AuthUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
-public class BottomToolbarActivity extends NavigationDrawerActivity {
+/*
+* Checked for bus and json
+* */
+public class BottomToolbarActivity extends ToolbarActivity {
 
     private Toolbar toolbarBottom;
 
@@ -43,16 +46,6 @@ public class BottomToolbarActivity extends NavigationDrawerActivity {
             });
         } else {
             profileLayout.setVisibility(View.GONE);
-            /*profileLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (AppController.currentActivity.getClass().getSimpleName().equals(GuestProfileActivity.class.getSimpleName()))
-                        return;
-                    Intent intent = new Intent(AppController.currentActivity, GuestProfileActivity.class);
-                    AppController.currentActivity.startActivity(intent);
-                    finish();
-                }
-            });*/
         }
 
         listLayout.setOnClickListener(new View.OnClickListener() {
@@ -65,16 +58,6 @@ public class BottomToolbarActivity extends NavigationDrawerActivity {
                 finish();
             }
         });
-        /*searchLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (AppController.currentActivity.getClass().getSimpleName().equals(SearchActivity.class.getSimpleName()))
-                    return;
-                Intent intent = new Intent(AppController.currentActivity, SearchActivity.class);
-                AppController.currentActivity.startActivity(intent);
-                finish();
-            }
-        });*/
     }
 
     protected void setupBottomToolbarLayoutActive(int which) {

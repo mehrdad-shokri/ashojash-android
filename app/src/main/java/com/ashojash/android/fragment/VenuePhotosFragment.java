@@ -1,36 +1,33 @@
 package com.ashojash.android.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
-import com.ashojash.android.activity.VenueReviewsActivity;
+import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.adapter.VenuePhotosAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructPhoto;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.model.Photo;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VenuePhotosFragment extends Fragment {
-    private static final int REVIEWS_BASE_LIMIT = 10;
-    private GridView gridView;
-    private String slug;
+    private RecyclerView recyclerView;
+    private String venueSlug;
 
     public VenuePhotosFragment() {
     }
@@ -44,67 +41,75 @@ public class VenuePhotosFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slug = getActivity().getIntent().getStringExtra("slug");
-        if (slug == null)
+        venueSlug = getActivity().getIntent().getStringExtra("slug");
+        String TAG = AppController.TAG;
+        Log.d(TAG, "onCreate: slug: " + venueSlug);
+        if (venueSlug == null)
             getActivity().getFragmentManager().popBackStack();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         setupViews();
-        getReviews();
-    }
-
-
-    private void getReviews() {
-        JsonObjectRequest request = WebServer.getVenuePhotos(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject data = response.getJSONObject("data");
-                    reviewList = new ArrayList<>();
-                    reviewList = JsonParser.parseVenuePhotos(data.getJSONArray("items"));
-                    Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
-                    adapter = new VenuePhotosAdapter(reviewList, AppController.context, intent);
-                    gridView.setAdapter(adapter);
-                } catch (JSONException e) {
-                    showErrorViews();
-                    txtError.setText(R.string.error_retrieving_data);
-
-                } catch (IllegalArgumentException e) {
-                    txtError.setText(R.string.no_reviews_added_yet);
-                    showErrorViews();
-                } finally {
-                    progressbar.setVisibility(View.GONE);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }, slug, REVIEWS_BASE_LIMIT);
-        AppController.getInstance().addToRequestQueue(request, "VENUE_REVIEWS_REQUEST");
+        VenueApi.photos(venueSlug);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        AppController.getInstance().cancelPendingRequests("VENUE_REVIEWS_REQUEST");
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtError.setText(R.string.error_retrieving_data);
+    }
+
+    String TAG = AppController.TAG;
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenuePhotosResponse event) {
+        Log.d(TAG, "onPhotosReceived: ");
+        progressbar.setVisibility(View.GONE);
+
+        photoList = event.photoList;
+        int photosCount = photoList.size();
+        if (photosCount == 0) {
+            txtError.setText(R.string.no_photo_item_yet);
+            showErrorViews();
+        }
+        adapter = new VenuePhotosAdapter(photoList);
+        adapter.setOnItemClickListener(new OnCardClickListener() {
+            @Override
+            public void onClick(Object model) {
+//                    Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
+//                    show image dmadet
+            }
+        });
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(AppController.context, 2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
+
+
     private VenuePhotosAdapter adapter;
-    private List<StructPhoto> reviewList;
+    private List<Photo> photoList;
     private TextView txtError;
 
     private void setupViews() {
-        gridView = (GridView) getView().findViewById(R.id.venueMenusRecyclerView);
+        recyclerView = (RecyclerView) getView().findViewById(R.id.venueMenusRecyclerView);
 //        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(AppController.context);
         progressbar = (ProgressBar) getView().findViewById(R.id.prgNearbyFragment);
-        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenueReviewFragment);
-        txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicReviewFragment);
+        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
+        txtError = (TextView) getView().findViewById(R.id.txtErrorVenue);
     }
 
     private void showErrorViews() {

@@ -1,5 +1,5 @@
 package com.ashojash.android.struct;
-
+@Deprecated
 public class StructPhoto {
     private String photoUrl;
     private String username;

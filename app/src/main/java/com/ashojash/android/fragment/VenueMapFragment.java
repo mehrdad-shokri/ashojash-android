@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.activeandroid.query.Select;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.model.Venue;
+import com.ashojash.android.orm.VenueOrm;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,8 +42,8 @@ public class VenueMapFragment extends Fragment {
         String slug = getActivity().getIntent().getStringExtra("slug");
         if (slug == null)
             getActivity().getFragmentManager().popBackStack();
-        Venue venue = new Select().from(Venue.class).where("slug =?", slug).executeSingle();
-        venueLatLng = new LatLng(venue.lat, venue.lng);
+        VenueOrm venueOrm = new Select().from(VenueOrm.class).where("slug =?", slug).executeSingle();
+        venueLatLng = new LatLng(venueOrm.lat, venueOrm.lng);
     }
 
     private SupportMapFragment mMapFragment;

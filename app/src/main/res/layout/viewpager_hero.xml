@@ -11,7 +11,7 @@
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:id="@+id/imgHeroViewpager"
-            android:contentDescription="venue image"/>
+            android:contentDescription="venueOrm image"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

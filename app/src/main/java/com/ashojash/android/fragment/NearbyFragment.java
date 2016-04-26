@@ -14,19 +14,18 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.adapter.VenueAdapter;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructVenue;
+import com.ashojash.android.model.Venue;
+import com.ashojash.android.utils.BusProvider;
 import com.ashojash.android.utils.LocationUtil;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.webserver.VenueApi;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -35,11 +34,11 @@ public class NearbyFragment extends Fragment {
     private TextView txtNearbyError;
     private LinearLayout retryView;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private VenueAdapter adapter;
     private double lat;
     private double lng;
     private String citySlug;
-    private List<StructVenue> venueList;
+    private List<Venue> venueList;
 
     public NearbyFragment() {
     }
@@ -60,11 +59,6 @@ public class NearbyFragment extends Fragment {
             citySlug = bundle.getString("current_city_slug");
         }
         getUserLocation();
-
-//        getAnotherUserLocation();
-//        getUserLocation();
-//       get current location of user
-//        request nearby venues
     }
 
     private void setupViews() {
@@ -73,7 +67,7 @@ public class NearbyFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         txtNearbyError = (TextView) getView().findViewById(R.id.txtErrorNearbyFragment);
-        retryView = (LinearLayout) getView().findViewById(R.id.errorViewVenueReviewFragment);
+        retryView = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
         retryView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +77,55 @@ public class NearbyFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
     private LocationUtil locationUtil;
+
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnNearbyVenuesResult event) {
+        venueList = event.venueList;
+        adapter = new VenueAdapter(venueList);
+        adapter.setOnItemClickListener(new VenueAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(Venue venue) {
+                Intent intent = new Intent(getActivity(), VenueActivity.class);
+                intent.putExtra("slug", venue.slug);
+                AppController.currentActivity.startActivity(intent);
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        try {
+            if (venueList.size() == 0)
+                throw new IllegalArgumentException("no nearby venues");
+        } catch (IllegalArgumentException e) {
+            txtNearbyError.setText(R.string.no_nearby_venues);
+            showErrorViews();
+        }
+        nearbyProgressbar.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtNearbyError.setText(R.string.error_retrieving_data);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent event) {
+        showErrorViews();
+        txtNearbyError.setText(R.string.error_retrieving_data);
+    }
 
     private void getUserLocation() {
 
@@ -102,37 +144,10 @@ public class NearbyFragment extends Fragment {
                 }
                 lat = location.getLatitude();
                 lng = location.getLongitude();
-                JsonObjectRequest jsonObjectRequest = WebServer.getCityNearbyVenues(new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-//                        json object
-                        try {
-                            venueList = JsonParser.parseVenuesJsonObject(response);
-                            Intent intent = new Intent(getActivity(), VenueActivity.class);
-                            adapter = new VenueAdapter(venueList, AppController.context, intent);
-                            recyclerView.setAdapter(adapter);
-                            if (venueList.size() == 0)
-                                throw new IllegalArgumentException("no nearby venues");
-                            nearbyProgressbar.setVisibility(View.GONE);
-//                            update view
-                        } catch (JSONException e) {
-                            showErrorViews();
-                            txtNearbyError.setText(R.string.error_retrieving_data);
-                        } catch (IllegalArgumentException e) {
-                            showErrorViews();
-                            txtNearbyError.setText(R.string.no_nearby_venues);
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showErrorViews();
-                        txtNearbyError.setText(R.string.error_retrieving_data);
-                    }
-                }, citySlug, lat, lng);
-                AppController.getInstance().addToRequestQueue(jsonObjectRequest, "NEARBY_FRAGMENT");
+                VenueApi.nearbyVenues(citySlug, lat, lng);
             }
         };
+
         String TAG = "LOCATION";
         locationUtil = new LocationUtil();
         try {
@@ -157,6 +172,5 @@ public class NearbyFragment extends Fragment {
     public void onPause() {
         super.onPause();
         locationUtil.cancelTimer();
-        AppController.getInstance().cancelPendingRequests("NEARBY_FRAGMENT");
     }
 }

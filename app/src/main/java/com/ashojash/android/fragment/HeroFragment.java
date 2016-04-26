@@ -6,33 +6,30 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.HeroPagerAdapter;
-import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructVenue;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.Colors;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
 import com.viewpagerindicator.CirclePageIndicator;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
 public class HeroFragment extends Fragment {
 
     private String citySlug;
-    private List<StructVenue> venueList;
+    private List<Venue> venueList;
     private LinearLayout retryView;
     private CirclePageIndicator circlePageIndicator;
     private ViewPager heroViewpager;
@@ -63,60 +60,49 @@ public class HeroFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 hideErrorViews();
-                getTopVenues();
+                VenueApi.topVenues(citySlug);
             }
+
         });
         Bundle bundle = getArguments();
         if (bundle != null) {
             citySlug = bundle.getString("current_city_slug");
         }
-        getTopVenues();
-
-//        setPending();
-//        getUserLocation();
-//        top locations in city
-
-
-    }
-
-    private void getTopVenues() {
-        final String TAG = AppController.TAG;
-
-        final JsonObjectRequest request = WebServer.getCityTopVenues(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    venueList = JsonParser.parseVenuesJsonObject(response);
-                    heroPagerAdapter = new HeroPagerAdapter(venueList);
-                    heroViewpager.setAdapter(heroPagerAdapter);
-                    circlePageIndicator.setViewPager(heroViewpager);
-                    progressbar.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    Log.d(TAG, "onResponse: fucked in json parsing");
-                    txtHeroError.setText(R.string.error_retrieving_data);
-                    showErrorViews();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onResponse: fucked in get data");
-                Log.d(TAG, "onResponse : " + error.getMessage());
-                Log.d(TAG, "onResponse : " + (heroPagerAdapter == null));
-                progressbar.setVisibility(View.GONE);
-                txtHeroError.setText(R.string.error_retrieving_data);
-                showErrorViews();
-            }
-        }, citySlug);
-
-        AppController.getInstance().addToRequestQueue(request, "HERO_FRAGMENT");
+        VenueApi.topVenues(citySlug);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        AppController.getInstance().cancelPendingRequests("HERO_FRAGMENT");
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnTopVenuesResult event) {
+        venueList = event.venueList;
+        heroPagerAdapter = new HeroPagerAdapter(venueList);
+        heroViewpager.setAdapter(heroPagerAdapter);
+        circlePageIndicator.setViewPager(heroViewpager);
+        progressbar.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        txtHeroError.setText(R.string.error_retrieving_data);
+        showErrorViews();
+    }
+
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent event) {
+        progressbar.setVisibility(View.GONE);
+        txtHeroError.setText(R.string.error_retrieving_data);
+        showErrorViews();
     }
 
     private void showErrorViews() {

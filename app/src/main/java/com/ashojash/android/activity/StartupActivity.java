@@ -3,11 +3,12 @@ package com.ashojash.android.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.helper.LangHelper;
 import com.ashojash.android.utils.AlarmUtils;
-
+/*
+* Checked for bus and json
+* */
 public class StartupActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -21,8 +22,6 @@ public class StartupActivity extends BaseActivity {
         boolean isFirstVisit = AppController.defaultPref.getBoolean("is_first_visit", true);
         String citySlug = AppController.defaultPref.getString("current_city_slug", null);
         Intent intent;
-        String TAG = AppController.TAG;
-        Log.d(TAG, "onResume: started StartupActivity");
         AlarmUtils.setRefreshTokenAlarm(AppController.context);
         if (isFirstVisit || (citySlug == null)) {
             AppController.editor.putBoolean("is_first_visit", false);

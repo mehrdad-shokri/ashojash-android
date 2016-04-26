@@ -5,12 +5,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.NotificationCompat;
 import com.ashojash.android.R;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.webserver.WebServer;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import cz.msebera.android.httpclient.Header;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.UserApi;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.VenueAddPhotoRequest, Void, Void> {
@@ -21,35 +22,28 @@ public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.Venue
     private NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(AppController.context);
     private int filesCount;
 
+    public UploadVenuePhotosTask() {
+        BusProvider.getInstance().register(this);
+    }
+
     @Override
     protected Void doInBackground(VenueAddPhotoRequest... venueAddPhotoRequests) {
-        try {
-            VenueAddPhotoRequest request = venueAddPhotoRequests[0];
-            ArrayList<String> checkedItems = request.checkedItems;
-            String venueSlug = request.venueSlug;
-            File[] files = getFilesFromPath(checkedItems);
-            filesCount = files.length;
+        VenueAddPhotoRequest request = venueAddPhotoRequests[0];
+        ArrayList<String> checkedItems = request.checkedItems;
+        String venueSlug = request.venueSlug;
+        File[] files = getFilesFromPath(checkedItems);
+        filesCount = files.length;
 
-            for (int i = 0; i < files.length; i++) {
-                WebServer.UploadVenuePhoto(venueSlug, files[i], new AsyncHttpResponseHandler() {
+        for (int i = 0; i < files.length; i++)
+            UserApi.uploadPhoto(files[i], venueSlug);
+        return null;
+    }
 
+    private boolean wasAllSuccessful = true;
 
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                    }
-                });
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            return null;
-        }
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        wasAllSuccessful = false;
     }
 
     @Override
@@ -67,13 +61,14 @@ public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.Venue
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        if (!wasAllSuccessful) return;
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(venuePhotoNotificationId, notificationBuilder.build());
         /*NotificationCompat.Builder builder = new NotificationCompat.Builder(AppController.context);*/
         notificationBuilder.setContentTitle(AppController.context.getResources().getString(R.string.finished))
                 .setSmallIcon(R.drawable.ic_stat_ashojash_logo_final)// change icon to notification icon
                 .setOngoing(false)
-                .setProgress(0,0,false)
+                .setProgress(0, 0, false)
                 .setSmallIcon(R.drawable.ic_stat_ashojash_logo_final)// change icon to notification icon
                 .setContentText(AppController.context.getResources().getString(R.string.uploading_photos_finished));
         if (filesCount == 1)

@@ -1,21 +1,23 @@
 package com.ashojash.android.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import android.support.annotation.Nullable;
 
-@Table(name = "users", id = "id")
-public class User extends Model {
-
-    @Column(name = "username")
-    public String username;
-
-    @Column(name = "name")
+public class User {
     public String name;
-
-    @Column(name = "email")
+    public String username;
     public String email;
+    public String bio;
+    public SimplePhoto photo;
+    public Date createdAt;
+    public Token token;
 
-    @Column(name = "image_url")
-    public String imageUrl;
+
+    @Nullable
+    public GoogleOAuth googleOAuth;
+
+
+
+    public class GoogleOAuth {
+        public boolean isNewUser;
+    }
 }

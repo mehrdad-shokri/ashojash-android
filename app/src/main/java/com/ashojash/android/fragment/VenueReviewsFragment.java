@@ -6,32 +6,30 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueReviewsActivity;
-import com.ashojash.android.adapter.VenueReviewAdapter;
+import com.ashojash.android.adapter.OnCardClickListener;
+import com.ashojash.android.adapter.VenueReviewsAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructReview;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.model.Review;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VenueReviewsFragment extends Fragment {
-    private static final int REVIEWS_BASE_LIMIT = 10;
     private RecyclerView recyclerView;
-    private String slug;
+    private String venueSlug;
 
     public VenueReviewsFragment() {
     }
@@ -45,61 +43,71 @@ public class VenueReviewsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slug = getActivity().getIntent().getStringExtra("slug");
-        if (slug == null)
+        venueSlug = getActivity().getIntent().getStringExtra("slug");
+        Log.d(TAG, "onCreate: venueSlug: " + venueSlug);
+        if (venueSlug == null)
             getActivity().getFragmentManager().popBackStack();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         setupViews();
-        getReviews();
+        VenueApi.reviews(venueSlug);
     }
 
     private String TAG = AppController.TAG;
 
-    private void getReviews() {
-        JsonObjectRequest request = WebServer.getVenueReviews(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject data = response.getJSONObject("data");
-                    reviewList = new ArrayList<>();
-                    reviewList = JsonParser.parseVenueReviews(data.getJSONArray("items"));
-                    Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
-                    adapter = new VenueReviewAdapter(reviewList, AppController.context, intent);
-                    recyclerView.setAdapter(adapter);
-
-                } catch (JSONException e) {
-                    showErrorViews();
-                    txtError.setText(R.string.error_retrieving_data);
-
-                } catch (IllegalArgumentException e) {
-                    txtError.setText(R.string.no_reviews_added_yet);
-                    showErrorViews();
-                } finally {
-                    progressbar.setVisibility(View.GONE);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }, slug, REVIEWS_BASE_LIMIT);
-        AppController.getInstance().addToRequestQueue(request, "VENUE_REVIEWS_REQUEST");
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueReviewsResponse event) {
+        Log.d(TAG, "onReviewsReceived: on response");
+        reviewList = event.reviewList;
+        int reviewsCount = reviewList.size();
+        progressbar.setVisibility(View.GONE);
+
+        if (reviewsCount == 0) {
+            txtError.setText(R.string.no_reviews_added_yet);
+            showErrorViews();
+            return;
+        }
+        adapter = new VenueReviewsAdapter(reviewList);
+        adapter.setOnItemClickListener(new OnCardClickListener() {
+            @Override
+            public void onClick(Object model) {
+                Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
+//                    start a new activity showing all the details of review
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        Log.d(TAG, "onResponseError: on Error");
+        txtError.setText(R.string.error_retrieving_data);
+        showErrorViews();
+    }
+
 
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().cancelPendingRequests("VENUE_REVIEWS_REQUEST");
     }
 
-    private RecyclerView.Adapter adapter;
-    private List<StructReview> reviewList;
+    private VenueReviewsAdapter adapter;
+    private List<Review> reviewList;
     private TextView txtError;
 
     private void setupViews() {
@@ -108,8 +116,8 @@ public class VenueReviewsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         progressbar = (ProgressBar) getView().findViewById(R.id.prgNearbyFragment);
-        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenueReviewFragment);
-        txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicReviewFragment);
+        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
+        txtError = (TextView) getView().findViewById(R.id.txtErrorVenue);
     }
 
     private void showErrorViews() {

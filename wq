@@ -1,0 +1,144 @@
+Change network infrastracture to Retrofit
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Apr 26 12:35:57 2016 +0430
+#
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   .idea/dictionaries/admin.xml
+#	modified:   .idea/misc.xml
+#	modified:   Ashojash.iml
+#	modified:   app/app.iml
+#	modified:   app/build.gradle
+#	modified:   app/proguard-rules.pro
+#	modified:   app/src/main/AndroidManifest.xml
+#	modified:   app/src/main/java/com/ashojash/android/activity/BaseActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/BottomToolbarActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/CityListActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/GuestProfileActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/MainActivity.java
+#	deleted:    app/src/main/java/com/ashojash/android/activity/NavigationDrawerActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/SearchActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/StartupActivity.java
+#	new file:   app/src/main/java/com/ashojash/android/activity/ToolbarActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenueActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenueBaseActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenueInfoActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenueMenusActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenuePhotosActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/activity/VenueReviewsActivity.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/CityAdapter.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/HeroPagerAdapter.java
+#	new file:   app/src/main/java/com/ashojash/android/adapter/OnCardClickListener.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/VenueAdapter.java
+#	deleted:    app/src/main/java/com/ashojash/android/adapter/VenueBasicPhotosAdapter.java
+#	renamed:    app/src/main/java/com/ashojash/android/adapter/VenueBasicMenuAdapter.java -> app/src/main/java/com/ashojash/android/adapter/VenueMenusAdapter.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/VenuePhotoUploadAdapter.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/VenuePhotosAdapter.java
+#	deleted:    app/src/main/java/com/ashojash/android/adapter/VenueReviewAdapter.java
+#	renamed:    app/src/main/java/com/ashojash/android/adapter/VenueBasicReviewsAdapter.java -> app/src/main/java/com/ashojash/android/adapter/VenueReviewsAdapter.java
+#	modified:   app/src/main/java/com/ashojash/android/adapter/VenueSearchResultAdapter.java
+#	modified:   app/src/main/java/com/ashojash/android/customview/SquareImageView.java
+#	modified:   app/src/main/java/com/ashojash/android/db/VenueDb.java
+#	new file:   app/src/main/java/com/ashojash/android/event/CityApiEvents.java
+#	new file:   app/src/main/java/com/ashojash/android/event/ErrorEvents.java
+#	new file:   app/src/main/java/com/ashojash/android/event/OnApiRequestErrorEvent.java
+#	new file:   app/src/main/java/com/ashojash/android/event/OnApiResponseErrorEvent.java
+#	new file:   app/src/main/java/com/ashojash/android/event/UserApiEvents.java
+#	new file:   app/src/main/java/com/ashojash/android/event/VenueApiEvents.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/CityListFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/EmailLoginFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/EmailRegisterFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/GoogleOauthFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/HeroFragment.java
+#	deleted:    app/src/main/java/com/ashojash/android/fragment/HomeFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/NearbyFragment.java
+#	deleted:    app/src/main/java/com/ashojash/android/fragment/OneFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/SearchFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/SelectedFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueBasicInfoFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueBasicMenuFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueBasicPhotosFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueBasicReviewFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueInfoFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueMapFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueMenusFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenuePhotosFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueReviewsFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/fragment/VenueUploadPhotoDialogFragment.java
+#	modified:   app/src/main/java/com/ashojash/android/helper/AppController.java
+#	new file:   app/src/main/java/com/ashojash/android/model/ApiRequestError.java
+#	new file:   app/src/main/java/com/ashojash/android/model/ApiResponseError.java
+#	modified:   app/src/main/java/com/ashojash/android/model/City.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Date.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Location.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Menu.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Meta.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Photo.java
+#	modified:   app/src/main/java/com/ashojash/android/model/Review.java
+#	new file:   app/src/main/java/com/ashojash/android/model/SimplePhoto.java
+#	new file:   app/src/main/java/com/ashojash/android/model/Token.java
+#	modified:   app/src/main/java/com/ashojash/android/model/User.java
+#	new file:   app/src/main/java/com/ashojash/android/model/UserRegistered.java
+#	new file:   app/src/main/java/com/ashojash/android/model/ValidationError.java
+#	modified:   app/src/main/java/com/ashojash/android/model/Venue.java
+#	new file:   app/src/main/java/com/ashojash/android/model/VenuePaginated.java
+#	new file:   app/src/main/java/com/ashojash/android/orm/CityObject.java
+#	new file:   app/src/main/java/com/ashojash/android/orm/OrmListener.java
+#	new file:   app/src/main/java/com/ashojash/android/orm/ReviewObject.java
+#	copied:     app/src/main/java/com/ashojash/android/model/User.java -> app/src/main/java/com/ashojash/android/orm/UserOrm.java
+#	copied:     app/src/main/java/com/ashojash/android/model/Venue.java -> app/src/main/java/com/ashojash/android/orm/VenueOrm.java
+#	modified:   app/src/main/java/com/ashojash/android/service/RefreshTokenService.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructCity.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructMenu.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructPhoto.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructReview.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructUser.java
+#	modified:   app/src/main/java/com/ashojash/android/struct/StructVenue.java
+#	modified:   app/src/main/java/com/ashojash/android/task/UploadVenuePhotosTask.java
+#	new file:   app/src/main/java/com/ashojash/android/ui/AshojashSnackbar.java
+#	modified:   app/src/main/java/com/ashojash/android/ui/UiUtils.java
+#	modified:   app/src/main/java/com/ashojash/android/utils/AuthUtils.java
+#	new file:   app/src/main/java/com/ashojash/android/utils/BusProvider.java
+#	new file:   app/src/main/java/com/ashojash/android/utils/ErrorUtils.java
+#	deleted:    app/src/main/java/com/ashojash/android/utils/LruBitmapCache.java
+#	new file:   app/src/main/java/com/ashojash/android/webserver/ApiCallback.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/AshojashJsonObjectRequest.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/AuthAsyncHttpClient.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/AuthHttpClient.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/AuthJsonObjectRequest.java
+#	new file:   app/src/main/java/com/ashojash/android/webserver/CityApi.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/JsonParser.java
+#	modified:   app/src/main/java/com/ashojash/android/webserver/UrlController.java
+#	new file:   app/src/main/java/com/ashojash/android/webserver/UserApi.java
+#	new file:   app/src/main/java/com/ashojash/android/webserver/VenueApi.java
+#	deleted:    app/src/main/java/com/ashojash/android/webserver/WebServer.java
+#	modified:   app/src/main/res/layout/activity_venue.xml
+#	modified:   app/src/main/res/layout/activity_venue_menus.xml
+#	modified:   app/src/main/res/layout/activity_venue_photos.xml
+#	modified:   app/src/main/res/layout/activity_venue_reviews.xml
+#	modified:   app/src/main/res/layout/card_city.xml
+#	modified:   app/src/main/res/layout/card_menu_basic.xml
+#	modified:   app/src/main/res/layout/card_photo_basic.xml
+#	modified:   app/src/main/res/layout/card_review.xml
+#	modified:   app/src/main/res/layout/card_review_basic.xml
+#	modified:   app/src/main/res/layout/fragment_city_list.xml
+#	modified:   app/src/main/res/layout/fragment_nearby_venues.xml
+#	modified:   app/src/main/res/layout/fragment_venue_basic_menu.xml
+#	modified:   app/src/main/res/layout/fragment_venue_basic_photos.xml
+#	modified:   app/src/main/res/layout/fragment_venue_basic_review.xml
+#	modified:   app/src/main/res/layout/fragment_venue_menus.xml
+#	modified:   app/src/main/res/layout/fragment_venue_photos.xml
+#	modified:   app/src/main/res/layout/fragment_venue_reviews.xml
+#	modified:   app/src/main/res/layout/viewpager_hero.xml
+#	deleted:    app/src/main/res/values-fa/strings.xml
+#	modified:   app/src/main/res/values-v21/styles.xml
+#	modified:   app/src/main/res/values/colors.xml
+#	modified:   app/src/main/res/values/strings.xml
+#	modified:   app/src/main/res/values/styles.xml
+#	modified:   build.gradle
+#

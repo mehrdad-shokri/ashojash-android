@@ -12,20 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.SearchActivity;
 import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.adapter.VenueSearchResultAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructVenue;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
+import com.ashojash.android.model.Venue;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
 import com.mypopsy.widget.FloatingSearchView;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -61,63 +59,58 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 hideErrorViews();
-                search(query);
+                VenueApi.search(CITY_SLUG, query, 10);
             }
         });
         Bundle bundle = getArguments();
         if (bundle != null) {
             query = bundle.getString("query");
         }
-//        getAnotherUserLocation();
-//        getUserLocation();
-//       get current location of user
-//        request nearby venues
+    }
+
+    public void search(String query) {
+        VenueApi.search(CITY_SLUG, query, 10);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        search(query);
+        VenueApi.search(CITY_SLUG, query, 10);
     }
 
-    public void search(String query) {
-        final String TAG = AppController.TAG;
-//        mSearch.search(query);
-        JsonObjectRequest request = WebServer.searchVenues(CITY_SLUG, query, 20, new Response.Listener<JSONObject>() {
+    @Subscribe
+    private void onEvent(VenueApiEvents.OnSearchResultsReady event) {
+        List<Venue> venues = event.venuePaginated.data;
+        VenueSearchResultAdapter adapter = new VenueSearchResultAdapter(venues);
+        adapter.setOnItemClickListener(new VenueSearchResultAdapter.OnItemClickListener() {
             @Override
-            public void onResponse(JSONObject response) {
-//                mSearchView.setAdapter();
-                try {
-                    List<StructVenue> venues = JsonParser.parseVenuesJsonObject(response);
-                    Intent intent = new Intent(AppController.currentActivity, VenueActivity.class);
-                    RecyclerView.Adapter adapter = new VenueSearchResultAdapter(venues, AppController.context, intent);
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    showSearchProgress(false);
-                    showFloatingSearchProgress(false);
-                    hideErrorViews();
-                    if (venues.size() == 0)
-                        Toast.makeText(getActivity(), R.string.no_results_found, Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    errorSearching();
-                    showErrorViews();
-                    showSearchProgress(false);
-                    showFloatingSearchProgress(false);
-                    txtSelectedError.setText(R.string.error_connecting_to_server);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorSearching();
-                showErrorViews();
-                showFloatingSearchProgress(false);
-                showSearchProgress(false);
-                txtSelectedError.setText(R.string.error_retrieving_data);
+            public void onClick(Venue venue) {
+                Intent intent = new Intent(AppController.currentActivity, VenueActivity.class);
+                intent.putExtra("slug", venue.slug);
+                AppController.currentActivity.startActivity(intent);
             }
         });
-        AppController.getInstance().addToRequestQueue(request, VENUE_SEARCH_REQUEST_TAG);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        showSearchProgress(false);
+        showFloatingSearchProgress(false);
+        hideErrorViews();
+        if (venues.size() == 0)
+            Toast.makeText(getActivity(), R.string.no_results_found, Toast.LENGTH_SHORT).show();
     }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showSearchProgress(false);
+        showErrorViews();
+        /*AshojashSnackbar.make(getActivity(), R.string.error_retrieving_data, Snackbar.LENGTH_INDEFINITE).setAction(R.string.try_again, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                VenueApi.search(query);
+            }
+        }).show();*/
+    }
+
 
     private void showErrorViews() {
         selectedProgressbar.setVisibility(View.GONE);
@@ -132,7 +125,18 @@ public class SearchFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().cancelPendingRequests(VENUE_SEARCH_REQUEST_TAG);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
     }
 
     private void showSearchProgress(boolean show) {

@@ -14,19 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
+import com.ashojash.android.event.ErrorEvents;
+import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.model.UserRegistered;
+import com.ashojash.android.model.ValidationError;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.AuthValidator;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.UserApi;
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class EmailRegisterFragment extends Fragment {
@@ -61,26 +59,28 @@ public class EmailRegisterFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().cancelPendingRequests("REGISTER_USER_EMAIL");
+        UserApi.cancelLogin();
     }
 
     private boolean validateInputs() {
         boolean canSendDataToServer = true;
-        usernameWrapper.setErrorEnabled(false);
-        passwordWrapper.setErrorEnabled(false);
-        nameWrapper.setErrorEnabled(false);
-        emailWrapper.setErrorEnabled(false);
-        if (AuthValidator.validateEmail(email) < 0) {
+        int emailValidationCode = AuthValidator.validateEmail(email);
+        int nameValidationCode = AuthValidator.validateName(name);
+        int usernameValidationCode = AuthValidator.validateUsername(username);
+        int passwordValidationCode = AuthValidator.validatePassword(password);
+        if (emailValidationCode < 0) {
             canSendDataToServer = false;
-            final int ERROR_CODE = AuthValidator.validateEmail(email);
+            final int ERROR_CODE = emailValidationCode;
             if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
                 emailWrapper.setError(getResources().getString(R.string.email_field_required));
             else if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
                 emailWrapper.setError(getResources().getString(R.string.email_not_valid));
+        } else {
+            emailWrapper.setError("");
         }
-        if (AuthValidator.validateName(name) < 0) {
-            final int ERROR_CODE = AuthValidator.validateName(name);
+        if (nameValidationCode < 0) {
             canSendDataToServer = false;
+            final int ERROR_CODE = nameValidationCode;
             if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
                 nameWrapper.setError(getResources().getString(R.string.name_reg_not_match));
             else if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
@@ -89,10 +89,12 @@ public class EmailRegisterFragment extends Fragment {
                 nameWrapper.setError(getResources().getString(R.string.name_under_limit));
             else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
                 nameWrapper.setError(getResources().getString(R.string.name_under_limit));
+        } else {
+            nameWrapper.setError("");
         }
-        if (AuthValidator.validatePassword(password) < 0) {
+        if (passwordValidationCode < 0) {
             canSendDataToServer = false;
-            final int ERROR_CODE = AuthValidator.validatePassword(password);
+            final int ERROR_CODE = passwordValidationCode;
             if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
                 passwordWrapper.setError(getResources().getString(R.string.password_field_required));
             else if (ERROR_CODE == AuthValidator.FIELD_UNDER_LIMIT)
@@ -100,10 +102,12 @@ public class EmailRegisterFragment extends Fragment {
             else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
                 passwordWrapper.setError(getResources().getString(R.string.password_under_limit));
 
+        } else {
+            passwordWrapper.setError("");
         }
-        if (AuthValidator.validateUsername(username) < 0) {
+        if (usernameValidationCode < 0) {
             canSendDataToServer = false;
-            final int ERROR_CODE = AuthValidator.validateUsername(username);
+            final int ERROR_CODE = usernameValidationCode;
             if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
                 usernameWrapper.setError(getResources().getString(R.string.username_reg_not_match));
             if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
@@ -112,81 +116,64 @@ public class EmailRegisterFragment extends Fragment {
                 usernameWrapper.setError(getResources().getString(R.string.username_under_limit));
             else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
                 usernameWrapper.setError(getResources().getString(R.string.username_under_limit));
+        } else {
+            usernameWrapper.setError("");
         }
         return canSendDataToServer;
     }
 
     String TAG = AppController.TAG;
 
-    private void registerUser() {
-        onRegisterPendingUpdateView();
-        JsonObjectRequest request = WebServer.postRegisterUser(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-//                TODO:// user has registered
-//                JsonParser.parseUserRegistrationJsonObject(response);
-                boolean isGoogleUser = false;
-                try {
-                    JSONObject data = response.getJSONObject("data");
-                    if (data.getBoolean("email_sent"))
-                        isGoogleUser = JsonParser.parseUserRegistrationIsGoogleEmail(data);
-                    onResponseUpdateView(isGoogleUser);
-                } catch (JSONException e) {
-                    showRetrievingErrorSnackbar();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    if (error.networkResponse.data != null) {
-                        String body = new String(error.networkResponse.data, "UTF-8");
-                        int statusCode = error.networkResponse.statusCode;
-                        if (statusCode == 422) {
-                            JSONObject messageJsonObject = new JSONObject(body).getJSONObject("error").getJSONObject("message");
-                            validatingInputError(messageJsonObject);
-                        }
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    showRetrievingErrorSnackbar();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    showRetrievingErrorSnackbar();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    showRetrievingErrorSnackbar();
-                } finally {
-                    dismissProgressDialog();
-                }
-            }
-        }, name, username, password, email);
-        AppController.getInstance().addToRequestQueue(request, "REGISTER_USER_EMAIL");
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
 
-    private void validatingInputError(JSONObject messageJsonObject) {
-        nameWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("name")));
-        emailWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("email")));
-        usernameWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("username")));
-        passwordWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("password")));
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
     }
+
+    @Subscribe
+    public void onEvent(UserApiEvents.onUserRegistered event) {
+        UserRegistered user = event.userRegistered;
+        boolean isGoogleUser = user.isGmailUser;
+        dismissProgressDialog();
+        if (user.emailSent)
+            onResponseUpdateView(isGoogleUser);
+    }
+
+    @Subscribe
+    public void onEvent(ErrorEvents.OnUserRegistrationFailed event) {
+        ValidationError error = event.error;
+        if (error.name != null) nameWrapper.setError(error.name.get(0));
+        if (error.email != null) emailWrapper.setError(error.email.get(0));
+        if (error.username != null) usernameWrapper.setError(error.username.get(0));
+        if (error.password != null) passwordWrapper.setError(error.password.get(0));
+        dismissProgressDialog();
+//        showRetrievingErrorSnackbar();
+    }
+
+    private void registerUser() {
+        progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.registering), true, false);
+        UserApi.register(name, username, password, email);
+    }
+
 
     private void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
     }
 
-    private void onRegisterPendingUpdateView() {
-        progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.registering), true, false);
-    }
 
     private void onResponseUpdateView(boolean isGoogleEmail) {
         dismissProgressDialog();
         final AlertDialog verifyEmailDialog;
-        final AlertDialog.Builder dialogBuilder =
-                new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+        verifyEmailDialog = dialogBuilder.show();
         if (isGoogleEmail) {
             dialogBuilder.setView(R.layout.dialog_email_register_finsished_google);
-            verifyEmailDialog = dialogBuilder.show();
             LinearLayout btnContinueInBrowser = (LinearLayout) verifyEmailDialog.findViewById(R.id.btnContinueInBrowser);
             btnContinueInBrowser.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -200,15 +187,11 @@ public class EmailRegisterFragment extends Fragment {
             });
         } else {
             dialogBuilder.setView(R.layout.fragment_email_register_finished);
-            verifyEmailDialog = dialogBuilder.show();
         }
         verifyEmailDialog.findViewById(R.id.btnVerifyEmail).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 verifyEmailDialog.dismiss();
-                /*Intent intent = new Intent(AppController.currentActivity, MainActivity.class);
-                AppController.currentActivity.startActivity(intent);
-                AppController.currentActivity.finish();*/
                 ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpagerProfileActivity);
                 viewPager.setCurrentItem(1);
             }

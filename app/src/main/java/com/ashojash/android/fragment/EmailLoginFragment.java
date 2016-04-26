@@ -12,24 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
+import com.ashojash.android.event.ErrorEvents;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.AuthUtils;
 import com.ashojash.android.utils.AuthValidator;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.UserApi;
+import org.greenrobot.eventbus.Subscribe;
 
 public class EmailLoginFragment extends Fragment {
-    private String callingActivity;
     private String login;
     private String password;
     private LinearLayout linearLayout;
@@ -62,87 +59,70 @@ public class EmailLoginFragment extends Fragment {
 
     private boolean validateInputs() {
         boolean canSendDataToServer = true;
-        loginWrapper.setErrorEnabled(false);
-        passwordWrapper.setErrorEnabled(false);
-        if (AuthValidator.validateLoginPassword(password) < 0) {
+        int passwordValidationCode = AuthValidator.validateLoginPassword(password);
+        if (passwordValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = AuthValidator.validatePassword(password);
             if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
                 passwordWrapper.setError(getResources().getString(R.string.password_field_required));
+        } else {
+            passwordWrapper.setError("");
         }
-        if (AuthValidator.validateLogin(login) < 0) {
+        int loginValidationCode = AuthValidator.validateLogin(login);
+        if (loginValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = AuthValidator.validateUsername(login);
             if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
                 loginWrapper.setError(getResources().getString(R.string.login_field_required));
+        } else {
+            loginWrapper.setError("");
         }
         return canSendDataToServer;
     }
 
+    @Subscribe
+    public void onEvent(UserApiEvents.OnUserLoggedIn event) {
+        AuthUtils.EmailLogin(event.user);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+        dismissProgressDialog();
+    }
+
+    @Subscribe
+    public void onEvent(ErrorEvents.OnUserLoginFailed event) {
+        AshojashSnackbar.make(getActivity(), event.error.message, Snackbar.LENGTH_LONG).show();
+        dismissProgressDialog();
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showRetrievingErrorSnackbar();
+        dismissProgressDialog();
+    }
+
     private void signInUser() {
         onLoginPendingUpdateView();
-        JsonObjectRequest request = WebServer.postSignInUser(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    AuthUtils.EmailLogin(response);
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
+        UserApi.login(login, password);
+    }
 
-                } catch (JSONException e) {
-                    showRetrievingErrorSnackbar();
-                } finally {
-                    dismissProgressDialog();
-                }
-            }
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
 
-                , new Response.ErrorListener()
-
-        {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    if (error.networkResponse.data != null) {
-                        String body = new String(error.networkResponse.data, "UTF-8");
-                        int statusCode = error.networkResponse.statusCode;
-                        if (statusCode == 422) {
-                            JSONObject messageJsonObject = new JSONObject(body).getJSONObject("error").getJSONObject("message");
-                            validatingInputError(messageJsonObject);
-                        }
-                        if (statusCode == 400) {
-                            String message = new JSONObject(body).getJSONObject("error").getString("message");
-                            showUserNotFoundSnackBar(message);
-                        }
-//                        validate for other stuff
-                    }
-                } catch (UnsupportedEncodingException | NullPointerException | JSONException e) {
-                    e.printStackTrace();
-                    showRetrievingErrorSnackbar();
-                } finally {
-                    dismissProgressDialog();
-                }
-            }
-        }
-
-                , login, password);
-        AppController.getInstance().
-
-                addToRequestQueue(request, "REGISTER_LOGIN_EMAIL");
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().cancelPendingRequests("REGISTER_LOGIN_EMAIL");
     }
 
-    private void validatingInputError(JSONObject messageJsonObject) {
-        loginWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("login")));
-        passwordWrapper.setError(JsonParser.convertJsonArrayToString(messageJsonObject.optJSONArray("password")));
-    }
 
     private void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
@@ -162,12 +142,6 @@ public class EmailLoginFragment extends Fragment {
                         if (validateInputs()) signInUser();
                     }
                 });
-        snackbar.show();
-    }
-
-    private void showUserNotFoundSnackBar(String message) {
-        Snackbar snackbar = Snackbar
-                .make(linearLayout, message, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

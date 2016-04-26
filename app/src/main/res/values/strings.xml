@@ -20,10 +20,10 @@
     <string name="name_field_required">فیلد نام الزامی است.</string>
     <string name="username_field_required">فیلد نام‌کاربری الزامی است.</string>
     <string name="review_field_required">نیاز است چیزی بنویسید!</string>
-    <string name="name_reg_not_match">نام خود را به زبان فارسی و با خط فارسی وارد کنید.</string>
-    <string name="username_reg_not_match">تنها اعداد،حروف انگلیسی و - مجاز است.</string>
-    <string name="password_under_limit">طول پسورد حداقل 6 کاراکتر است.</string>
-    <string name="email_not_valid">ایمیل معتبر نیست.</string>
+    <string name="name_reg_not_match">نام خود را به زبان فارسی و با خط فارسی وارد کنید</string>
+    <string name="username_reg_not_match">تنها اعداد،حروف انگلیسی و - مجاز است</string>
+    <string name="password_under_limit">طول پسورد حداقل 6 کاراکتر است</string>
+    <string name="email_not_valid">ایمیل معتبر نیست</string>
     <string name="ashojash_registration">ثبت نام آشوجاش!</string>
     <!---->
     <string name="drawer_open">باز کردن</string>
@@ -154,4 +154,5 @@
     <string name="finished">پایان!</string>
     <string name="uploading_photos_finished">آپلود عکس ها با موفقیت به پایان رسید.</string>
     <string name="uploading_photo_finished">آپلود عکس با موفقیت به پایان رسید.</string>
+    <string name="city_select">انتخاب شهر</string>
 </resources>

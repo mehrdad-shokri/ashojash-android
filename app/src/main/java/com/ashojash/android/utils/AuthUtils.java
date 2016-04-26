@@ -2,10 +2,9 @@ package com.ashojash.android.utils;
 
 import android.util.Log;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructUser;
-import com.ashojash.android.webserver.JsonParser;
+import com.ashojash.android.model.Token;
+import com.ashojash.android.model.User;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public final class AuthUtils {
 
@@ -17,47 +16,49 @@ public final class AuthUtils {
         return false;
     }
 
-    public static StructUser getAuthUser() {
+    public static User getAuthUser() {
         if (!isUserLoggedIn()) return null;
-        StructUser user = new StructUser();
-        user.setUsername(AppController.defaultPref.getString("username", ""));
-        user.setName(AppController.defaultPref.getString("name", ""));
-        user.setEmail(AppController.defaultPref.getString("email", ""));
+        User user = new User();
+        user.username = AppController.defaultPref.getString("username", "");
+        user.name = AppController.defaultPref.getString("name", "");
+        user.email = AppController.defaultPref.getString("email", "");
         return user;
     }
 
 
-    public static void EmailLogin(JSONObject response) throws JSONException {
-        JSONObject data = response.getJSONObject("data");
-        StructUser user = JsonParser.parseUserJsonObject(data.getJSONObject("user"));
-        AppController.editor.putString("username", user.getUsername());
-        AppController.editor.putString("email", user.getEmail());
-        AppController.editor.putString("name", user.getName());
+    public static void EmailLogin(User user) {
+        AppController.editor.putString("username", user.username);
+        AppController.editor.putString("email", user.email);
+        AppController.editor.putString("name", user.name);
         AppController.editor.commit();
-        updateTokenPayload(data.getJSONObject("token_payload"));
+        updateTokenPayload(user.token);
     }
 
 
-    public static boolean GoogleLogIn(JSONObject response) throws JSONException {
-        JSONObject data = response.getJSONObject("data");
-        StructUser user = JsonParser.parseUserJsonObject(data.getJSONObject("user"));
-        boolean isNewUser = data.getBoolean("is_new_user");
-        AppController.editor.putString("username", user.getUsername());
-        AppController.editor.putString("email", user.getEmail());
-        AppController.editor.putString("name", user.getName());
-        updateTokenPayload(data.getJSONObject("token_payload"));
+    public static boolean GoogleLogIn(User user) throws JSONException {
+//        JSONObject data = response.getJSONObject("data");
+//        StructUser user = JsonParser.parseUserJsonObject(data.getJSONObject("user"));
+
+        boolean isNewUser = user.googleOAuth.isNewUser;
+        AppController.editor.putString("username", user.username);
+        AppController.editor.putString("email", user.email);
+        AppController.editor.putString("name", user.name);
         AppController.editor.commit();
-        AppController.obsEditor.commit();
+        updateTokenPayload(user.token);
         return isNewUser;
     }
 
     private static String TAG = AppController.TAG;
 
-    public static void updateTokenPayload(JSONObject tokenPayload) throws JSONException {
-        AppController.obsEditor.putString("token", tokenPayload.getString("token"));
-        AppController.obsEditor.putLong("ttl_refresh", tokenPayload.getLong("ttl_refresh"));
-        AppController.obsEditor.putLong("ttl", tokenPayload.getLong("ttl"));
-        AppController.obsEditor.putLong("exp", tokenPayload.getLong("exp"));
+    public static void updateTokenPayload(Token token) {
+        AppController.obsEditor.putString("token", token.token);
+        Log.d(TAG, "updateTokenPayload: " + token.ttlRefresh);
+        if (token.ttlRefresh != 0) {
+
+            AppController.obsEditor.putLong("ttlRefresh", token.ttlRefresh);
+        }
+        AppController.obsEditor.putLong("ttl", token.ttl);
+        AppController.obsEditor.putLong("exp", token.exp);
         AppController.obsEditor.commit();
     }
 
@@ -67,7 +68,6 @@ public final class AuthUtils {
         AppController.obsEditor.remove("ttl");
         AppController.obsEditor.remove("exp");
         AppController.obsEditor.commit();
-        Log.d(TAG, "logoutUser: after login token: " + (AppController.obsPref.getString("token", "") == null));
     }
 
     public static String getToken() {

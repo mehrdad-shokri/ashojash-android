@@ -31,7 +31,10 @@
                 app:expandedTitleMarginStart="0dp"
                 app:expandedTitleMarginTop="0dp">
 
-            <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
                 <ImageView
                         android:id="@+id/backdrop"
                         android:layout_width="match_parent"
@@ -39,13 +42,14 @@
                         android:fitsSystemWindows="true"
                         android:scaleType="centerCrop"
                         app:layout_collapseMode="parallax"/>
-                <com.ashojash.android.customview.VenueScoreIndicator android:layout_width="match_parent"
-                                                                     android:layout_height="match_parent"
-                                                                     android:layout_alignParentBottom="true"
-                                                                     android:id="@+id/venueScoreIndicator"/>
+
+                <com.ashojash.android.customview.VenueScoreIndicator
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentBottom="true"
+                        android:id="@+id/venueScoreIndicator"/>
             </RelativeLayout>
 
-            <!-- As our statusBar is transparent below and content is moved behind our toolbar has to include the padding on top so we use this area -->
             <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
@@ -58,6 +62,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
     <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -70,28 +75,35 @@
                 android:focusableInTouchMode="true"
                 android:paddingTop="24dp">
 
-            <FrameLayout android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:layout_marginBottom="10dp"
-                         android:id="@+id/venueActivityBasicInfoContainer"/>
-            <FrameLayout android:layout_width="match_parent"
-                         android:focusable="false"
-                         android:layout_height="wrap_content"
-                         android:layout_marginTop="10dp"
-                         android:layout_marginBottom="10dp"
-                         android:id="@+id/venueActivityReviewsContainer"/>
-            <FrameLayout android:layout_width="match_parent"
-                         android:focusable="false"
-                         android:layout_marginTop="10dp"
-                         android:layout_marginBottom="10dp"
-                         android:layout_height="wrap_content"
-                         android:id="@+id/venueActivityMenusContainer"/>
-            <FrameLayout android:layout_width="match_parent"
-                         android:focusable="false"
-                         android:layout_marginTop="10dp"
-                         android:layout_marginBottom="10dp"
-                         android:layout_height="wrap_content"
-                         android:id="@+id/venueActivityPicsContainer"/>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/venueActivityBasicInfoContainer"/>
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:focusable="false"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/venueActivityReviewsContainer"/>
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:focusable="false"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/venueActivityMenusContainer"/>
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:focusable="false"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/venueActivityPicsContainer"/>
 
         </LinearLayout>
 
@@ -106,6 +118,7 @@
             app:fabSize="mini"
             app:layout_anchor="@id/appbar"
             app:layout_anchorGravity="bottom|left|start"/>
+
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fragmentCollapsingToolbarAddPhotoFab"
             android:layout_width="wrap_content"

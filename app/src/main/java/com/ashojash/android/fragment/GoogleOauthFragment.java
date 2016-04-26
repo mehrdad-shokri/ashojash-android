@@ -14,20 +14,22 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.model.User;
+import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.webserver.WebServer;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.UserApi;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,11 +38,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.Subscribe;
 
 
 public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
@@ -53,7 +52,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     private ViewGroup rootLayout;
     private GoogleSignInOptions gso;
     public static final int GET_ACCOUNT_PERMISSION_REQUEST_CODE = 79;
-
+    private static boolean hasFinished = false;
 
     public GoogleOauthFragment() {
     }
@@ -61,8 +60,6 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        String callingActivity = getArguments().getString("calling_activity");
-        Log.d(TAG, "onCreateView: google " + callingActivity);
         return inflater.inflate(R.layout.fragment_google_register, container, false);
     }
 
@@ -98,7 +95,6 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
             final Activity currentActivity = getActivity();
             // Should we show an explanation?
             if (hasGetAccountsPermission != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "checkForPermission: should show rationale: " + ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, Manifest.permission.READ_CONTACTS));
                 showRationale();
             } else {
                 showGoogleOauth();
@@ -109,15 +105,11 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult");
         for (int i = 0, len = permissions.length; i < len; i++) {
             String permission = permissions[i];
-            Log.d(TAG, "onRequestPermissionsResult");
             if (permission.equals(GET_ACCOUNTS_PERMISSION) && requestCode == GET_ACCOUNT_PERMISSION_REQUEST_CODE) {
-                Log.d(TAG, "onRequestPermissionsResult: here");
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
                     boolean showRationale = shouldShowRequestPermissionRationale(permission);
-                    Log.d(TAG, "onRequestPermissionsResult: " + showRationale);
                     showRationale();
                     if (!showRationale) {
                         Button btnAskForPermission = (Button) getView().findViewById(R.id.btnGetUserAccountsPermission);
@@ -135,6 +127,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         super.onStart();
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
+        BusProvider.getInstance().register(this);
     }
 
 
@@ -144,6 +137,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        BusProvider.getInstance().unregister(this);
     }
 
     @Override
@@ -152,30 +146,20 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
 
         if (requestCode == RC_GET_TOKEN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "onActivityResult: success" + result.isSuccess());
-            Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusCode());
-            Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusMessage());
             if (result.isSuccess()) {
                 GoogleSignInAccount acct = result.getSignInAccount();
-                Log.d(TAG, "onActivityResult: success" + acct.getServerAuthCode());
                 String authCode = acct.getServerAuthCode();
                 uiShowRegisteringUserProgressDialog();
-                sendGoogleAuthCode(authCode);
+                UserApi.google(authCode);
             } else {
                 uiShowErrorConnectingToGoogleSnackbar();
             }
         }
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        AppController.getInstance().cancelPendingRequests("REGISTER_USER_GOOGLE_OAUTH");
-    }
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        uiShowErrorConnectingToGoogleSnackbar();
     }
 
 
@@ -216,12 +200,11 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     }
 
 
-    private void signOut() {
+    /*private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Log.d(TAG, "signOut:onResult:" + status);
                     }
                 });
     }
@@ -234,37 +217,35 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
                         Log.d(TAG, "revokeAccess:onResult:" + status);
                     }
                 });
+    }*/
+
+    @Subscribe
+    public void onEvent(UserApiEvents.OnUserGoogleHandled event) {
+        if (hasFinished) return;
+        User user = event.user;
+        boolean isNewUser = user.googleOAuth.isNewUser;
+        AuthUtils.updateTokenPayload(user.token);
+        uiDismissProgressDialog();
+        if (isNewUser) uiShowNewUserRegisteredDialog();
+        else {
+            AppController.currentActivity.finish();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        }
+        hasFinished = true;
     }
 
-    private void sendGoogleAuthCode(String authCode) {
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showRetrievingErrorSnackbar();
+        uiDismissProgressDialog();
+    }
 
-        Log.d(TAG, "sendGoogleAuthCode: AuthCode: " + authCode);
-        JsonObjectRequest request = WebServer.postGoogleAuthCode(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-//                user , token , is_new_user
-                try {
-                    boolean isNewUser = AuthUtils.GoogleLogIn(response);
-                    if (isNewUser) uiShowNewUserRegisteredDialog();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                } catch (JSONException | NullPointerException e) {
-                    showRetrievingErrorSnackbar();
-                } finally {
-                    uiDismissProgressDialog();
-                }
-                Log.d(TAG, "onResponse:  onSuccess");
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                uiShowErrorConnectingToServerErrorSnackbar();
-                uiDismissProgressDialog();
-            }
-        }, authCode);
-
-        AppController.getInstance().addToRequestQueue(request, "REGISTER_USER_GOOGLE_OAUTH");
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent event) {
+        AshojashSnackbar.make(getActivity(), R.string.error_connecting_to_server, Snackbar.LENGTH_LONG).show();
+        uiDismissProgressDialog();
     }
 
     private void uiDismissProgressDialog() {
@@ -277,16 +258,23 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
 
 
     private void uiShowNewUserRegisteredDialog() {
-        final AlertDialog.Builder dialogBuilder =
-                new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
-        dialogBuilder.setView(R.layout.dialog_google_register_finished);
-        final AlertDialog registerCompleteDialog = dialogBuilder.show();
-        registerCompleteDialog.findViewById(R.id.btnVerifyEmail).setOnClickListener(new View.OnClickListener() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
+//        dialogBuilder.setView(R.layout.dialog_google_register_finished);
+        LayoutInflater inflater = AppController.layoutInflater;
+        View dialogView = inflater.inflate(R.layout.dialog_google_register_finished, null);
+        dialogBuilder.setView(dialogView);
+        final AlertDialog registerCompleteDialog = dialogBuilder.create();
+        dialogView.findViewById(R.id.btnVerifyEmail).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 registerCompleteDialog.dismiss();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                AppController.currentActivity.finish();
+                getActivity().finish();
+                startActivity(intent);
             }
         });
+        registerCompleteDialog.show();
     }
 
 
@@ -296,18 +284,10 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     }
 
     private void uiShowErrorConnectingToServerErrorSnackbar() {
-        Snackbar snackbar = Snackbar
-                .make(rootLayout, R.string.error_connecting_to_server, Snackbar.LENGTH_LONG);
-        snackbar.show();
-
     }
 
 
     private void uiShowErrorConnectingToGoogleSnackbar() {
-        Snackbar snackbar = Snackbar
-                .make(rootLayout, R.string.error_connecting_to_google, Snackbar.LENGTH_LONG);
-        snackbar.show();
-
-
+        AshojashSnackbar.make(getActivity(), R.string.error_connecting_to_google, Snackbar.LENGTH_LONG).show();
     }
 }

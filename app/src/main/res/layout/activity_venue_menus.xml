@@ -12,8 +12,7 @@
                 android:id="@+id/toolbarTop"
                 layout="@layout/toolbar_top"/>
     </LinearLayout>
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="VenueName reviews"
-              android:gravity="center" android:layout_margin="10dp"/>
+
     <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
                  android:id="@+id/venueMenusContainer">
     </FrameLayout>

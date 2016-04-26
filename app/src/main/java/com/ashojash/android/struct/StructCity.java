@@ -1,5 +1,5 @@
 package com.ashojash.android.struct;
-
+@Deprecated
 public class StructCity {
     private String name;
     private String imageUrl;

@@ -12,48 +12,39 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.*;
-import com.activeandroid.query.Select;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.customview.CostRatingOnRatingBarChangeListener;
 import com.ashojash.android.customview.GenericOnRatingBarChangeListener;
 import com.ashojash.android.customview.VenueScoreIndicator;
 import com.ashojash.android.db.VenueDb;
+import com.ashojash.android.event.ErrorEvents;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.fragment.*;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.struct.StructUser;
-import com.ashojash.android.struct.StructVenue;
+import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.UserApi;
+import com.ashojash.android.webserver.VenueApi;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialize.util.UIUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.Subscribe;
 
+/*
+* IN progress
+* */
 public class VenueActivity extends BaseActivity {
-    String TAG = AppController.TAG;
     private ImageView imgHeroCollapsingToolbarLayout;
-    private AccountHeader headerResult;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private FloatingActionButton addPhotoFab;
@@ -63,9 +54,13 @@ public class VenueActivity extends BaseActivity {
     private VenueBasicInfoFragment venueBasicInfoFragment;
     private VenueBasicMenuFragment venueBasicMenuFragment;
     private VenueBasicPhotosFragment venueBasicPhotosFragment;
-    private Venue venue;
+    private VenueOrm venueOrm;
     private final int REQUEST_REGISTER = 8000;
     private Tracker mTracker;
+    private String slug;
+    private Button btnPublishReview;
+    private ProgressDialog progressDialog;
+    private AlertDialog registerCompleteDialog;
 
     @Override
     protected void onResume() {
@@ -77,98 +72,67 @@ public class VenueActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final String slug = getIntent().getStringExtra("slug");
+        slug = getIntent().getStringExtra("slug");
         setContentView(R.layout.activity_venue);
 // Obtain the shared Tracker instance.
         AppController application = (AppController) getApplication();
         mTracker = application.getDefaultTracker();
         setupViews();
-        if (slug != null) {
-            venue = new Select().from(Venue.class).where("slug =?", slug).executeSingle();
-            collapsingToolbarLayout.setTitle(venue.name);
-            Glide.with(this).load(venue.imageUrl).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgHeroCollapsingToolbarLayout);
-            venueBasicInfoFragment = new VenueBasicInfoFragment();
-            venueBasicReviewFragment = new VenueBasicReviewFragment();
-            venueBasicMenuFragment = new VenueBasicMenuFragment();
-            venueBasicPhotosFragment = new VenueBasicPhotosFragment();
-            addFragment(R.id.venueActivityBasicInfoContainer, venueBasicInfoFragment);
-            addFragment(R.id.venueActivityReviewsContainer, venueBasicReviewFragment);
-            addFragment(R.id.venueActivityMenusContainer, venueBasicMenuFragment);
-            addFragment(R.id.venueActivityPicsContainer, venueBasicPhotosFragment);
-            syncVenueInfo(slug);
-            findViewById(R.id.venueActivityMenusContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        if (slug == null) finish();
+        venueOrm = VenueDb.findBySlugOrFail(slug);
+        collapsingToolbarLayout.setTitle(venueOrm.name);
+        Glide.with(this).load(venueOrm.imageUrl).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgHeroCollapsingToolbarLayout);
+        venueBasicInfoFragment = new VenueBasicInfoFragment();
+        venueBasicReviewFragment = new VenueBasicReviewFragment();
+        venueBasicMenuFragment = new VenueBasicMenuFragment();
+        venueBasicPhotosFragment = new VenueBasicPhotosFragment();
+        addFragment(R.id.venueActivityBasicInfoContainer, venueBasicInfoFragment);
+        addFragment(R.id.venueActivityReviewsContainer, venueBasicReviewFragment);
+        addFragment(R.id.venueActivityMenusContainer, venueBasicMenuFragment);
+        addFragment(R.id.venueActivityPicsContainer, venueBasicPhotosFragment);
+        VenueApi.index(slug);
+    }
 
-                }
-            });
-            findViewById(R.id.venueActivityPicsContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
+        Venue venue = event.venue;
 
-                }
-            });
-            findViewById(R.id.venueActivityReviewsContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-
-
-        } else {
-            finish();
-        }
+        venueScoreIndicator.setScore(venue.score, venue.reviewsCount);
+//                    JSONObject data = response.getJSONObject("data");
+//                    StructVenue structVenue = JsonParser.parseVenueJsonObject(data.getJSONObject("venue"));
+//                    int reviewsCount = data.getInt("reviews_count");
+//                    int menusCount = data.getInt("menus_count");
+//                    JSONArray menus = data.getJSONArray("menus");
+//                    JSONArray reviews = data.getJSONArray("reviews");
+//                    JSONArray photos = data.getJSONArray("photos");
+//                    venueBasicReviewFragment.onDataReceived(reviews, reviewsCount);
+//                    venueBasicMenuFragment.onDataReceived(menus, menusCount);
+//                    venueBasicPhotosFragment.onDataReceived(photos);
     }
 
 
-    private void syncVenueInfo(final String slug) {
-        JsonObjectRequest jsonObjectRequest = WebServer.getVenueBasicInfo(new Response.Listener<JSONObject>() {
+    @Subscribe
+    public void onEvent(final OnApiResponseErrorEvent event) {
+        AshojashSnackbar.make(this, R.string.error_retrieving_data, Snackbar.LENGTH_INDEFINITE).setAction(R.string.try_again, new View.OnClickListener() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject data = response.getJSONObject("data");
-                    StructVenue structVenue = JsonParser.parseVenueJsonObject(data.getJSONObject("venue"));
-                    VenueDb.createOrUpdate(structVenue);
-                    int reviewsCount = data.getInt("reviews_count");
-                    int menusCount = data.getInt("menus_count");
-                    venueScoreIndicator.setScore(structVenue.getScore(), reviewsCount);
-                    JSONArray menus = data.getJSONArray("menus");
-                    JSONArray reviews = data.getJSONArray("reviews");
-                    JSONArray photos = data.getJSONArray("photos");
-                    venueBasicReviewFragment.onDataReceived(reviews, reviewsCount);
-                    venueBasicMenuFragment.onDataReceived(menus, menusCount);
-                    venueBasicPhotosFragment.onDataReceived(photos);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    venueBasicReviewFragment.onDataReceived(null, 0);
-                    venueBasicMenuFragment.onDataReceived(null, 0);
-                    venueBasicPhotosFragment.onDataReceived(null);
-                }
+            public void onClick(View view) {
+                VenueApi.index(slug);
             }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Snackbar.make(findViewById(R.id.venueActivityRootLayout), R.string.error_retrieving_data, Snackbar.LENGTH_INDEFINITE).setAction(R.string.try_again, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        syncVenueInfo(slug);
-                    }
-                }).show();
-                venueBasicReviewFragment.onDataReceived(null, 0);
-                venueBasicMenuFragment.onDataReceived(null, 0);
-                venueBasicPhotosFragment.onDataReceived(null);
-            }
-        }, slug);
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "VENUE_UPDATE_INFO");
+        }).show();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        AppController.getInstance().cancelPendingRequests("VENUE_UPDATE_INFO");
+    protected void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
 
     private void setupViews() {
         venueScoreIndicator = (VenueScoreIndicator) findViewById(R.id.venueScoreIndicator);
@@ -183,13 +147,12 @@ public class VenueActivity extends BaseActivity {
         lp.height = lp.height + UIUtils.getStatusBarHeight(this);
         toolbar.setLayoutParams(lp);
         setSupportActionBar(toolbar);
-        setupNavigationDrawer();
         addPhotoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (AuthUtils.isUserLoggedIn()) {
                     VenueUploadPhotoDialogFragment photoUploadDialogFragment = VenueUploadPhotoDialogFragment.newInstance();
-                    photoUploadDialogFragment.venue = venue;
+                    photoUploadDialogFragment.venueOrm = venueOrm;
                     photoUploadDialogFragment.show(getSupportFragmentManager(), "VENUE_PHOTO_UPLOAD_FRAGMENT");
                 } else {
                     showLoginForm();
@@ -234,7 +197,7 @@ public class VenueActivity extends BaseActivity {
         dialogBuilder.setView(R.layout.dialog_add_photo);
         final AlertDialog registerCompleteDialog = dialogBuilder.show();
         TextView txtVenueTitle = (TextView) registerCompleteDialog.findViewById(R.id.txtAddPhotoTitle);
-        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venue.name));
+        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venueOrm.name));
 
         btnUploadVenuePhotos = (Button) registerCompleteDialog.findViewById(R.id.btnUploadVenuePhotos);
         venuePhotosRecyclerView = (RecyclerView) registerCompleteDialog.findViewById(R.id.recyclerViewPhotosList);
@@ -254,13 +217,36 @@ public class VenueActivity extends BaseActivity {
         });
     }*/
 
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnReviewAdded event) {
+        String TAG = AppController.TAG;
+        if (progressDialog != null) progressDialog.dismiss();
+        registerCompleteDialog.dismiss();
+        AshojashSnackbar.make(this, R.string.review_added_successfully, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Subscribe
+    public void onEvent(ErrorEvents.OnReviewAddFailed event) {
+        String TAG=AppController.TAG;
+        if (progressDialog != null) progressDialog.dismiss();
+        String message = event.error.message;
+        AshojashSnackbar.make(this, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent event)
+    {
+        if (progressDialog != null) progressDialog.dismiss();
+        AshojashSnackbar.make(this, R.string.error_connecting_to_server, Snackbar.LENGTH_LONG).show();
+    }
     private void setupAddReview() {
         final AlertDialog.Builder dialogBuilder =
                 new AlertDialog.Builder(AppController.currentActivity, R.style.AppCompatAlertDialogStyle);
         dialogBuilder.setView(R.layout.dialog_add_review);
         dialogBuilder.setInverseBackgroundForced(true);
-        final AlertDialog registerCompleteDialog = dialogBuilder.show();
-        final Button btnPublish = (Button) registerCompleteDialog.findViewById(R.id.btnAddReview);
+        registerCompleteDialog = dialogBuilder.show();
+        btnPublishReview = (Button) registerCompleteDialog.findViewById(R.id.btnAddReview);
         TextView txtReviewTitle = (TextView) registerCompleteDialog.findViewById(R.id.txtReviewTitle);
         final TextInputLayout reviewTextWrapper = (TextInputLayout) registerCompleteDialog.findViewById(R.id.reviewTextWrapper);
         final EditText edtReviewText = reviewTextWrapper.getEditText();
@@ -278,7 +264,7 @@ public class VenueActivity extends BaseActivity {
                 }
             }
         });
-        txtReviewTitle.setText(getResources().getString(R.string.review_venue_title).replace("{{venueName}}", venue.name));
+        txtReviewTitle.setText(getResources().getString(R.string.review_venue_title).replace("{{venueName}}", venueOrm.name));
         final TextView txtCostReviewIndicator = (TextView) registerCompleteDialog.findViewById(R.id.txtCostIndicator);
         final RatingBar costRatingBar = (RatingBar) registerCompleteDialog.findViewById(R.id.costRating);
         final RatingBar qualityRatingBar = (RatingBar) registerCompleteDialog.findViewById(R.id.scoreRating);
@@ -286,7 +272,7 @@ public class VenueActivity extends BaseActivity {
         costRatingBar.setOnRatingBarChangeListener(new CostRatingOnRatingBarChangeListener(txtCostReviewIndicator));
         qualityRatingBar.setOnRatingBarChangeListener(new GenericOnRatingBarChangeListener());
         decorRatingBar.setOnRatingBarChangeListener(new GenericOnRatingBarChangeListener());
-        btnPublish.setOnClickListener(new View.OnClickListener() {
+        btnPublishReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String reviewText = edtReviewText.getText().toString().trim();
@@ -300,79 +286,14 @@ public class VenueActivity extends BaseActivity {
                     reviewTextWrapper.setError(getString(R.string.review_under_limit));
                 } else {
                     reviewTextWrapper.setErrorEnabled(false);
-                    final ProgressDialog dialog = ProgressDialog.show(AppController.currentActivity, null, getString(R.string.just_a_while), true, true);
-//                    publish review
-                    JsonObjectRequest request = WebServer.uploadVenueReview(venue.slug, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            dialog.dismiss();
-                            registerCompleteDialog.dismiss();
-                            Snackbar.make(findViewById(R.id.venueActivityRootLayout), R.string.review_added_successfully, Snackbar.LENGTH_SHORT).show();
-//                            AlertDialog dialog=new AlertDialog();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dialog.dismiss();
-                            Snackbar.make(findViewById(R.id.venueActivityRootLayout), R.string.error_connecting_to_server, Snackbar.LENGTH_SHORT).setAction(R.string.try_again, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    btnPublish.performClick();
-                                }
-                            }).show();
-                        }
-                    }, reviewText, qualityRatingBar.getRating(), costRatingBar.getRating(), decorRatingBar.getRating());
-                    AppController.getInstance().addToRequestQueue(request);
+                    progressDialog = ProgressDialog.show(AppController.currentActivity, null, getString(R.string.just_a_while), true, false);
+                    UserApi.addReview(slug, (int) qualityRatingBar.getRating(), (int) costRatingBar.getRating(), (int) decorRatingBar.getRating(), reviewText);
                 }
             }
 //                registerCompleteDialog.dismiss();
         });
     }
 
-    private void setupNavigationDrawer() {
-        if (AuthUtils.isUserLoggedIn()) {
-            StructUser user = AuthUtils.getAuthUser();
-            headerResult = new AccountHeaderBuilder()
-                    .withActivity(this)
-                    .withSelectionListEnabledForSingleProfile(false)
-                    .withProfileImagesClickable(false)
-                    .addProfiles(
-                            new ProfileDrawerItem().withName(user.getName()).withEmail(user.getEmail()).withIcon(GoogleMaterial.Icon.gmd_mail)
-                    )
-                    .withHeaderBackground(R.drawable.acount_header_background)
-                    .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                        @Override
-                        public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
-                            return false;
-                        }
-                    })
-                    .build();
-            int reviewColor = getResources().getColor(R.color.colorNavigationDrawerItemAddReview);
-            int photoColor = getResources().getColor(R.color.colorNavigationDrawerItemAddPhoto);
-            int primaryDrawerItemColor = getResources().getColor(R.color.colorNavigationDrawerItemPrimary);
-            new DrawerBuilder()
-                    .withActivity(this)
-                    .withToolbar(toolbar)
-                    .withAccountHeader(headerResult)
-                    .addDrawerItems(
-                            new PrimaryDrawerItem().withName(R.string.add_review).withIcon(GoogleMaterial.Icon.gmd_star_border).withIconColor(reviewColor).withSelectedIconColor(reviewColor).withTextColor(reviewColor).withSelectedTextColor(reviewColor).withSelectedIconColor(reviewColor),
-                            new PrimaryDrawerItem().withName(R.string.add_pic).withIcon(GoogleMaterial.Icon.gmd_photo_camera).withIconColor(photoColor).withSelectedIconColor(photoColor).withTextColor(photoColor).withSelectedTextColor(photoColor).withSelectedIconColor(photoColor),
-                            new DividerDrawerItem(),
-                            new PrimaryDrawerItem().withName(R.string.action_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withTextColor(primaryDrawerItemColor).withIconColor(primaryDrawerItemColor).withSelectedIconColor(primaryDrawerItemColor).withSelectedTextColor(primaryDrawerItemColor)
-                    )
-                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-
-                        @Override
-                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            // do something with the clicked item :D
-//                            GoogleMaterial.Icon.gmd_photo_library
-                            return false;
-
-                        }
-                    })
-                    .build();
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

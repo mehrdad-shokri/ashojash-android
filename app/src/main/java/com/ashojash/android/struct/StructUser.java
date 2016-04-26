@@ -1,5 +1,5 @@
 package com.ashojash.android.struct;
-
+@Deprecated
 public class StructUser {
     private String email;
     private String name;

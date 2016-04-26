@@ -11,7 +11,7 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:layout_centerVertical="true"
-            android:id="@+id/errorViewVenueReviewFragment"
+            android:id="@+id/errorViewVenue"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content" android:visibility="gone">
         <TextView
@@ -20,7 +20,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/error_retrieving_data"
                 android:textColor="@color/text_secondary"
-                android:id="@+id/txtErrorVenueBasicReviewFragment"/>
+                android:id="@+id/txtErrorVenue"/>
     </LinearLayout>
     <ProgressBar
             android:id="@+id/prgNearbyFragment"

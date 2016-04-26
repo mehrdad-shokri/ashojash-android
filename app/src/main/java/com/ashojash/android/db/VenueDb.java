@@ -3,44 +3,43 @@ package com.ashojash.android.db;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.struct.StructVenue;
+import com.ashojash.android.orm.VenueOrm;
 
 import java.util.List;
 
 public class VenueDb {
-
-    public static void createOrUpdate(List<StructVenue> venues) {
+public static VenueOrm findBySlugOrFail(String slug)
+{
+    return new Select().from(VenueOrm.class).where("slug =?", slug).executeSingle();
+}
+    public static void createOrUpdate(List<Venue> venues) {
         try {
             ActiveAndroid.beginTransaction();
 
-            for (StructVenue structVenue : venues) {
-                createOrUpdate(structVenue);
+            for (Venue Venue : venues) {
+                createOrUpdate(Venue);
             }
         } finally {
             ActiveAndroid.endTransaction();
         }
     }
 
-    public static void createOrUpdate(StructVenue structVenue) {
-        Venue venue = new Select()
-                .from(Venue.class)
-                .where("slug=?", structVenue.getSlug())
+    public static void createOrUpdate(Venue Venue) {
+        VenueOrm venueOrm = new Select()
+                .from(VenueOrm.class)
+                .where("slug=?", Venue.slug)
                 .executeSingle();
-        if (venue == null) {
-            venue = new Venue();
-            venue.slug = structVenue.getSlug();
+        if (venueOrm == null) {
+            venueOrm = new VenueOrm();
+            venueOrm.slug = Venue.slug;
         }
-        venue.address = structVenue.getAddress();
-        venue.cost = structVenue.getCost();
-        venue.imageUrl = structVenue.getImageUrl();
-        venue.instagram = structVenue.getInstagram();
-        venue.url = structVenue.getUrl();
-        venue.lat = structVenue.getLat();
-        venue.lng = structVenue.getLng();
-        venue.mobile = structVenue.getMobile();
-        venue.phone = structVenue.getPhone();
-        venue.name = structVenue.getName();
-        venue.score = structVenue.getScore();
-        venue.save();
+        venueOrm.address = Venue.location.address;
+        venueOrm.cost = Venue.cost;
+        venueOrm.imageUrl = Venue.photo.url;
+        venueOrm.lat = Venue.location.lat;
+        venueOrm.lng = Venue.location.lng;
+        venueOrm.name = Venue.name;
+        venueOrm.score = Venue.score;
+        venueOrm.save();
     }
 }

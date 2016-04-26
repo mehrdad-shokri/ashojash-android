@@ -1,6 +1,5 @@
 package com.ashojash.android.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,26 +11,21 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
-import com.ashojash.android.activity.VenueReviewsActivity;
 import com.ashojash.android.adapter.VenueMenusAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructMenu;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.model.Menu;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VenueMenusFragment extends Fragment {
-    private static final int REVIEWS_BASE_LIMIT = 10;
     private RecyclerView recyclerView;
-    private String slug;
+    private String venueSlug;
 
     public VenueMenusFragment() {
     }
@@ -45,60 +39,55 @@ public class VenueMenusFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slug = getActivity().getIntent().getStringExtra("slug");
-        if (slug == null)
+        venueSlug = getActivity().getIntent().getStringExtra("slug");
+        if (venueSlug == null)
             getActivity().getFragmentManager().popBackStack();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         setupViews();
-        getReviews();
+        VenueApi.menus(venueSlug);
     }
 
-    private String TAG = AppController.TAG;
 
-    private void getReviews() {
-        JsonObjectRequest request = WebServer.getVenueMenus(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject data = response.getJSONObject("data");
-                    reviewList = new ArrayList<>();
-                    reviewList = JsonParser.parseVenueMenus(data.getJSONArray("items"));
-                    Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
-                    adapter = new VenueMenusAdapter(reviewList, AppController.context, intent);
-                    recyclerView.setAdapter(adapter);
-                } catch (JSONException e) {
-                    showErrorViews();
-                    txtError.setText(R.string.error_retrieving_data);
-
-                } catch (IllegalArgumentException e) {
-                    txtError.setText(R.string.no_reviews_added_yet);
-                    showErrorViews();
-                } finally {
-                    progressbar.setVisibility(View.GONE);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }, slug, REVIEWS_BASE_LIMIT);
-        AppController.getInstance().addToRequestQueue(request, "VENUE_REVIEWS_REQUEST");
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        AppController.getInstance().cancelPendingRequests("VENUE_REVIEWS_REQUEST");
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
     }
 
-    private RecyclerView.Adapter adapter;
-    private List<StructMenu> reviewList;
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueMenusResponse event) {
+        menuList = event.menuList;
+        int menusCount = event.menuList.size();
+        progressbar.setVisibility(View.GONE);
+
+        adapter = new VenueMenusAdapter(menuList);
+        recyclerView.setAdapter(adapter);
+        if (menusCount == 0) {
+            txtError.setText(R.string.no_menu_item_yet);
+            showErrorViews();
+        }
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtError.setText(R.string.error_retrieving_data);
+    }
+
+
+
+    private VenueMenusAdapter adapter;
+    private List<Menu> menuList;
     private TextView txtError;
 
     private void setupViews() {
@@ -107,8 +96,8 @@ public class VenueMenusFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         progressbar = (ProgressBar) getView().findViewById(R.id.prgNearbyFragment);
-        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenueReviewFragment);
-        txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicReviewFragment);
+        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
+        txtError = (TextView) getView().findViewById(R.id.txtErrorVenue);
     }
 
     private void showErrorViews() {

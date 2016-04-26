@@ -1,5 +1,6 @@
 package com.ashojash.android.struct;
 
+@Deprecated
 public class StructVenue {
     private String name;
     private String slug;

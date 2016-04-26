@@ -1,51 +1,22 @@
 package com.ashojash.android.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.SerializedName;
 
-@Table(name = "venues", id = "id")
-public class Venue extends Model {
+import java.util.List;
 
-    @Column(name = "slug")
-    public String slug;
-
-    @Column(name = "name")
+public class Venue {
     public String name;
-
-    @Column(name = "cost")
-    public int cost;
-
-    @Column(name = "score")
+    public String slug;
     public float score;
-
-    @Column(name = "address")
-    public String address;
-
-
-    @Column(name = "image_url")
-    public String imageUrl;
-
-    @Column(name = "lat")
-    public double lat;
-
-    @Column(name = "lng")
-    public double lng;
-
-    @Column(name = "instagram")
-    public String instagram;
-
-    @Column(name = "url")
-    public String url;
-
-    @Column(name = "phone")
+    public int cost;
     public String phone;
-
-    @Column(name = "mobile")
-    public String mobile;
-
-    public Venue() {
-        super();
-    }
-
+    @SerializedName("mainPhoto")
+    public SimplePhoto photo;
+    public Location location;
+    public List<Menu> menus;
+    public List<Review> reviews;
+    public List<Photo> photos;
+    public int reviewsCount;
+    public int menusCount;
+    public int photosCount;
 }

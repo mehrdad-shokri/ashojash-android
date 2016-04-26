@@ -12,18 +12,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.adapter.VenueAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructVenue;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.model.Venue;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.VenueApi;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -35,9 +33,9 @@ public class SelectedFragment extends Fragment {
     private TextView txtSelectedError;
     private LinearLayout retryView;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private VenueAdapter adapter;
     private String citySlug;
-    private List<StructVenue> venueList;
+    private List<Venue> venueList;
 
     public SelectedFragment() {
         // Required empty public constructor
@@ -64,45 +62,55 @@ public class SelectedFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 hideErrorViews();
-                getSelectedVenues();
+                VenueApi.selectedVenues(citySlug);
             }
         });
         Bundle bundle = getArguments();
         if (bundle != null) {
             citySlug = bundle.getString("current_city_slug");
         }
-        getSelectedVenues();
+        VenueApi.selectedVenues(citySlug);
 //        getAnotherUserLocation();
 //        getUserLocation();
 //       get current location of user
 //        request nearby venues
     }
 
-
-    private void getSelectedVenues() {
-        JsonObjectRequest jsonObjectRequest = WebServer.getEliteVenue(new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    venueList = JsonParser.parseVenuesJsonObject(response);
-                    Intent intent = new Intent(getActivity(), VenueActivity.class);
-                    adapter = new VenueAdapter(venueList, AppController.context, intent);
-                    recyclerView.setAdapter(adapter);
-                    selectedProgressbar.setVisibility(View.GONE);
-                } catch (JSONException e) {
-                    showErrorViews();
-                    txtSelectedError.setText(R.string.error_retrieving_data);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                showErrorViews();
-                txtSelectedError.setText(R.string.error_retrieving_data);
-            }
-        }, citySlug);
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, "SELECTED_FRAGMENT");
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.register(this);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.unregister(this);
+    }
+
+    @Subscribe
+    public void onResponseError(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtSelectedError.setText(R.string.error_retrieving_data);
+    }
+
+    @Subscribe
+    public void onVenuesReceived(VenueApiEvents.OnSelectedVenuesResult event) {
+        venueList = event.venueList;
+        adapter = new VenueAdapter(venueList);
+        adapter.setOnItemClickListener(new VenueAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(Venue venue) {
+                Intent intent = new Intent(getActivity(), VenueActivity.class);
+                intent.putExtra("slug", venue.slug);
+                AppController.currentActivity.startActivity(intent);
+
+            }
+        });
+        recyclerView.setAdapter(adapter);
+        selectedProgressbar.setVisibility(View.GONE);
+    }
+
 
     private void showErrorViews() {
         selectedProgressbar.setVisibility(View.GONE);
@@ -117,7 +125,6 @@ public class SelectedFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        AppController.getInstance().cancelPendingRequests("SELECTED_FRAGMENT");
     }
 
 }

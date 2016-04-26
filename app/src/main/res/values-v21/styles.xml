@@ -9,4 +9,11 @@
         <item name="android:navigationBarColor">@color/gray</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">#333</item>
+        <item name="android:background">#efefef</item>
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+
 </resources>

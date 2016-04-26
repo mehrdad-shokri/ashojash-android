@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent" android:layout_height="match_parent"
-                android:minHeight="60dp"
-        >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp">
+
     <android.support.v7.widget.CardView
             android:id="@+id/cardBasicMenu"
+            android:layout_height="80dp"
+            android:layout_width="fill_parent"
             android:layout_gravity="center"
             card_view:cardElevation="0dp"
             card_view:cardCornerRadius="0dp"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent">
+            android:layout_margin="5dp"
+            android:padding="10dp">
 
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:orientation="horizontal" android:background="@color/default_white">
+                android:orientation="horizontal"
+                android:background="@color/default_white">
 
             <TextView
                     android:text="Item name"
@@ -28,6 +32,7 @@
                     android:textSize="14dp"
                     android:gravity="center_vertical|right"
                     android:layout_toRightOf="@+id/txtMenuPriceMenuBasicCard"/>
+
             <TextView
                     android:text="Price"
                     android:id="@+id/txtMenuPriceMenuBasicCard"
@@ -35,7 +40,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textSize="14dp"
-                    android:layout_alignParentLeft="false" android:gravity="center_vertical|left"/>
+                    android:layout_alignParentLeft="false"
+                    android:gravity="center_vertical|left"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

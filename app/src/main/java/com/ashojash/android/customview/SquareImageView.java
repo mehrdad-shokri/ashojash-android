@@ -25,6 +25,7 @@ public class SquareImageView extends ImageView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec); // This is the key that will make the height equivalent to its width

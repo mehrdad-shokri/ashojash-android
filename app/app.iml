@@ -58,7 +58,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.0/jars" />
@@ -103,8 +102,29 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/materialize/0.5.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.viewpagerindicator/library/2.4.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
+<<<<<<< HEAD
+<<<<<<< HEAD
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+=======
+>>>>>>> 9bddd5f... WIP
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+>>>>>>> 5f8feb0... Fixed proguard rule for release
+=======
+>>>>>>> c3d3927... WIP
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
+=======
+>>>>>>> 60b2068... WIP
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
+>>>>>>> 1891102... WIP
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
@@ -118,52 +138,57 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="play-services-appindexing-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="library-1.0.19" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-plus-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="iconics-core-2.5.1" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-wearable-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="google-material-typeface-2.1.0.1.original" level="project" />
-    <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-measurement-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-vision-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-wallet-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.2.0" level="project" />
+    <orderEntry type="library" exported="" name="FloatingSearchView-1.0.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-drive-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="httpclient-4.3.6" level="project" />
+    <orderEntry type="library" exported="" name="materialdrawer-4.5.7" level="project" />
+    <orderEntry type="library" exported="" name="play-services-ads-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appinvite-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="library-2.4.1" level="project" />
+    <orderEntry type="library" exported="" name="cardview-v7-23.2.0" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="converter-gson-2.0.1" level="project" />
+    <orderEntry type="library" exported="" name="design-23.2.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-gcm-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="ToggleDrawable-1.0.2" level="project" />
+    <orderEntry type="library" exported="" name="play-services-panorama-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appindexing-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-plus-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="iconics-core-2.5.1" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.6.2" level="project" />
+    <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-cast-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.2.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-vision-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-wallet-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="FloatingSearchView-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-drive-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="httpclient-4.3.6" level="project" />
     <orderEntry type="library" exported="" name="glide-3.5.2" level="project" />
-    <orderEntry type="library" exported="" name="materialdrawer-4.5.7" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="play-services-ads-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-appinvite-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="materialize-0.5.1" level="project" />
-    <orderEntry type="library" exported="" name="library-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appstate-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="cardview-v7-23.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-games-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="design-23.2.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-gcm-8.4.0" level="project" />
+    <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-23.0.0" level="project" />
-    <orderEntry type="library" exported="" name="ToggleDrawable-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.9" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-8.4.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-panorama-8.4.0" level="project" />
   </component>
 </module>

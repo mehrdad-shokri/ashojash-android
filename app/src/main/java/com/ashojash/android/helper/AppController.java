@@ -9,18 +9,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import com.activeandroid.ActiveAndroid;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
+import com.ashojash.android.orm.OrmListener;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.LruBitmapCache;
 import com.ashojash.android.utils.ObscuredSharedPrefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -33,8 +27,6 @@ public class AppController extends MultiDexApplication {
     public static Context context;
     public static Activity currentActivity;
     public static LayoutInflater layoutInflater;
-    private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
     private static AppController instance;
     public static final Handler HANDLER = new Handler();
     public static SharedPreferences defaultPref;
@@ -55,11 +47,12 @@ public class AppController extends MultiDexApplication {
         context = getApplicationContext();
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         instance = this;
-        ActiveAndroid.initialize(this);
+        ActiveAndroid.initialize(getApplicationContext());
         initializeSharedPrefs();
         initializePhoneDimes();
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
+        new OrmListener();
 //        ANDROID_VERSION = Build.VERSION.SDK_INT;
     }
 
@@ -90,40 +83,6 @@ public class AppController extends MultiDexApplication {
         return instance;
     }
 
-    public RequestQueue getRequestQueue() {
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
-        return requestQueue;
-    }
-
-    public ImageLoader getImageLoader() {
-        getRequestQueue();
-        if (imageLoader == null) {
-            imageLoader = new ImageLoader(this.requestQueue,
-                    new LruBitmapCache());
-        }
-        return this.imageLoader;
-    }
-
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        // set the default tag if tag is empty
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        getRequestQueue().add(req);
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        Log.d(TAG, "addToRequestQueue");
-        req.setTag(TAG);
-        getRequestQueue().add(req);
-    }
-
-    public void cancelPendingRequests(Object tag) {
-        if (requestQueue != null) {
-            requestQueue.cancelAll(tag);
-        }
-    }
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -147,5 +106,4 @@ public class AppController extends MultiDexApplication {
         }
         return mTracker;
     }
-
 }

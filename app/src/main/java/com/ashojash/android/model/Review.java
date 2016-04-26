@@ -1,13 +1,10 @@
 package com.ashojash.android.model;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Table;
-
-@Deprecated
-@Table(name = "reviews", id = "id")
-public class Review extends Model {
-
+public class Review {
+    public User user;
     public String comment;
-    public int score;
+    public int quality;
     public int cost;
+    public int decor;
+    public Date createdAt;
 }

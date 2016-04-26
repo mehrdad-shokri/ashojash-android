@@ -5,33 +5,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
 import com.ashojash.android.adapter.CityAdapter;
+import com.ashojash.android.event.CityApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructCity;
-import com.ashojash.android.webserver.JsonParser;
-import com.ashojash.android.webserver.WebServer;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ashojash.android.model.City;
+import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.webserver.CityApi;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class CityListFragment extends Fragment {
-    private List<StructCity> listCityStruct;
+    private List<City> cityList;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private CityAdapter adapter;
     private ProgressBar progressBar;
 
     public CityListFragment() {
@@ -48,34 +44,46 @@ public class CityListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViews();
-        getCityListJsonObject();
+        progressBar= (ProgressBar) getView().findViewById(R.id.prg);
+        CityApi.getAllCities();
     }
 
-    private void getCityListJsonObject() {
-        final JsonObjectRequest jsonObjectRequest = WebServer.getCityList(new Response.Listener<JSONObject>() {
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        BusProvider.getInstance().unregister(this);
+        super.onStop();
+    }
+
+    private static final String TAG = "CityListFragment";
+
+    @Subscribe
+    public void onEvent(CityApiEvents.OnAllCitiesAvailable event) {
+        Log.d(TAG, "onAllCitiesAvailable: got event");
+        progressBar.setVisibility(View.GONE);
+        cityList = event.cityList;
+        adapter = new CityAdapter(cityList);
+        adapter.setOnItemClickListener(new CityAdapter.OnItemClickListener() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    listCityStruct = JsonParser.parseCityJsonObject(response);
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    adapter = new CityAdapter(listCityStruct, AppController.context, intent);
-                    recyclerView.setAdapter(adapter);
-                } catch (JSONException e) {
-                } finally {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(View.GONE);
+            public void onClick(City city) {
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                AppController.editor.putString("current_city_slug", city.slug);
+                AppController.editor.commit();
+                AppController.currentActivity.startActivity(intent);
+                AppController.currentActivity.finish();
             }
         });
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest);
+        recyclerView.setAdapter(adapter);
     }
 
+
     private void setupViews() {
-        progressBar = (ProgressBar) getView().findViewById(R.id.prgCityList);
+        progressBar = (ProgressBar) getView().findViewById(R.id.prg);
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewCityList);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(AppController.context);

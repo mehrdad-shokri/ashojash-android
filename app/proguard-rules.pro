@@ -51,7 +51,6 @@
      **[] $VALUES;
      public *;
  }
-
 -keep public class com.google.android.gms.* { public *; }
 -keepnames @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
@@ -64,3 +63,29 @@
  public static int d(...);
  public static int v(...);
 }
+
+# Retrofit 2.X
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+-dontwarn com.google.common.primitives.**
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
+# Okhttp
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
+-dontwarn okio.*
+#eventbus
+-keepclassmembers,includedescriptorclasses class ** { public void onEvent*(**); }
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+#Gson models
+-keep class com.ashojash.android.model.** {*; }

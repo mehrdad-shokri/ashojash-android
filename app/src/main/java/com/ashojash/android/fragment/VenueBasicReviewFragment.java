@@ -15,15 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueReviewsActivity;
-import com.ashojash.android.adapter.VenueBasicReviewsAdapter;
+import com.ashojash.android.adapter.OnCardClickListener;
+import com.ashojash.android.adapter.VenueReviewsAdapter;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
+import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructReview;
+import com.ashojash.android.model.Review;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.webserver.JsonParser;
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.ashojash.android.utils.BusProvider;
+import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,8 +35,8 @@ public class VenueBasicReviewFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView btnSeeAllReviews;
     private View rootLayout;
-    private List<StructReview> reviewList;
-    private RecyclerView.Adapter adapter;
+    private List<Review> reviewList;
+    private VenueReviewsAdapter adapter;
     private TextView txtError;
     private String slug;
 
@@ -70,8 +72,8 @@ public class VenueBasicReviewFragment extends Fragment {
             }
         });
         progressbar = (ProgressBar) getView().findViewById(R.id.prgNearbyFragment);
-        txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicReviewFragment);
-        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenueReviewFragment);
+        txtError = (TextView) getView().findViewById(R.id.txtErrorVenue);
+        errorTxtContainer = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
 
     }
 
@@ -82,40 +84,56 @@ public class VenueBasicReviewFragment extends Fragment {
     }
 
 
-    public void onDataReceived(JSONArray response, int reviewsCount) {
-        try {
-            if (response == null)
-                throw new JSONException("json parsing exception");
-            reviewList = new ArrayList<>();
-            reviewList = JsonParser.parseVenueReviews(response);
-            if (reviewsCount == 0)
-                throw new IllegalArgumentException("no reviews yet :(");
-            btnSeeAllReviews.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
-            Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
-            adapter = new VenueBasicReviewsAdapter(reviewList, AppController.context, intent);
-            recyclerView.setAdapter(adapter);
-            rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(reviewList.size() * 75 + 100)));
-            btnSeeAllReviews.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.VISIBLE);
-            hideErrorViews();
-
-        } catch (JSONException e) {
-            showErrorViews();
-            txtError.setText(R.string.error_retrieving_data);
-//            recyclerView.setVisibility(View.GONE);
-//            btnSeeAllReviews.setVisibility(View.GONE);
-//            rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(150)));
-
-        } catch (IllegalArgumentException e) {
-            txtError.setText(R.string.no_reviews_added_yet);
-//            btnSeeAllReviews.setVisibility(View.GONE);
-//            recyclerView.setVisibility(View.GONE);
-//            getView().findViewById(R.id.reviewRootLayoutVenueReviewFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(150)));
-            showErrorViews();
-        } finally {
-            progressbar.setVisibility(View.GONE);
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusProvider.getInstance().register(this);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusProvider.getInstance().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent event) {
+        showErrorViews();
+        txtError.setText(R.string.error_retrieving_data);
+    }
+
+    @Subscribe
+    public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
+        Venue venue = event.venue;
+        reviewList = venue.reviews;
+        int reviewsCount = venue.reviewsCount;
+        progressbar.setVisibility(View.GONE);
+        if (reviewsCount == 0) {
+            txtError.setText(R.string.no_reviews_added_yet);
+            btnSeeAllReviews.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            showErrorViews();
+            getView().findViewById(R.id.reviewRootLayoutVenueReviewFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            return;
+        }
+        btnSeeAllReviews.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
+        adapter = new VenueReviewsAdapter(reviewList);
+        adapter.setOnItemClickListener(new OnCardClickListener() {
+            @Override
+            public void onClick(Object model) {
+                startVenueReviewActivity();
+            }
+        });
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerView.setAdapter(adapter);
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(reviewList.size() * 75 + 100)));
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerView.setLayoutManager(layoutManager);
+        btnSeeAllReviews.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        hideErrorViews();
+    }
+
 
     private void showErrorViews() {
         progressbar.setVisibility(View.GONE);

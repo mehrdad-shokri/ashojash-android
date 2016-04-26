@@ -7,23 +7,26 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.ActionMenuView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.ashojash.android.R;
 import com.ashojash.android.fragment.SearchFragment;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.webserver.VenueApi;
 import com.mypopsy.drawable.SearchArrowDrawable;
 import com.mypopsy.widget.FloatingSearchView;
 import com.mypopsy.widget.internal.ViewUtils;
 
-public class SearchActivity extends NavigationDrawerActivity implements
+/*
+* Checked for bus and json
+* */
+public class SearchActivity extends ToolbarActivity implements
         ActionMenuView.OnMenuItemClickListener {
     public FloatingSearchView mSearchView;
     private static final String VENUE_SEARCH_REQUEST_TAG = "VENUE_SEARCH";
     private SearchFragment searchFragment;
-    //    private static final String CITY_SLUG = AppController.defaultPref.getString("current_city_slug", null);
+//    private static final String CITY_SLUG = AppController.defaultPref.getString("current_city_slug", null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,38 +92,11 @@ public class SearchActivity extends NavigationDrawerActivity implements
                 searchFragment.search(query.toString());
             }
         });
-        /*mSearchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-                int queryLength = query.length();
-                showClearButton(queryLength > 0 && mSearchView.isActivated());
-                if (queryLength >= 3) {
-                    cancelSearch();
-                    showSearchProgress(mSearchView.isActivated());
-                    searchFragment.search(query.toString().trim());
-                } else {
-                    cancelSearch();
-                    showSearchProgress(false);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
-
-
     }
 
 
     private void cancelSearch() {
-        AppController.getInstance().cancelPendingRequests(VENUE_SEARCH_REQUEST_TAG);
-
+        VenueApi.cancelSearch();
     }
 
     private void updateNavigationIcon() {
@@ -143,7 +119,6 @@ public class SearchActivity extends NavigationDrawerActivity implements
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Log.d(TAG, "onMenuItemClick: ");
         switch (item.getItemId()) {
             case R.id.menu_clear:
                 mSearchView.setText(null);

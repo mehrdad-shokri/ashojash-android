@@ -25,10 +25,10 @@
                 android:value="ashojash.db"/>
         <meta-data
                 android:name="AA_DB_VERSION"
-                android:value="1"/>
+                android:value="4"/>
         <meta-data
                 android:name="AA_MODELS"
-                android:value="com.ashojash.android.model.Venue, com.ashojash.android.model.City"/>
+                android:value="com.ashojash.android.orm.VenueOrm, com.ashojash.android.orm.CityOrm,com.ashojash.android.orm.UserOrm"/>
         <meta-data
                 android:name="com.ashojash.android.helper.GlideConfiguration"
                 android:value="GlideModule"/>

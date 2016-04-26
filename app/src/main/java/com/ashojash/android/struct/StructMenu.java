@@ -1,5 +1,5 @@
 package com.ashojash.android.struct;
-
+@Deprecated
 public class StructMenu {
     private int price;
     private String name;

@@ -14,22 +14,17 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.VenuePhotoUploadAdapter;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.model.Venue;
+import com.ashojash.android.orm.VenueOrm;
 import com.ashojash.android.task.UploadVenuePhotosTask;
 import com.ashojash.android.utils.ContentResolverUtil;
-import com.ashojash.android.webserver.WebServer;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import cz.msebera.android.httpclient.Header;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +38,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
     private ArrayList<String> files;
     private VenuePhotoUploadAdapter adapter;
     @NonNull
-    public Venue venue;
+    public VenueOrm venueOrm;
     private Button btnAddVenuePhotoCamera;
     private AlertDialog dialog;
     private Button btnAddVenuePhotoGallery;
@@ -73,7 +68,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
         if (files == null)
             files = new ArrayList<>();
         if (adapter == null) {
-            adapter = new VenuePhotoUploadAdapter(files, AppController.context);
+            adapter = new VenuePhotoUploadAdapter(files);
         }
         setupViews(dialog);
         return dialog;
@@ -91,7 +86,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
 
     private void setupViews(AlertDialog dialog) {
         TextView txtVenueTitle = (TextView) dialog.findViewById(R.id.txtAddPhotoTitle);
-        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venue.name));
+        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venueOrm.name));
         btnUploadVenuePhotos = (Button) dialog.findViewById(R.id.btnUploadVenuePhotos);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         venuePhotosRecyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerViewPhotosList);
@@ -130,7 +125,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
                 final ArrayList<String> checkedItems = adapter.getCheckedFilesPath();
                 if (checkedItems.size() != 0) {
                     UploadVenuePhotosTask task = new UploadVenuePhotosTask();
-                    task.execute(new UploadVenuePhotosTask.VenueAddPhotoRequest(venue.slug, checkedItems));
+                    task.execute(new UploadVenuePhotosTask.VenueAddPhotoRequest(venueOrm.slug, checkedItems));
                     dismiss();
                 } else {
                     Snackbar.make(getActivity().findViewById(R.id.venueActivityRootLayout), R.string.select_some_files_to_upload, Snackbar.LENGTH_LONG).show();
@@ -188,28 +183,6 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
         getActivity().sendBroadcast(mediaScanIntent);
     }
 
-    /* private void setPic() {
-
-         // Get the dimensions of the View
-         int targetW = mImageView.getWidth();
-         int targetH = mImageView.getHeight();
-         // Get the dimensions of the bitmap
-         BitmapFactory.Options bmScaledOptions = new BitmapFactory.Options();
-         bmScaledOptions.inJustDecodeBounds = true;
-         BitmapFactory.decodeFile(mCurrentPhotoPath, bmScaledOptions);
-         int photoW = bmScaledOptions.outWidth;
-         int photoH = bmScaledOptions.outHeight;
-         // Determine how much to scale down the image
-         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-         // Decode the image file into a Bitmap sized to fill the View
-         bmScaledOptions.inJustDecodeBounds = false;
-         bmScaledOptions.inSampleSize = scaleFactor;
-         bmScaledOptions.inPurgeable = true;
-         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmScaledOptions);
-         mImageView.setImageBitmap(bitmap);
-     }*/
-    private String TAG = "VENUEUPLOADPHOTODIALOGFRAGMENT";
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
@@ -220,33 +193,6 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
             addToAdapter(path);
         }
     }
-
-
-    /*public String getRealPathFromURI( Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = AppController.context.getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-*/
-
-    /**
-     * Get a file path from a Uri. This will get the the path for Storage Access
-     * Framework Documents, as well as the _data field for the MediaStore and
-     * other file-based ContentProviders.
-     *
-     * @param Context The context.
-     * @param Uri     The Uri to query.
-     * @author paulburke
-     */
 
 
     private void handleBigCameraPhoto() {

@@ -1,61 +1,74 @@
 package com.ashojash.android.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.struct.StructPhoto;
+import com.ashojash.android.model.Photo;
+import com.ashojash.android.ui.UiUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
-public class VenuePhotosAdapter extends BaseAdapter {
-    private Context context;
-    List<StructPhoto> structPhotoList;
-    private Intent intent;
+public class VenuePhotosAdapter extends RecyclerView.Adapter<VenuePhotosAdapter.ViewHolder> {
+    private static final Context CONTEXT = AppController.context;
+    List<Photo> photoList;
+    private OnCardClickListener onCardClickListener;
 
-    public VenuePhotosAdapter(List<StructPhoto> picsList, Context context, Intent intent) {
+    public void setOnItemClickListener(OnCardClickListener onCardClickListener) {
+        this.onCardClickListener = onCardClickListener;
+    }
+
+    public VenuePhotosAdapter(List<Photo> photoList) {
         super();
-        this.structPhotoList = picsList;
-        this.context = context;
-        this.intent = intent;
+        this.photoList = photoList;
     }
 
-    private String TAG = AppController.TAG;
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_photo_basic, parent, false);
+        ViewHolder viewHolder = new ViewHolder(v);
+        return viewHolder;
+    }
+
+    String TAG = AppController.TAG;
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.card_photo_basic, viewGroup, false);
-        } else {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final Photo photo = photoList.get(position);
+        Glide.with(CONTEXT).load(UiUtils.setUrlWidth(240, photo.url)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgVenuePhoto);
+        if (onCardClickListener != null)
+            holder.imgVenuePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCardClickListener.onClick(photo);
+                }
+            });
+    }
+
+    @Override
+    public int getItemCount() {
+        return photoList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView imgVenuePhoto;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            imgVenuePhoto = (ImageView) itemView.findViewById(R.id.imgVenuePhotoVenuePhotoCard);
+//            imgVenuePhoto.setLayoutParams(new RelativeLayout.LayoutParams(AppController.widthPx / 2, AppController.widthPx / 2));
+            /*ViewGroup viewGroup = (ViewGroup) itemView.findViewById(R.id.imgVenuePhotoContainerVenuePhotoCard);
+            ViewGroup.LayoutParams layoutParams = viewGroup.getLayoutParams();
+            layoutParams.width = AppController.widthPx / getItemCount();
+            viewGroup.setLayoutParams(layoutParams);*/
         }
-        final StructPhoto structPhoto = structPhotoList.get(i);
-        ImageView imgVenuePhoto = (ImageView) view.findViewById(R.id.imgVenuePhotoVenuePhotoCard);
-        Log.d(TAG, "getView: " + (imgVenuePhoto == null));
-        Glide.with(context).load(structPhoto.getPhotoUrl()).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgVenuePhoto);
-        return view;
     }
-
-    @Override
-    public int getCount() {
-        return structPhotoList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
 }

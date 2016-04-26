@@ -15,8 +15,8 @@ android {
         applicationId "com.ashojash.android"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 7
-        versionName "0.10.3"
+        versionCode 8
+        versionName "0.11.0"
         multiDexEnabled true
     }
     dexOptions {
@@ -57,7 +57,6 @@ dependencies {
     compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.bumptech.glide:glide:3.5.2'
-    compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
@@ -66,5 +65,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.github.renaudcerrato:FloatingSearchView:1.0.0'
     compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
