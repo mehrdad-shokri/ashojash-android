@@ -53,7 +53,6 @@ public class AppController extends MultiDexApplication {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
         new OrmListener();
-//        ANDROID_VERSION = Build.VERSION.SDK_INT;
     }
 
     private void initializePhoneDimes() {

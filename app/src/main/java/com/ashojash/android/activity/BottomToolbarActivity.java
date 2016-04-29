@@ -1,34 +1,16 @@
 package com.ashojash.android.activity;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import com.ashojash.android.R;
-import com.ashojash.android.helper.AppController;
-import com.ashojash.android.utils.AuthUtils;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
-
 /*
 * Checked for bus and json
 * */
 public class BottomToolbarActivity extends ToolbarActivity {
 
-    private Toolbar toolbarBottom;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setupBottomToolbar();
-    }
 
-    private void setupBottomToolbar() {
-        toolbarBottom = (Toolbar) findViewById(R.id.toolbarBottomMainActivity);
-        toolbarBottom.inflateMenu(R.menu.menu_bottom);
+
+    /*private void setupBottomToolbar() {
+//        toolbarBottom = (Toolbar) findViewById(R.id.toolbarBottomMainActivity);
+//        toolbarBottom.inflateMenu(R.menu.menu_bottom);
 //        LinearLayout searchLayout = (LinearLayout) findViewById(R.id.toolbarBottomSearch);
         final LinearLayout profileLayout = (LinearLayout) findViewById(R.id.toolbarBottomProfile);
         LinearLayout listLayout = (LinearLayout) findViewById(R.id.toolbarBottomList);
@@ -58,9 +40,9 @@ public class BottomToolbarActivity extends ToolbarActivity {
                 finish();
             }
         });
-    }
+    }*/
 
-    protected void setupBottomToolbarLayoutActive(int which) {
+    /*protected void setupBottomToolbarLayoutActive(int which) {
 //        ImageView imgSearch = (ImageView) findViewById(R.id.imgToolbarBottomSearch);
 //        imgSearch.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).color(getResources().getVenue(R.color.text_secondary)));
         ImageView imgProfile = (ImageView) findViewById(R.id.imgToolbarBottomProfile);
@@ -81,5 +63,5 @@ public class BottomToolbarActivity extends ToolbarActivity {
                 imgProfile.setColorFilter(Color.BLUE);
                 txtProfile.setTextColor(Color.BLUE);
         }
-    }
+    }*/
 }

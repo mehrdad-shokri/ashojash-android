@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +65,7 @@ public class NearbyFragment extends Fragment {
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewNearbyFragment);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
         txtNearbyError = (TextView) getView().findViewById(R.id.txtErrorNearbyFragment);
         retryView = (LinearLayout) getView().findViewById(R.id.errorViewVenue);
         retryView.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +83,7 @@ public class NearbyFragment extends Fragment {
         BusProvider.getInstance().register(this);
     }
 
+
     @Override
     public void onStop() {
         super.onStop();
@@ -91,6 +92,7 @@ public class NearbyFragment extends Fragment {
 
     private LocationUtil locationUtil;
 
+    private static final String TAG = "NearbyFragment";
 
     @Subscribe
     public void onEvent(VenueApiEvents.OnNearbyVenuesResult event) {
@@ -152,11 +154,10 @@ public class NearbyFragment extends Fragment {
         locationUtil = new LocationUtil();
         try {
             boolean isGetLocationSuccess = locationUtil.getLocation(AppController.context, locationResult);
-            Log.d(TAG, "getUserLocation: in try : " + isGetLocationSuccess);
         } catch (SecurityException e) {
-            Log.d(TAG, "getUserLocation: securityException");
         }
     }
+
 
     private void showErrorViews() {
         nearbyProgressbar.setVisibility(View.GONE);

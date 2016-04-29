@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Ashojash</string>
-    <string name="action_profile">پروفایل</string>
+    <string name="title_profile">پروفایل</string>
     <string name="action_settings">تنظیمات</string>
     <string name="action_search">جست‌وجو</string>
     <string name="action_list">لیست</string>
@@ -42,7 +42,7 @@
 
     <string name="title_messages">Messages</string>
     <string name="title_friends">Friends</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">خونه</string>
     <string name="error_retrieving_data">خطا در دریافت اطلاعات</string>
     <string name="error_connecting_to_google">خطا در اتصال به گوگل</string>
     <string name="error_retrieving_location">خطا در دریافت موقعیت شما</string>

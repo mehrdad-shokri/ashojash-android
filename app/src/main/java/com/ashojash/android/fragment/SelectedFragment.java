@@ -56,6 +56,7 @@ public class SelectedFragment extends Fragment {
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewSelectedFragment);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setNestedScrollingEnabled(false);
         txtSelectedError = (TextView) getView().findViewById(R.id.txtErrorSelectedFragment);
         retryView = (LinearLayout) getView().findViewById(R.id.retryViewSelectedFragment);
         retryView.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +123,5 @@ public class SelectedFragment extends Fragment {
         selectedProgressbar.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
 
 }

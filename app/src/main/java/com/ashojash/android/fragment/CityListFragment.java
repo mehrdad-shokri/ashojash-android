@@ -44,7 +44,7 @@ public class CityListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViews();
-        progressBar= (ProgressBar) getView().findViewById(R.id.prg);
+        progressBar = (ProgressBar) getView().findViewById(R.id.prg);
         CityApi.getAllCities();
     }
 
@@ -60,20 +60,20 @@ public class CityListFragment extends Fragment {
         super.onStop();
     }
 
-    private static final String TAG = "CityListFragment";
-
     @Subscribe
     public void onEvent(CityApiEvents.OnAllCitiesAvailable event) {
-        Log.d(TAG, "onAllCitiesAvailable: got event");
         progressBar.setVisibility(View.GONE);
         cityList = event.cityList;
         adapter = new CityAdapter(cityList);
         adapter.setOnItemClickListener(new CityAdapter.OnItemClickListener() {
             @Override
             public void onClick(City city) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+
                 AppController.editor.putString("current_city_slug", city.slug);
                 AppController.editor.commit();
+                String TAG = AppController.TAG;
+                Log.d(TAG, "onClick: " + AppController.defaultPref.getString("current_city_slug", null));
+                Intent intent = new Intent(getActivity(), MainActivity.class);
                 AppController.currentActivity.startActivity(intent);
                 AppController.currentActivity.finish();
             }

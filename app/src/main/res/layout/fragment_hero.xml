@@ -5,22 +5,27 @@
                 android:layout_height="fill_parent"
                 android:id="@+id/fragmentHero"
                 tools:context="com.ashojash.activity.FragmentHero">
+
     <android.support.v4.view.ViewPager
             android:layout_height="fill_parent"
             android:id="@+id/heroViewpager"
             android:layout_width="fill_parent">
     </android.support.v4.view.ViewPager>
+
     <com.viewpagerindicator.CirclePageIndicator
             android:id="@+id/heroViewpagerIndicator"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:paddingLeft="12dp"
             android:layout_alignParentBottom="true"/>
+
     <ProgressBar
             android:id="@+id/prgHeroFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -28,7 +33,9 @@
             android:layout_centerVertical="true"
             android:id="@+id/retryViewHeroFragment"
             android:layout_centerHorizontal="true"
-            android:layout_height="fill_parent" android:visibility="gone">
+            android:layout_height="fill_parent"
+            android:visibility="gone">
+
         <com.mikepenz.iconics.view.IconicsImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -36,6 +43,7 @@
                 android:padding="4dp"
                 android:scaleType="centerInside"
                 app:iiv_icon="gmd_loop"/>
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

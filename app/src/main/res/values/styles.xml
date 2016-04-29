@@ -1,10 +1,10 @@
 <resources>
 
-    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+    <style name="AshojashTheme" parent="AshojashMaterialTheme.Base">
 
     </style>
 
-    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AshojashMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -58,7 +58,7 @@
         <item name="android:minHeight">24dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
-    <style name="CustomFloatingSearchViewTheme" parent="MyMaterialTheme">
+    <style name="CustomFloatingSearchViewTheme" parent="AshojashTheme">
         <item name="editTextStyle">@style/searchViewEditTextStyle</item>
         <item name="android:divider">#c9c9c9</item>
         <item name="android:dividerHeight">1dp</item>

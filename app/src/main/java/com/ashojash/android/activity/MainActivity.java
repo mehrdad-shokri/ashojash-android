@@ -3,13 +3,15 @@ package com.ashojash.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.ActionMenuView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,35 +26,45 @@ import com.ashojash.android.fragment.SelectedFragment;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.AshojashSnackbar;
+import com.ashojash.android.utils.AuthUtils;
 import com.ashojash.android.utils.BusProvider;
 import com.ashojash.android.webserver.VenueApi;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mypopsy.drawable.SearchArrowDrawable;
 import com.mypopsy.widget.FloatingSearchView;
 import com.mypopsy.widget.internal.ViewUtils;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabClickListener;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-/*
-* Checked for bus and json
-* */
-public class MainActivity extends BottomToolbarActivity implements
+public class MainActivity extends ToolbarActivity implements
         ActionMenuView.OnMenuItemClickListener {
 
-    private String TAG = AppController.TAG;
     private FloatingSearchView mSearchView;
-    private static final String CITY_SLUG = AppController.defaultPref.getString("current_city_slug", null);
+    private static String CITY_SLUG ;
     private String searchQuery;
+    private BottomBar mBottomBar;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mBottomBar.onSaveInstanceState(outState);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        CITY_SLUG= AppController.defaultPref.getString("current_city_slug", null);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        super.setupBottomToolbarLayoutActive(0);
         setupSearch();
-
+        setupBottomBar(savedInstanceState);
         if (CITY_SLUG == null) {
-            Intent intent = new Intent(AppController.currentActivity, CityListActivity.class);
+            Intent intent = new Intent(MainActivity.this, CityListActivity.class);
             startActivity(intent);
             finish();
         }
@@ -66,6 +78,63 @@ public class MainActivity extends BottomToolbarActivity implements
             SelectedFragment selectedFragment = (SelectedFragment) addFragment(R.id.fragmentTopVenuesContainer, new SelectedFragment());
             selectedFragment.setArguments(bundle);
         }
+    }
+
+
+    private void setupBottomBar(Bundle savedInstanceState) {
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.rootView), findViewById(R.id.scrollingContent), savedInstanceState);
+        if (AuthUtils.isUserLoggedIn()) {
+            mBottomBar.setItems(
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(25).color(AppController.context.getResources().getColor(R.color.text_primary)), R.string.title_home)
+            );
+            mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+        } else {
+            mBottomBar.setItems(
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(25).color(AppController.context.getResources().getColor(R.color.text_primary)), R.string.title_home),
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_account_circle).sizeDp(25).color(AppController.context.getResources().getColor(R.color.text_primary)), R.string.title_profile)
+            );
+            mBottomBar.mapColorForTab(0, ContextCompat.getColor(this, R.color.colorAccent));
+            mBottomBar.mapColorForTab(1, 0xFF5D4037);
+        }
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+                    @Override
+                    public void onTabSelected(int position) {
+                        if (position == 1) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(130);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intent = new Intent(MainActivity.this, GuestProfileActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                    finish();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onTabReSelected(int position) {
+                    }
+                });
+
+            }
+        });
+
     }
 
     private void setupSearch() {
@@ -102,7 +171,6 @@ public class MainActivity extends BottomToolbarActivity implements
                 }
                 mSearchView.setActivated(false);
                 Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                Log.d(TAG, "onSearchAction: query: " + query);
                 intent.putExtra("query", String.valueOf(query));
                 startActivity(intent);
             }
@@ -143,7 +211,6 @@ public class MainActivity extends BottomToolbarActivity implements
     @Subscribe
     public void onEvent(VenueApiEvents.OnSearchResultsReady event) {
 //        mSearchView.setAdapter();
-        Log.d(TAG, "onSearchResultsAvailable: " + event.venuePaginated.data.size());
         List<Venue> venueList = event.venuePaginated.data;
         VenueSearchResultAdapter adapter = new VenueSearchResultAdapter(venueList);
         adapter.setOnItemClickListener(new VenueSearchResultAdapter.OnItemClickListener() {
@@ -192,6 +259,7 @@ public class MainActivity extends BottomToolbarActivity implements
         Context context = mSearchView.getContext();
         Drawable drawable = new SearchArrowDrawable(context);
         drawable = DrawableCompat.wrap(drawable);
+        drawable.mutate();
         DrawableCompat.setTint(drawable, ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
         mSearchView.setIcon(drawable);
     }
@@ -206,7 +274,6 @@ public class MainActivity extends BottomToolbarActivity implements
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Log.d(TAG, "onMenuItemClick: ");
         switch (item.getItemId()) {
             case R.id.menu_clear:
                 mSearchView.setText(null);
