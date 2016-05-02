@@ -102,29 +102,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.mikepenz/materialize/0.5.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.viewpagerindicator/library/2.4.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
-<<<<<<< HEAD
-<<<<<<< HEAD
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
-=======
->>>>>>> 9bddd5f... WIP
-=======
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
->>>>>>> 5f8feb0... Fixed proguard rule for release
-=======
->>>>>>> c3d3927... WIP
-=======
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-verifier" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
-=======
->>>>>>> 60b2068... WIP
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
->>>>>>> 1891102... WIP
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
