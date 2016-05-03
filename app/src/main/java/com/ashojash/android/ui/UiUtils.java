@@ -3,7 +3,6 @@ package com.ashojash.android.ui;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import com.ashojash.android.helper.AppController;
@@ -81,8 +80,6 @@ public final class UiUtils {
 
     public static String setUrlWidth(int dp, String url) {
         String newUrl = url + ("?w=" + convertDpToPixel(dp));
-        String TAG = AppController.TAG;
-        Log.d(TAG, "setUrlWidth: " + newUrl);
         return newUrl;
     }
 }

@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
@@ -48,7 +47,6 @@ public class VenueScoreArc extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d(TAG, "onDraw: again");
         mPath.moveTo(0, getHeight() - UiUtils.convertDpToPixel(115));
         mPath.cubicTo(0, getHeight() - UiUtils.convertDpToPixel(115), getWidth() / 2, 50 * getHeight() / 100, getWidth(), getHeight() - UiUtils.convertDpToPixel(115)); /*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more */
         paint.setAntiAlias(true);

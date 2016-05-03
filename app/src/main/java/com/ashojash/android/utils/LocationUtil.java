@@ -5,7 +5,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,7 +26,6 @@ public class LocationUtil {
 
         //don't start listeners if no provider is enabled
         if (!gps_enabled && !network_enabled) {
-            Log.d("LOCATION", "getLocation: non are enabled");
 
             return false;
         }

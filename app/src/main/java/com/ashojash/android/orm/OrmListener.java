@@ -1,6 +1,5 @@
 package com.ashojash.android.orm;
 
-import android.util.Log;
 import com.activeandroid.query.Select;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.model.Venue;
@@ -15,11 +14,9 @@ public class OrmListener {
         BusProvider.getInstance().register(this);
     }
 
-    private static final String TAG = "OrmListener";
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onVenueIndexReady(VenueApiEvents.OnVenueIndexResultsReady event) {
-        Log.d(TAG, "onVenueIndexReady: indexing " + event.venue.name);
         createOrUpdate(event.venue);
     }
 
@@ -30,7 +27,6 @@ public class OrmListener {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onSelectedVenues(VenueApiEvents.OnSelectedVenuesResult event) {
-        Log.d(TAG, "onVenueIndexReady: indexing " + event.venueList.size());
         createOrUpdate(event.venueList);
     }
 
@@ -63,7 +59,6 @@ public class OrmListener {
         if (venueOrm == null) {
             venueOrm = new VenueOrm();
             venueOrm.slug = venue.slug;
-            Log.d(TAG, "createOrUpdate: orm slug: " + venueOrm.slug);
         }
         try {
             venueOrm.address = venue.location.address;
@@ -76,9 +71,7 @@ public class OrmListener {
             venueOrm.phone = venue.phone;
             venueOrm.save();
         } catch (NullPointerException e) {
-            Log.d(TAG, "createOrUpdate: null pointer exception");
         } catch (Exception e) {
-            Log.d(TAG, "createOrUpdate: exception MF");
         }
     }
 }

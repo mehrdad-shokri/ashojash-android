@@ -1,9 +1,7 @@
 package com.ashojash.android.ui;
 
 import android.graphics.Color;
-import android.util.Log;
 import com.ashojash.android.R;
-import com.ashojash.android.helper.AppController;
 
 public final class VenueUtils {
     public static String getVenueScoreText(double score) {
@@ -12,7 +10,6 @@ public final class VenueUtils {
         return String.valueOf(score);
     }
 
-    private static String TAG = AppController.TAG;
 
     public static int getVenueScoreDrawableId(double score) {
         if (score < 1 || score > 5)
@@ -39,7 +36,6 @@ public final class VenueUtils {
     }
 
     public static int getVenueScoreColor(double score) {
-        Log.d(TAG, "getVenueScoreColor: score: " + score);
         if (score < 1 || score > 5)
             return Color.parseColor("#c1c1c1");
         if (score < 1.25)
@@ -60,10 +56,8 @@ public final class VenueUtils {
             return Color.parseColor("#3f7e00");
         if (score <= 5)
         {
-            Log.d(TAG, "getVenueScoreColor: it's here :D");
             return Color.parseColor("#305d02");
         }
-        Log.d(TAG, "getVenueScoreColor: came here:(");
         return Color.parseColor("#c1c1c1");
     }
 

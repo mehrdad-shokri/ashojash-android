@@ -1,6 +1,5 @@
 package com.ashojash.android.webserver;
 
-import android.util.Log;
 import com.ashojash.android.event.CityApiEvents;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
@@ -42,7 +41,6 @@ public class CityApi {
 
             @Override
             public void onFailure(Call<List<City>> call, Throwable t) {
-                Log.d(TAG, "onFailure: "+t.getMessage());
                 BusProvider.getInstance().post(new ApiRequestError(t.getMessage()));
             }
         });

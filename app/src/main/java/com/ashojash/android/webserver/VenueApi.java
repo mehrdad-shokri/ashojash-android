@@ -53,8 +53,6 @@ public final class VenueApi {
             @Override
             public void onResponse(Call<Venue> call, Response<Venue> response) {
                 if (call.isCanceled()) return;
-                Log.d(TAG, "onResponse: "+(response.isSuccessful()));
-//                new OnApiResponseErrorEvent(new ApiResponseError());
                 handleResponse(response, new VenueApiEvents.OnVenueIndexResultsReady(response.body()));
             }
         });
@@ -100,7 +98,6 @@ public final class VenueApi {
 
     public static void menus(String venueSlug) {
         Call<List<Menu>> call = API.menus(venueSlug);
-        Log.d(TAG, "menus: calling");
         call.enqueue(new ApiCallback<List<Menu>>() {
             @Override
             public void onResponse(Call<List<Menu>> call, Response<List<Menu>> response) {

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
@@ -24,7 +25,8 @@ public class RefreshTokenService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        BusProvider.register(this);
+        if (!BusProvider.getInstance().isRegistered(this))
+            BusProvider.register(this);
     }
 
     @Override
@@ -33,15 +35,21 @@ public class RefreshTokenService extends Service {
         BusProvider.unregister(this);
     }
 
+    String TAG = AppController.TAG;
+
     @Subscribe
-    private void onEvent(UserApiEvents.OnTokenRefreshed event) {
+    public void onEvent(UserApiEvents.OnTokenRefreshed event) {
         Token token = event.token;
         AuthUtils.updateTokenPayload(token);
     }
 
     @Subscribe
-    private void onEvent(OnApiResponseErrorEvent event) {
+    public void onEvent(OnApiResponseErrorEvent event) {
         AuthUtils.logoutUser();
+    }
+
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent event) {
     }
 
     @Override

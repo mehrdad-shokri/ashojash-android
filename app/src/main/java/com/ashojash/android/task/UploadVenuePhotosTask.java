@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.VenueAddPhotoRequest, Void, Void> {
 
-    String TAG = AppController.TAG;
     private final int venuePhotoNotificationId = 1001;
     private NotificationManager notificationManager = (NotificationManager) AppController.context.getSystemService(Context.NOTIFICATION_SERVICE);
     private NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(AppController.context);

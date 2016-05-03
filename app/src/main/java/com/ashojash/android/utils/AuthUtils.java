@@ -1,6 +1,5 @@
 package com.ashojash.android.utils;
 
-import android.util.Log;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Token;
 import com.ashojash.android.model.User;
@@ -48,13 +47,10 @@ public final class AuthUtils {
         return isNewUser;
     }
 
-    private static String TAG = AppController.TAG;
 
     public static void updateTokenPayload(Token token) {
         AppController.obsEditor.putString("token", token.token);
-        Log.d(TAG, "updateTokenPayload: " + token.ttlRefresh);
         if (token.ttlRefresh != 0) {
-
             AppController.obsEditor.putLong("ttlRefresh", token.ttlRefresh);
         }
         AppController.obsEditor.putLong("ttl", token.ttl);

@@ -19,6 +19,7 @@ public class AlarmUtils {
         return alarmManager;
     }
 
+
     public static void setRefreshTokenAlarm(Context context) {
         boolean isRefreshTokenSet = PendingIntent.getService(AppController.context, AppController.REFRESH_TOKEN_REQUEST_CODE, new Intent(AppController.context, RefreshTokenService.class), PendingIntent.FLAG_NO_CREATE) != null;
         if (!isRefreshTokenSet) {

@@ -43,7 +43,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 
 public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
-    private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
     public static final String GET_ACCOUNTS_PERMISSION = Manifest.permission.GET_ACCOUNTS;
     private GoogleApiClient mGoogleApiClient;
@@ -198,26 +197,6 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
             startActivityForResult(signInIntent, RC_GET_TOKEN);
 
     }
-
-
-    /*private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.d(TAG, "revokeAccess:onResult:" + status);
-                    }
-                });
-    }*/
 
     @Subscribe
     public void onEvent(UserApiEvents.OnUserGoogleHandled event) {

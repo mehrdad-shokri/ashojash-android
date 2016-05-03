@@ -1,6 +1,5 @@
 package com.ashojash.android.webserver;
 
-import android.util.Log;
 import com.ashojash.android.event.ErrorEvents;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
@@ -90,7 +89,6 @@ public class UserApi {
                 } else {
                     if (response.code() == 400) {
                         ApiResponseError validationError = ErrorUtils.parseError(response);
-                        Log.d(TAG, "onResponse: " + validationError.message);
                         Gson gson = new Gson();
                         BUS.post(new ErrorEvents.OnUserRegistrationFailed(gson.fromJson(validationError.message, ValidationError.class)));
                     } else {
@@ -111,7 +109,6 @@ public class UserApi {
         addReviewCall.enqueue(new ApiCallback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.d(TAG, "onResponse: " + response.isSuccessful());
                 if (response.isSuccessful()) {
                     BUS.post(new VenueApiEvents.OnReviewAdded());
                 } else {
@@ -125,6 +122,7 @@ public class UserApi {
             }
         });
     }
+
     public static void cancelReviewCall() {
         if (addReviewCall != null) addReviewCall.cancel();
     }
@@ -144,24 +142,7 @@ public class UserApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*uploadPhotoCall.enqueue(new ApiCallback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-
-            }
-        });*/
     }
-/*
-    public static void uploadPhotos(File[] files, String venueSlug) {
-        for (int i = 0; i < files.length; i++) {
-            uploadPhotoCall = AUTH_API.addPhoto(files[i], venueSlug);
-            uploadPhotoCall.enqueue(new ApiCallback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                }
-            });
-        }
-    }*/
 
     public static void cancelPhotoUploadCall() {
         if (uploadPhotoCall != null) uploadPhotoCall.cancel();
@@ -192,6 +173,7 @@ public class UserApi {
         @POST("auth/google?include=googleOAuth,token")
         Call<User> google(@Field("auth-code") String authCode);
 
+        @FormUrlEncoded
         @POST("auth/refreshToken")
         Call<Token> refreshToken(@Field("token") String token);
 
