@@ -13,6 +13,7 @@
         <item name="android:homeAsUpIndicator">@color/white</item>
         <item name="vpiCirclePageIndicatorStyle">@style/CirclePageIndicator</item>
     </style>
+
     <style name="CirclePageIndicator">
         <item name="android:gravity">center</item>
         <item name="android:background">@null</item>
@@ -23,15 +24,18 @@
         <item name="android:maxLines">1</item>
         <item name="android:textColor">#FF555555</item>
     </style>
+
     <style name="HintText" parent="TextAppearance.AppCompat.Small">
         <item name="android:textStyle">bold|italic</item>
         <item name="android:textColor">@color/hint_text_color</item>
     </style>
+
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColorPrimary">#333</item>
         <item name="android:background">#efefef</item>
     </style>
+
     <style name="CustomTheme" parent="MaterialDrawerTheme">
         <!-- ...and here we setting appcompat’s color theming attrs -->
         <item name="colorPrimary">@color/material_drawer_primary</item>
@@ -48,26 +52,29 @@
         <item name="material_drawer_selected_text">@color/material_drawer_selected_text</item>
         <item name="material_drawer_header_selection_text">@color/material_drawer_header_selection_text</item>
     </style>
+
     <style name="dollarRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_dollar</item>
         <item name="android:minHeight">24dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
+
     <style name="starRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_star</item>
         <item name="android:minHeight">24dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
+
     <style name="CustomFloatingSearchViewTheme" parent="AshojashTheme">
         <item name="editTextStyle">@style/searchViewEditTextStyle</item>
         <item name="android:divider">#c9c9c9</item>
         <item name="android:dividerHeight">1dp</item>
-        <item name="colorControlNormal">#696969</item>
+        <item name="colorControlNormal">#666</item>
     </style>
 
     <style name="searchViewEditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#666</item>
         <item name="android:imeOptions">actionSearch</item>
     </style>
 

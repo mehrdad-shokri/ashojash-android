@@ -107,6 +107,7 @@ public final class VenueApi {
     public static void photos(String venueSlug) {
         Call<List<Photo>> call = API.photos(venueSlug);
         call.enqueue(new ApiCallback<List<Photo>>() {
+
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
                 handleResponse(response, new VenueApiEvents.OnVenuePhotosResponse(response.body()));
@@ -114,7 +115,6 @@ public final class VenueApi {
         });
     }
 
-    private static final String TAG = "VenueApi";
 
     public static void reviews(String venueSlug) {
         reviewsCall = API.reviews(venueSlug);

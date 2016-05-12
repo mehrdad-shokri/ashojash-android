@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +41,6 @@ public class VenuePhotosFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         venueSlug = getActivity().getIntent().getStringExtra("slug");
-        String TAG = AppController.TAG;
-        Log.d(TAG, "onCreate: slug: " + venueSlug);
         if (venueSlug == null)
             getActivity().getFragmentManager().popBackStack();
     }
@@ -73,11 +70,9 @@ public class VenuePhotosFragment extends Fragment {
         txtError.setText(R.string.error_retrieving_data);
     }
 
-    String TAG = AppController.TAG;
 
     @Subscribe
     public void onEvent(VenueApiEvents.OnVenuePhotosResponse event) {
-        Log.d(TAG, "onPhotosReceived: ");
         progressbar.setVisibility(View.GONE);
 
         photoList = event.photoList;
