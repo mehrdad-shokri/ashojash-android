@@ -45,7 +45,7 @@ public class MainActivity extends ToolbarActivity implements
         ActionMenuView.OnMenuItemClickListener {
 
     private FloatingSearchView mSearchView;
-    private static String CITY_SLUG ;
+    private static String CITY_SLUG;
     private String searchQuery;
     private BottomBar mBottomBar;
 
@@ -58,7 +58,7 @@ public class MainActivity extends ToolbarActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        CITY_SLUG= AppController.defaultPref.getString("current_city_slug", null);
+        CITY_SLUG = AppController.defaultPref.getString("current_city_slug", null);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupSearch();

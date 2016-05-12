@@ -1,6 +1,5 @@
 package com.ashojash.android.webserver;
 
-import android.util.Log;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.model.*;
 import retrofit2.Call;
@@ -34,6 +33,7 @@ public final class VenueApi {
     public static void search(String citySlug, String query, int limit) {
         searchCall = API.search(citySlug, query, limit);
         searchCall.enqueue(new ApiCallback<VenuePaginated>() {
+
             @Override
             public void onResponse(Call<VenuePaginated> call, Response<VenuePaginated> response) {
                 if (call.isCanceled()) return;
@@ -63,7 +63,6 @@ public final class VenueApi {
     }
 
 
-
     public static void topVenues(String citySlug) {
         Call<List<Venue>> call = API.topVenues(citySlug);
         call.enqueue(new ApiCallback<List<Venue>>() {
@@ -83,7 +82,6 @@ public final class VenueApi {
                 handleResponse(response, new VenueApiEvents.OnNearbyVenuesResult(response.body()));
             }
         });
-
     }
 
     public static void selectedVenues(String citySlug) {

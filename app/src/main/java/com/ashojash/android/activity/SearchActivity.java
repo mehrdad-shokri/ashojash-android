@@ -103,6 +103,7 @@ public class SearchActivity extends ToolbarActivity implements
         Context context = mSearchView.getContext();
         Drawable drawable = new SearchArrowDrawable(context);
         drawable = DrawableCompat.wrap(drawable);
+        drawable.mutate();
         DrawableCompat.setTint(drawable, ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
         mSearchView.setIcon(drawable);
     }

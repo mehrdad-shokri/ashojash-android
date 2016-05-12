@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public final class UrlController {
     private static String BASE_URL = "http://www.ashojash.com/api/";
-    //    private static String BASE_URL = "http://192.168.20.10/api/";
+//        private static String BASE_URL = "http://192.168.20.10/api/";
     private final static Retrofit RETROFIT;
     private final static Retrofit AUTH_RETROFIT;
 

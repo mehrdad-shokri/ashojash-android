@@ -79,7 +79,7 @@ public class SearchFragment extends Fragment {
     }
 
     @Subscribe
-    private void onEvent(VenueApiEvents.OnSearchResultsReady event) {
+    public void onEvent(VenueApiEvents.OnSearchResultsReady event) {
         List<Venue> venues = event.venuePaginated.data;
         VenueSearchResultAdapter adapter = new VenueSearchResultAdapter(venues);
         adapter.setOnItemClickListener(new VenueSearchResultAdapter.OnItemClickListener() {
