@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 
 import java.util.regex.Matcher;
@@ -43,14 +44,14 @@ public final class UiUtils {
         return out;
     }
 
-    public static float convertDpToPixel(float dp) {
+    public static float dp2px(float dp) {
         Resources resources = Resources.getSystem();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return px;
     }
 
-    public static float convertPixelsToDp(float px) {
+    public static float px2dp(float px) {
         Resources resources = Resources.getSystem();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / (metrics.densityDpi / 160f);
@@ -79,7 +80,27 @@ public final class UiUtils {
     }
 
     public static String setUrlWidth(int dp, String url) {
-        String newUrl = url + ("?w=" + convertDpToPixel(dp));
+        String newUrl = url + ("?w=" + dp2px(dp));
         return newUrl;
+    }
+    public static int getStatusBarHeight(Context context) {
+        return getStatusBarHeight(context, false);
+    }
+
+    private static int getStatusBarHeight(Context context, boolean force) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+
+        int dimenResult = context.getResources().getDimensionPixelSize(R.dimen.tool_bar_top_padding);
+        //if our dimension is 0 return 0 because on those devices we don't need the height
+        if (dimenResult == 0 && !force) {
+            return 0;
+        } else {
+            //if our dimens is > 0 && the result == 0 use the dimenResult else the result;
+            return result == 0 ? dimenResult : result;
+        }
     }
 }

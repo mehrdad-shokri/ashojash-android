@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ public class VenueBasicMenuFragment extends Fragment {
     private LinearLayout errorTxtContainer;
     private ProgressBar progressbar;
     private RecyclerView recyclerView;
-    private TextView btnSeeAllMenus;
+    private TextView btnSeeMore;
     private View rootLayout;
     private String slug;
 
@@ -58,13 +57,13 @@ public class VenueBasicMenuFragment extends Fragment {
     private TextView txtError;
 
     private void setupViews() {
-        rootLayout = getView().findViewById(R.id.menuRootLayoutVenueMenuFragment);
+        rootLayout = getView().findViewById(R.id.rootView);
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewMenusVenueMenuFragment);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(AppController.context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        btnSeeAllMenus = (TextView) getView().findViewById(R.id.btnSellAllVenueMenuFragment);
-        btnSeeAllMenus.setOnClickListener(new View.OnClickListener() {
+        btnSeeMore = (TextView) getView().findViewById(R.id.btnSellAllVenueMenuFragment);
+        btnSeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startVenueMenusActivity();
@@ -77,8 +76,8 @@ public class VenueBasicMenuFragment extends Fragment {
 
     private void startVenueMenusActivity() {
         Intent intent = new Intent(getActivity(), VenueMenusActivity.class);
-        Log.d(TAG, "startVenueMenusActivity: "+slug);
         intent.putExtra("slug", slug);
+        intent.putExtra("venue", getActivity().getIntent().getStringExtra("venue"));
         startActivity(intent);
     }
 
@@ -98,7 +97,6 @@ public class VenueBasicMenuFragment extends Fragment {
 
     @Subscribe
     public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
-        Log.d(TAG, "onVenueInfoReceived: received");
         Venue venue = event.venue;
         int menusCount = venue.menusCount;
         List<Menu> menuList = venue.menus;
@@ -106,12 +104,12 @@ public class VenueBasicMenuFragment extends Fragment {
         if (menusCount == 0) {
             txtError.setText(R.string.no_menu_item_yet);
             showErrorViews();
-            btnSeeAllMenus.setVisibility(View.GONE);
+            btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
-            getView().findViewById(R.id.menuRootLayoutVenueMenuFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
             return;
         }
-        btnSeeAllMenus.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
+        btnSeeMore.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
         VenueMenusAdapter adapter = new VenueMenusAdapter(menuList);
         adapter.setOnItemClickLister(new OnCardClickListener() {
             @Override
@@ -120,14 +118,17 @@ public class VenueBasicMenuFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
-        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(menuList.size() * 65 + 90)));
-        btnSeeAllMenus.setVisibility(View.VISIBLE);
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(menuList.size() * 65 + 90)));
+        btnSeeMore.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         hideErrorViews();
     }
 
     @Subscribe
     public void onError(OnApiResponseErrorEvent event) {
+        btnSeeMore.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }

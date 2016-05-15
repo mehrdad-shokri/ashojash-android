@@ -2,10 +2,10 @@ package com.ashojash.android.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +14,10 @@ import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
 import com.ashojash.android.adapter.CityAdapter;
 import com.ashojash.android.event.CityApiEvents;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.City;
+import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.utils.BusProvider;
 import com.ashojash.android.webserver.CityApi;
 import org.greenrobot.eventbus.Subscribe;
@@ -71,8 +73,7 @@ public class CityListFragment extends Fragment {
 
                 AppController.editor.putString("current_city_slug", city.slug);
                 AppController.editor.commit();
-                String TAG = AppController.TAG;
-                Log.d(TAG, "onClick: " + AppController.defaultPref.getString("current_city_slug", null));
+                AppController.citySlug = city.slug;
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 AppController.currentActivity.startActivity(intent);
                 AppController.currentActivity.finish();
@@ -81,6 +82,17 @@ public class CityListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent error) {
+        progressBar.setVisibility(View.GONE);
+        new AshojashSnackbar.AshojashSnackbarBuilder(getActivity()).message(R.string.error_retrieving_data).duration(Snackbar.LENGTH_INDEFINITE).build().setAction(R.string.try_again, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CityApi.getAllCities();
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        }).show();
+    }
 
     private void setupViews() {
         progressBar = (ProgressBar) getView().findViewById(R.id.prg);

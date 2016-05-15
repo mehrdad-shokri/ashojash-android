@@ -3,15 +3,13 @@ package com.ashojash.android.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.activeandroid.query.Select;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.UiUtils;
 
 
@@ -19,7 +17,7 @@ public class VenueInfoFragment extends Fragment {
     private TextView txtVenueAddress;
     private TextView txtVenuePhone;
     private TextView txtVenuePhoneTitle;
-    private VenueOrm venueOrm;
+    private Venue venue;
 
     public VenueInfoFragment() {
     }
@@ -36,7 +34,7 @@ public class VenueInfoFragment extends Fragment {
         String slug = getActivity().getIntent().getStringExtra("slug");
         if (slug == null)
             getActivity().getFragmentManager().popBackStack();
-        venueOrm = new Select().from(VenueOrm.class).where("slug =?", slug).executeSingle();
+        venue = AppController.gson.fromJson(getActivity().getIntent().getStringExtra("venue"), Venue.class);
         setupViews();
     }
 
@@ -44,13 +42,11 @@ public class VenueInfoFragment extends Fragment {
         txtVenueAddress = (TextView) getActivity().findViewById(R.id.txtVenueAddress);
         txtVenuePhone = (TextView) getActivity().findViewById(R.id.txtVenuePhone);
         txtVenuePhoneTitle = (TextView) getActivity().findViewById(R.id.txtVenuePhone);
-        String TAG = AppController.TAG;
-        Log.d(TAG, "setupViews: is phone empty: " + venueOrm.phone.isEmpty());
-        if (venueOrm.phone.isEmpty()) {
+        if (venue.phone.isEmpty()) {
             txtVenuePhone.setVisibility(View.GONE);
             txtVenuePhoneTitle.setVisibility(View.GONE);
         }
-        txtVenuePhone.setText(UiUtils.toPersianNumber(venueOrm.phone));
-        txtVenueAddress.setText(venueOrm.address);
+        txtVenuePhone.setText(UiUtils.toPersianNumber(venue.phone));
+        txtVenueAddress.setText(venue.location.address);
     }
 }

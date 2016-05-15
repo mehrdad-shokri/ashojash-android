@@ -4,7 +4,6 @@ import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.model.*;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -12,8 +11,8 @@ import retrofit2.http.Query;
 import java.util.List;
 
 
-public final class VenueApi {
-
+public final class VenueApi extends BaseApi {
+    private final static Endpoints API;
     private static Call<Venue> indexCall;
     private static Call<VenuePaginated> searchCall;
     private static Call<List<Review>> reviewsCall;
@@ -21,12 +20,8 @@ public final class VenueApi {
     private VenueApi() {
     }
 
-    private final static Retrofit RETROFIT;
-
-    private final static Endpoints API;
 
     static {
-        RETROFIT = UrlController.getInstance();
         API = RETROFIT.create(Endpoints.class);
     }
 
@@ -131,6 +126,7 @@ public final class VenueApi {
         if (reviewsCall != null) reviewsCall.cancel();
     }
 
+
     private interface Endpoints {
         //list all venueOrm related API endpoints
         @GET("{citySlug}/venue/top")
@@ -157,6 +153,4 @@ public final class VenueApi {
         @GET("venue/{venueSlug}/photos")
         Call<List<Photo>> photos(@Path("venueSlug") String venueSlug);
     }
-
-
 }

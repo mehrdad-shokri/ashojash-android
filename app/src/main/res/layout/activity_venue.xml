@@ -26,7 +26,7 @@
                 app:titleEnabled="true"
                 app:expandedTitleGravity="top|center_horizontal"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:expandedTitleMarginEnd="0dp"
                 app:expandedTitleMarginStart="0dp"
                 app:expandedTitleMarginTop="0dp">
@@ -55,7 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:paddingRight="8dp"
-                    android:paddingTop="@dimen/tool_bar_top_padding"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -83,8 +82,8 @@
 
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:focusable="false"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:id="@+id/venueActivityReviewsContainer"/>

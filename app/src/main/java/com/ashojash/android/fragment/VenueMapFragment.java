@@ -8,10 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.activeandroid.query.Select;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.model.Venue;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -24,6 +23,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 
 public class VenueMapFragment extends Fragment {
     private LatLng venueLatLng;
+    private Venue venue;
 
     public VenueMapFragment() {
     }
@@ -42,8 +42,8 @@ public class VenueMapFragment extends Fragment {
         String slug = getActivity().getIntent().getStringExtra("slug");
         if (slug == null)
             getActivity().getFragmentManager().popBackStack();
-        VenueOrm venueOrm = new Select().from(VenueOrm.class).where("slug =?", slug).executeSingle();
-        venueLatLng = new LatLng(venueOrm.lat, venueOrm.lng);
+        venue = AppController.gson.fromJson(getActivity().getIntent().getStringExtra("venue"), Venue.class);
+        venueLatLng = new LatLng(venue.location.lat, venue.location.lng);
     }
 
     private SupportMapFragment mMapFragment;

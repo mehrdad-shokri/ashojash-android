@@ -85,8 +85,8 @@ public class VenuePhotoUploadAdapter extends RecyclerView.Adapter<VenuePhotoUplo
     String TAG = AppController.TAG;
 
     private void setPhoto(String mCurrentPhotoPath, ImageView mImageView) {
-        int targetW = (int) UiUtils.convertDpToPixel(72);
-        int targetH = (int) UiUtils.convertDpToPixel(72);
+        int targetW = (int) UiUtils.dp2px(72);
+        int targetH = (int) UiUtils.dp2px(72);
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmScaledOptions = new BitmapFactory.Options();
         bmScaledOptions.inJustDecodeBounds = true;

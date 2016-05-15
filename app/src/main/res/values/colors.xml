@@ -2,10 +2,13 @@
 <resources>
     <!--<color name="colorPrimary">#5C0011</color>-->
     <color name="colorPrimary">#cb202e</color>
-    <color name="colorPrimaryDark">#bc212d</color>
     <color name="colorAccent">#cb202e</color>
+    <color name="colorPrimaryDark">#bc212d</color>
+    <color name="colorPrimaryLight">#ff11aa</color>
     <color name="colorPrimaryNavigationDrawer">#cb202e</color>
-    <color name="gray">#777</color>
+    <color name="gray_100">#5e5b5b</color>
+    <color name="green">#1aca07</color>
+    <color name="transparentGray">#5b777777</color>
     <color name="colorBottomMenu">#fbfbfb</color>
     <color name="colorToolbarBottomFocused">#d9d6d6</color>
     <color name="colorWindowBackground">#FFFFFF</color>
@@ -74,5 +77,10 @@
     <color name="colorDollarSign">#2c8019</color>
     <color name="default_white">#fafafa</color>
     <color name="level_0">#c1c1c1</color>
-    <color name="black">#ffffff</color>
+    <color name="black">#000</color>
+    <color name="activity_main_background_color">#eee</color>
+    <color name="yellow_400">#fffb00</color>
+    <color name="bottom_nav.item_unselected">#cecece</color>
+    <color name="bottom_nav.item_selected">#cb202e</color>
+    <color name="pink_500">#ffb2f7</color>
 </resources>

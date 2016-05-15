@@ -2,13 +2,12 @@ package com.ashojash.android.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.db.VenueDb;
 import com.ashojash.android.fragment.VenuePhotosFragment;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.model.Venue;
 
 /*
 * Web server
@@ -16,7 +15,7 @@ import com.ashojash.android.orm.VenueOrm;
 public class VenuePhotosActivity extends BaseActivity {
     private Toolbar toolbar;
     private String slug;
-    private VenueOrm venueOrm;
+    private Venue venue;
 
 
     @Override
@@ -24,8 +23,7 @@ public class VenuePhotosActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_venue_photos);
         slug = getIntent().getStringExtra("slug");
-        if (slug == null) finish();
-        venueOrm = VenueDb.findBySlugOrFail(slug);
+        venue = AppController.gson.fromJson(getIntent().getStringExtra("venue"), Venue.class);
         setupViews();
         VenuePhotosFragment fragment = new VenuePhotosFragment();
         addFragment(R.id.venuePhotosContainer, fragment);
@@ -33,15 +31,11 @@ public class VenuePhotosActivity extends BaseActivity {
 
     private void setupViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbarTop);
-        toolbar.setTitle(venueOrm.name);
+        ((TextView) toolbar.findViewById(R.id.txtToolbarTitle)).setText(R.string.title_photos);
         setSupportActionBar(toolbar);
-        final String TAG = AppController.TAG;
-        Log.d(TAG, "setupViews: " + (getSupportActionBar() == null));
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

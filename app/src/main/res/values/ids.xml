@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="venueHeroBig" type="id"></item>
+    <item name="venueHeroNormal" type="id"></item>
+    <item name="venuesCollection" type="id"></item>
+    <item name="venuesVerticalNormal" type="id"></item>
+
+    <item name="venuesSlideShow" type="id"></item>
+    <item name="collectionHero" type="id"></item>
+    <item name="collectionsSlideshow" type="id"></item>
+    <item name="collectionsVerticalNormal" type="id"></item>
+</resources>

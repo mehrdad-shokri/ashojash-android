@@ -2,8 +2,8 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="200dp"
-                android:id="@+id/rootLayoutVenueBasicPhotosFragment"
-                tools:context="com.ashojash.fragment.FragmentHero"
+                android:id="@+id/rootView"
+                tools:context="com.ashojash.android.activity.VenueActivity"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp">
 
@@ -20,7 +20,7 @@
 
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="23dp"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/title_photos"
             android:textColor="#444"
@@ -50,12 +50,12 @@
 
     <LinearLayout
             android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:gravity="center"
+            android:layout_centerInParent="true"
             android:id="@+id/errorViewVenueBasicPicsFragment"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/txtTitleVenuePhotoFragment"
-            android:layout_height="fill_parent"
             android:visibility="gone">
 
         <TextView

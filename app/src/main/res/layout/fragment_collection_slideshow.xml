@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="300dp"
+                android:id="@+id/rootView"
+                tools:context="com.ashojash.activity.FragmentHero"
+                android:gravity="top">
+
+    <android.support.v4.view.ViewPager
+            android:layout_height="fill_parent"
+            android:id="@+id/collectionViewPager"
+            android:layout_width="fill_parent">
+    </android.support.v4.view.ViewPager>
+
+    <include
+            layout="@layout/viewpager_indicator"/>
+
+</RelativeLayout>

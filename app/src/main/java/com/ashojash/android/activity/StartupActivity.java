@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.helper.LangHelper;
 import com.ashojash.android.utils.AlarmUtils;
+
 /*
 * Checked for bus and json
 * */
@@ -13,7 +13,6 @@ public class StartupActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LangHelper.setLang("fa");
     }
 
     @Override
@@ -34,5 +33,4 @@ public class StartupActivity extends BaseActivity {
         startActivity(intent);
         finish();
     }
-
 }

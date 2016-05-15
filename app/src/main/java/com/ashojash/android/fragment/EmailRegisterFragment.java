@@ -16,10 +16,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import com.ashojash.android.R;
 import com.ashojash.android.event.ErrorEvents;
+import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.UserRegistered;
 import com.ashojash.android.model.ValidationError;
+import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.AuthValidator;
 import com.ashojash.android.utils.BusProvider;
@@ -156,14 +158,35 @@ public class EmailRegisterFragment extends Fragment {
 //        showRetrievingErrorSnackbar();
     }
 
+    @Subscribe
+    public void onEvent(OnApiResponseErrorEvent error) {
+        if (error.object instanceof UserApiEvents.onUserRegistered) {
+            dismissProgressDialog();
+            new AshojashSnackbar.AshojashSnackbarBuilder(getActivity().findViewById(R.id.rootView)).message(R.string.error_retrieving_data).duration(Snackbar.LENGTH_INDEFINITE).build().setAction(R.string.try_again, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    registerUser();
+                }
+            }).show();
+        }
+    }
+
     private void registerUser() {
-        progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.registering), true, false);
-        UserApi.register(name, username, password, email);
+        UiUtils.hideKeyboard();
+        username = usernameWrapper.getEditText().getText().toString();
+        password = passwordWrapper.getEditText().getText().toString();
+        email = emailWrapper.getEditText().getText().toString();
+        name = nameWrapper.getEditText().getText().toString();
+        if (validateInputs()) {
+            progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.registering), true, false);
+            UserApi.register(name, username, password, email);
+        }
     }
 
 
     private void dismissProgressDialog() {
-        if (progressDialog != null) progressDialog.dismiss();
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
 
@@ -222,14 +245,7 @@ public class EmailRegisterFragment extends Fragment {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UiUtils.hideKeyboard();
-                username = usernameWrapper.getEditText().getText().toString();
-                password = passwordWrapper.getEditText().getText().toString();
-                email = emailWrapper.getEditText().getText().toString();
-                name = nameWrapper.getEditText().getText().toString();
-                if (validateInputs()) {
-                    registerUser();
-                }
+                registerUser();
             }
         });
     }

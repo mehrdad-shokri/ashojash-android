@@ -47,8 +47,8 @@ public class VenueScoreArc extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPath.moveTo(0, getHeight() - UiUtils.convertDpToPixel(115));
-        mPath.cubicTo(0, getHeight() - UiUtils.convertDpToPixel(115), getWidth() / 2, 50 * getHeight() / 100, getWidth(), getHeight() - UiUtils.convertDpToPixel(115)); /*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more */
+        mPath.moveTo(0, getHeight() - UiUtils.dp2px(115));
+        mPath.cubicTo(0, getHeight() - UiUtils.dp2px(115), getWidth() / 2, 50 * getHeight() / 100, getWidth(), getHeight() - UiUtils.dp2px(115)); /*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more */
         paint.setAntiAlias(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);

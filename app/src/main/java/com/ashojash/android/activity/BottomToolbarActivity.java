@@ -1,67 +1,128 @@
 package com.ashojash.android.activity;
 
-/*
-* Checked for bus and json
-* */
-public class BottomToolbarActivity extends ToolbarActivity {
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.util.Log;
+import android.view.View;
+import com.ashojash.android.R;
+import com.ashojash.android.helper.AppController;
+import com.ashojash.android.utils.AuthUtils;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.BottomBarTab;
+import com.roughike.bottombar.OnTabClickListener;
 
+public class BottomToolbarActivity extends BaseActivity {
+    private BottomBar mBottomBar;
+    private static final int ICON_SIZE = 26;
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mBottomBar != null)
+            mBottomBar.onSaveInstanceState(outState);
+    }
 
+    protected void attachShy(final int position, Activity activity, Bundle savedInstanceState, CoordinatorLayout layout, View contentView) {
+        mBottomBar = BottomBar.attachShy(layout, contentView, savedInstanceState);
+        String TAG = AppController.TAG;
+        if (activity instanceof MainActivity) {
+            Log.d(TAG, "attachShy: instance of main activity");
+        } else if (activity instanceof CollectionActivity) {
+            Log.d(TAG, "attachShy: instance of collection activity");
+        }
+        setupBottomBar(position, activity);
+    }
 
-    /*private void setupBottomToolbar() {
-//        toolbarBottom = (Toolbar) findViewById(R.id.toolbarBottomMainActivity);
-//        toolbarBottom.inflateMenu(R.menu.menu_bottom);
-//        LinearLayout searchLayout = (LinearLayout) findViewById(R.id.toolbarBottomSearch);
-        final LinearLayout profileLayout = (LinearLayout) findViewById(R.id.toolbarBottomProfile);
-        LinearLayout listLayout = (LinearLayout) findViewById(R.id.toolbarBottomList);
-        if (!AuthUtils.isUserLoggedIn()) {
+    protected void attach(int position, Activity activity, Bundle savedInstanceState) {
+        mBottomBar = BottomBar.attach(activity, savedInstanceState);
+        setupBottomBar(position, activity);
+    }
 
-            profileLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (AppController.currentActivity.getClass().getSimpleName().equals(GuestProfileActivity.class.getSimpleName()))
-                        return;
-                    Intent intent = new Intent(AppController.currentActivity, GuestProfileActivity.class);
-                    AppController.currentActivity.startActivity(intent);
-                    finish();
-                }
-            });
+    private void setupBottomBar(final int position, final Activity activity) {
+        mBottomBar.setDefaultTabPosition(position);
+        int homeColor = 0, profileColor = 0;
+        switch (position) {
+            case 0:
+                homeColor = R.color.bottom_nav_item_selected;
+                profileColor = R.color.default_line_indicator_unselected_color;
+                break;
+            case 1:
+                homeColor = R.color.default_underline_indicator_selected_color;
+                profileColor = R.color.bottom_nav_item_selected;
+                break;
+        }
+        Resources res = AppController.context.getResources();
+        if (AuthUtils.isUserLoggedIn()) {
+            mBottomBar.setItems(
+
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(ICON_SIZE
+                    ).color(res.getColor(homeColor)), null)
+            );
         } else {
-            profileLayout.setVisibility(View.GONE);
+            mBottomBar.setItems(
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(ICON_SIZE
+                    ).color(res.getColor(homeColor)), null),
+                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_account_circle).sizeDp(ICON_SIZE).color(res.getColor(profileColor)), null)
+            );
         }
 
-        listLayout.setOnClickListener(new View.OnClickListener() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            public void onClick(View view) {
-                if (AppController.currentActivity.getClass().getSimpleName().equals(MainActivity.class.getSimpleName()))
-                    return;
-                Intent intent = new Intent(AppController.currentActivity, MainActivity.class);
-                AppController.currentActivity.startActivity(intent);
-                finish();
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+                    @Override
+                    public void onTabSelected(int selectedTab) {
+                        if (position == 0 && selectedTab == 1) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intent = new Intent(activity, GuestProfileActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                }
+                            });
+                        }
+                        if (position == 1 && selectedTab == 0) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.sleep(100);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intent = new Intent(activity, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onTabReSelected(int position) {
+                    }
+                });
+
             }
         });
-    }*/
-
-    /*protected void setupBottomToolbarLayoutActive(int which) {
-//        ImageView imgSearch = (ImageView) findViewById(R.id.imgToolbarBottomSearch);
-//        imgSearch.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).color(getResources().getVenue(R.color.text_secondary)));
-        ImageView imgProfile = (ImageView) findViewById(R.id.imgToolbarBottomProfile);
-        imgProfile.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_account_circle).color(getResources().getColor(R.color.text_secondary)));
-
-        ImageView imgList = (ImageView) findViewById(R.id.imgToolbarBottomList);
-        imgList.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_view_list).color(getResources().getColor(R.color.text_secondary)));
-        TextView txtList = (TextView) findViewById(R.id.txtToolbarBottomList);
-        TextView txtProfile = (TextView) findViewById(R.id.txtToolbarBottomProfile);
-        if (AuthUtils.isUserLoggedIn()) txtProfile.setText(R.string.action_me);
-        else txtProfile.setText(R.string.action_profile);
-        switch (which) {
-            case 0:
-                imgList.setColorFilter(Color.BLUE);
-                txtList.setTextColor(Color.BLUE);
-                break;
-            case 2:
-                imgProfile.setColorFilter(Color.BLUE);
-                txtProfile.setTextColor(Color.BLUE);
-        }
-    }*/
+    }
 }

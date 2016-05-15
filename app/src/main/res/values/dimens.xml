@@ -3,4 +3,17 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
+    <dimen name="card_collection.collection_name">20sp</dimen>
+    <dimen name="fragment_collection_hero.collection_name">17sp</dimen>
+    <dimen name="card_collection_slideshow.collection_name">16sp</dimen>
+    <dimen name="card_collection_slideshow.collection_description">14sp</dimen>
+    <dimen name="fragment_venue_hero_big.venue_name">20sp</dimen>
+    <dimen name="fragment_venue_vertical.collection_name">21sp</dimen>
+    <dimen name="fragment_venue_hero_big.venue_description">16sp</dimen>
+    <dimen name="fragment_venue_hero_normal.venue_name">20sp</dimen>
+    <dimen name="fragment_venue_collection_card.venue_name">20sp</dimen>
+    <dimen name="fragment_venue_collection_card.venue_address">14sp</dimen>
+    <dimen name="bottom_navabar_height">45dp</dimen>
+    <dimen name="tool_bar_top_padding">0dp</dimen>
+    <dimen name="toolbar_bar_title_size">18sp</dimen>
 </resources>

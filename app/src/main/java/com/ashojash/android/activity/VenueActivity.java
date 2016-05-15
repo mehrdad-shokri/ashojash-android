@@ -10,13 +10,14 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.ashojash.android.R;
 import com.ashojash.android.customview.CostRatingOnRatingBarChangeListener;
 import com.ashojash.android.customview.GenericOnRatingBarChangeListener;
 import com.ashojash.android.customview.VenueScoreIndicator;
-import com.ashojash.android.db.VenueDb;
 import com.ashojash.android.event.ErrorEvents;
 import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
@@ -24,7 +25,6 @@ import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.fragment.*;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.orm.VenueOrm;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.AuthUtils;
@@ -37,7 +37,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.materialize.util.UIUtils;
 import org.greenrobot.eventbus.Subscribe;
 
 /*
@@ -54,13 +53,14 @@ public class VenueActivity extends BaseActivity {
     private VenueBasicInfoFragment venueBasicInfoFragment;
     private VenueBasicMenuFragment venueBasicMenuFragment;
     private VenueBasicPhotosFragment venueBasicPhotosFragment;
-    private VenueOrm venueOrm;
     private final int REQUEST_REGISTER = 8000;
     private Tracker mTracker;
     private String slug;
+    private Venue venue;
     private Button btnPublishReview;
     private ProgressDialog progressDialog;
     private AlertDialog registerCompleteDialog;
+    private AshojashSnackbar.AshojashSnackbarBuilder builder;
 
     @Override
     protected void onResume() {
@@ -69,19 +69,21 @@ public class VenueActivity extends BaseActivity {
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
+    private static final String TAG = "VenueActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         slug = getIntent().getStringExtra("slug");
+        Log.d(TAG, "onCreate: slug: " + slug);
         setContentView(R.layout.activity_venue);
-// Obtain the shared Tracker instance.
         AppController application = (AppController) getApplication();
         mTracker = application.getDefaultTracker();
         setupViews();
-        if (slug == null) finish();
-        venueOrm = VenueDb.findBySlugOrFail(slug);
-        collapsingToolbarLayout.setTitle(venueOrm.name);
-        Glide.with(this).load(venueOrm.imageUrl).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgHeroCollapsingToolbarLayout);
+        venue = AppController.gson.fromJson(getIntent().getStringExtra("venue"), Venue.class);
+        collapsingToolbarLayout.setTitle(venue.name);
+        Glide.with(this).load(venue.photo.url).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgHeroCollapsingToolbarLayout);
+        imgHeroCollapsingToolbarLayout.setColorFilter(Color.rgb(130, 130, 130), android.graphics.PorterDuff.Mode.MULTIPLY);
         venueBasicInfoFragment = new VenueBasicInfoFragment();
         venueBasicReviewFragment = new VenueBasicReviewFragment();
         venueBasicMenuFragment = new VenueBasicMenuFragment();
@@ -113,7 +115,7 @@ public class VenueActivity extends BaseActivity {
 
     @Subscribe
     public void onEvent(final OnApiResponseErrorEvent event) {
-        AshojashSnackbar.make(this, R.string.error_retrieving_data, Snackbar.LENGTH_INDEFINITE).setAction(R.string.try_again, new View.OnClickListener() {
+        builder.message(R.string.error_retrieving_data).duration(Snackbar.LENGTH_INDEFINITE).build().setAction(R.string.try_again, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 VenueApi.index(slug);
@@ -135,6 +137,7 @@ public class VenueActivity extends BaseActivity {
 
 
     private void setupViews() {
+        builder = new AshojashSnackbar.AshojashSnackbarBuilder(this);
         venueScoreIndicator = (VenueScoreIndicator) findViewById(R.id.venueScoreIndicator);
         imgHeroCollapsingToolbarLayout = (ImageView) findViewById(R.id.backdrop);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -143,16 +146,17 @@ public class VenueActivity extends BaseActivity {
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         addReviewFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_rate_review).actionBar().color(Color.WHITE));
         addPhotoFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add_a_photo).actionBar().color(Color.WHITE));
-        CollapsingToolbarLayout.LayoutParams lp = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
-        lp.height = lp.height + UIUtils.getStatusBarHeight(this);
-        toolbar.setLayoutParams(lp);
+        CollapsingToolbarLayout.LayoutParams params = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
+        params.height = params.height + UiUtils.getStatusBarHeight(this);
+        toolbar.setLayoutParams(params);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addPhotoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (AuthUtils.isUserLoggedIn()) {
                     VenueUploadPhotoDialogFragment photoUploadDialogFragment = VenueUploadPhotoDialogFragment.newInstance();
-                    photoUploadDialogFragment.venueOrm = venueOrm;
+                    photoUploadDialogFragment.venue = venue;
                     photoUploadDialogFragment.show(getSupportFragmentManager(), "VENUE_PHOTO_UPLOAD_FRAGMENT");
                 } else {
                     showLoginForm();
@@ -169,6 +173,13 @@ public class VenueActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+            finish();
+        return super.onOptionsItemSelected(item);
     }
 
     private void showLoginForm() {
@@ -220,26 +231,27 @@ public class VenueActivity extends BaseActivity {
 
     @Subscribe
     public void onEvent(VenueApiEvents.OnReviewAdded event) {
-        String TAG = AppController.TAG;
         if (progressDialog != null) progressDialog.dismiss();
         registerCompleteDialog.dismiss();
-        AshojashSnackbar.make(this, R.string.review_added_successfully, Snackbar.LENGTH_LONG).show();
+        builder.message(R.string.review_added_successfully).duration(Snackbar.LENGTH_LONG).build().show();
+
     }
 
     @Subscribe
     public void onEvent(ErrorEvents.OnReviewAddFailed event) {
-        String TAG=AppController.TAG;
         if (progressDialog != null) progressDialog.dismiss();
         String message = event.error.message;
-        AshojashSnackbar.make(this, message, Snackbar.LENGTH_LONG).show();
+        builder.message(message).duration(Snackbar.LENGTH_LONG).build().show();
+
     }
 
     @Subscribe
-    public void onEvent(OnApiRequestErrorEvent event)
-    {
+    public void onEvent(OnApiRequestErrorEvent event) {
         if (progressDialog != null) progressDialog.dismiss();
-        AshojashSnackbar.make(this, R.string.error_connecting_to_server, Snackbar.LENGTH_LONG).show();
+        builder.message(R.string.error_connecting_to_server).duration(Snackbar.LENGTH_LONG).build().show();
+
     }
+
     private void setupAddReview() {
         final AlertDialog.Builder dialogBuilder =
                 new AlertDialog.Builder(AppController.currentActivity, R.style.AppCompatAlertDialogStyle);
@@ -264,7 +276,7 @@ public class VenueActivity extends BaseActivity {
                 }
             }
         });
-        txtReviewTitle.setText(getResources().getString(R.string.review_venue_title).replace("{{venueName}}", venueOrm.name));
+        txtReviewTitle.setText(getResources().getString(R.string.review_venue_title).replace("{{venueName}}", venue.name));
         final TextView txtCostReviewIndicator = (TextView) registerCompleteDialog.findViewById(R.id.txtCostIndicator);
         final RatingBar costRatingBar = (RatingBar) registerCompleteDialog.findViewById(R.id.costRating);
         final RatingBar qualityRatingBar = (RatingBar) registerCompleteDialog.findViewById(R.id.scoreRating);

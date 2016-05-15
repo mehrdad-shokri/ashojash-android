@@ -9,7 +9,7 @@
             android:layout_height="75dp"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
-            app:iiv_color="@color/md_light_green_A700"
+            app:iiv_color="@color/green_normal"
             app:iiv_icon="gmd-check-circle"/>
     <TextView
             android:layout_width="wrap_content"

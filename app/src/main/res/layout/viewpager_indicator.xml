@@ -1,0 +1,11 @@
+<me.relex.circleindicator.CircleIndicator
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:ci_gravity="right|center_vertical"
+        android:layout_marginRight="7dp"
+        android:layout_marginBottom="7dp"
+        android:layout_height="10dp"/>

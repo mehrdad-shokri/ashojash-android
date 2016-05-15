@@ -3,10 +3,11 @@ package com.ashojash.android.activity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.db.VenueDb;
 import com.ashojash.android.fragment.VenueReviewsFragment;
-import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.helper.AppController;
+import com.ashojash.android.model.Venue;
 
 /*
 * Completed
@@ -14,7 +15,7 @@ import com.ashojash.android.orm.VenueOrm;
 public class VenueReviewsActivity extends BaseActivity {
     private Toolbar toolbar;
     private String slug;
-    private VenueOrm venueOrm;
+    private Venue venue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class VenueReviewsActivity extends BaseActivity {
         setContentView(R.layout.activity_venue_reviews);
         slug = getIntent().getStringExtra("slug");
         if (slug == null) finish();
-        venueOrm = VenueDb.findBySlugOrFail(slug);
+        venue = AppController.gson.fromJson(getIntent().getStringExtra("venue"),Venue.class);
         setupViews();
         VenueReviewsFragment fragment = new VenueReviewsFragment();
         addFragment(R.id.venueReviewContainer, fragment);
@@ -30,7 +31,7 @@ public class VenueReviewsActivity extends BaseActivity {
 
     private void setupViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbarTop);
-        toolbar.setTitle(venueOrm.name);
+        ((TextView) toolbar.findViewById(R.id.txtToolbarTitle)).setText(R.string.title_reviews);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

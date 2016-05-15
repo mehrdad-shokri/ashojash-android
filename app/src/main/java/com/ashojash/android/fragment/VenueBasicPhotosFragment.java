@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,7 @@ public class VenueBasicPhotosFragment extends Fragment {
     }
 
     private void setupViews() {
-        rootLayout = (ViewGroup) getView().findViewById(R.id.rootLayoutVenueBasicPhotosFragment);
+        rootLayout = (ViewGroup) getView().findViewById(R.id.rootView);
         errorRootLayout = (ViewGroup) getView().findViewById(R.id.errorViewVenueBasicPicsFragment);
         txtError = (TextView) getView().findViewById(R.id.txtErrorVenueBasicPicsFragment);
         progressbar = (ProgressBar) getView().findViewById(R.id.progressbar);
@@ -74,6 +73,7 @@ public class VenueBasicPhotosFragment extends Fragment {
     private void startVenuePhotosActivity() {
         Intent intent = new Intent(getActivity(), VenuePhotosActivity.class);
         intent.putExtra("slug", slug);
+        intent.putExtra("venue", getActivity().getIntent().getStringExtra("venue"));
         startActivity(intent);
     }
 
@@ -91,12 +91,12 @@ public class VenueBasicPhotosFragment extends Fragment {
 
     @Subscribe
     public void onEvent(OnApiResponseErrorEvent event) {
-        Log.d(TAG, "onEvent: " + event.error.message);
+        btnSeeMore.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }
-
-    private static final String TAG = "Ashojash";
 
     @Subscribe
     public void onEvent(VenueApiEvents.OnVenueIndexResultsReady event) {
@@ -109,10 +109,10 @@ public class VenueBasicPhotosFragment extends Fragment {
             btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             showErrorViews();
-            getView().findViewById(R.id.rootLayoutVenueBasicPhotosFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
             return;
         }
-//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / photoList.size() + UiUtils.convertDpToPixel(15 + 15 + 1 + 23)));
+//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / photoList.size() + UiUtils.dp2px(200)));
 //            rootLayout.setLayoutParams(layoutParams);
         VenuePhotosAdapter adapter = new VenuePhotosAdapter(photoList);
         adapter.setOnItemClickListener(new OnCardClickListener() {

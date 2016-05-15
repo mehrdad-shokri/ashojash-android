@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
 import com.ashojash.android.event.ErrorEvents;
@@ -29,11 +28,11 @@ import org.greenrobot.eventbus.Subscribe;
 public class EmailLoginFragment extends Fragment {
     private String login;
     private String password;
-    private LinearLayout linearLayout;
     private TextInputLayout loginWrapper;
     private TextInputLayout passwordWrapper;
     private Button btnLogin;
     private ProgressDialog progressDialog;
+    private AshojashSnackbar.AshojashSnackbarBuilder builder;
 
 
     public EmailLoginFragment() {
@@ -51,8 +50,6 @@ public class EmailLoginFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         String callingActivity = getArguments().getString("calling_activity");
-        Log.d(TAG, "onActivityCreated: email login " + callingActivity);
-
         super.onActivityCreated(savedInstanceState);
         setupViews();
     }
@@ -91,15 +88,24 @@ public class EmailLoginFragment extends Fragment {
 
     @Subscribe
     public void onEvent(ErrorEvents.OnUserLoginFailed event) {
-        AshojashSnackbar.make(getActivity(), event.error.message, Snackbar.LENGTH_LONG).show();
+        builder.duration(Snackbar.LENGTH_LONG).message(event.error.message).build().show();
         dismissProgressDialog();
     }
 
     @Subscribe
     public void onEvent(OnApiResponseErrorEvent event) {
-        showRetrievingErrorSnackbar();
-        dismissProgressDialog();
+        if (event.object instanceof UserApiEvents.OnUserLoggedIn) {
+            Log.d(TAG, "onEvent: email login");
+            builder.duration(Snackbar.LENGTH_INDEFINITE).message(R.string.error_retrieving_data).build().setAction(R.string.try_again, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (validateInputs()) signInUser();
+                }
+            }).show();
+            dismissProgressDialog();
+        }
     }
+
 
     private void signInUser() {
         onLoginPendingUpdateView();
@@ -118,12 +124,6 @@ public class EmailLoginFragment extends Fragment {
         BusProvider.getInstance().unregister(this);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-
     private void dismissProgressDialog() {
         if (progressDialog != null) progressDialog.dismiss();
     }
@@ -132,23 +132,10 @@ public class EmailLoginFragment extends Fragment {
         progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.logging_in), true, false);
     }
 
-
-    private void showRetrievingErrorSnackbar() {
-        Snackbar snackbar = Snackbar
-                .make(linearLayout, R.string.error_retrieving_data, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.try_again, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (validateInputs()) signInUser();
-                    }
-                });
-        snackbar.show();
-    }
-
     private void setupViews() {
+        builder = new AshojashSnackbar.AshojashSnackbarBuilder(getActivity().findViewById(R.id.rootView));
         loginWrapper = (TextInputLayout) getView().findViewById(R.id.wrapperLoginFragmentEmailLogin);
         passwordWrapper = (TextInputLayout) getView().findViewById(R.id.wrapperPasswordFragmentEmailLogin);
-        linearLayout = (LinearLayout) getView().findViewById(R.id.fragmentEmailSigninLayout);
         btnLogin = (Button) getView().findViewById(R.id.btnFragmentEmailLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

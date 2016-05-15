@@ -33,7 +33,7 @@ public class VenueBasicReviewFragment extends Fragment {
     private LinearLayout errorTxtContainer;
     private ProgressBar progressbar;
     private RecyclerView recyclerView;
-    private TextView btnSeeAllReviews;
+    private TextView btnSeeMore;
     private View rootLayout;
     private List<Review> reviewList;
     private VenueReviewsAdapter adapter;
@@ -59,13 +59,13 @@ public class VenueBasicReviewFragment extends Fragment {
     }
 
     private void setupViews() {
-        rootLayout = getView().findViewById(R.id.reviewRootLayoutVenueReviewFragment);
+        rootLayout = getView().findViewById(R.id.rootView);
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerViewReviewsVenueReviewFragment);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(AppController.context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        btnSeeAllReviews = (TextView) getView().findViewById(R.id.btnSellAllVenueReviewFragment);
-        btnSeeAllReviews.setOnClickListener(new View.OnClickListener() {
+        btnSeeMore = (TextView) getView().findViewById(R.id.btnSellAllVenueReviewFragment);
+        btnSeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startVenueReviewActivity();
@@ -80,6 +80,7 @@ public class VenueBasicReviewFragment extends Fragment {
     private void startVenueReviewActivity() {
         Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
         intent.putExtra("slug", slug);
+        intent.putExtra("venue", getActivity().getIntent().getStringExtra("venue"));
         startActivity(intent);
     }
 
@@ -98,6 +99,9 @@ public class VenueBasicReviewFragment extends Fragment {
 
     @Subscribe
     public void onEvent(OnApiResponseErrorEvent event) {
+        btnSeeMore.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }
@@ -110,13 +114,13 @@ public class VenueBasicReviewFragment extends Fragment {
         progressbar.setVisibility(View.GONE);
         if (reviewsCount == 0) {
             txtError.setText(R.string.no_reviews_added_yet);
-            btnSeeAllReviews.setVisibility(View.GONE);
+            btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             showErrorViews();
-            getView().findViewById(R.id.reviewRootLayoutVenueReviewFragment).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
             return;
         }
-        btnSeeAllReviews.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
+        btnSeeMore.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
         adapter = new VenueReviewsAdapter(reviewList);
         adapter.setOnItemClickListener(new OnCardClickListener() {
             @Override
@@ -126,10 +130,10 @@ public class VenueBasicReviewFragment extends Fragment {
         });
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
-        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.convertDpToPixel(reviewList.size() * 75 + 100)));
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(reviewList.size() * 75 + 100)));
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 //        recyclerView.setLayoutManager(layoutManager);
-        btnSeeAllReviews.setVisibility(View.VISIBLE);
+        btnSeeMore.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         hideErrorViews();
     }

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.VenuePhotoUploadAdapter;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.orm.VenueOrm;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.task.UploadVenuePhotosTask;
 import com.ashojash.android.utils.ContentResolverUtil;
 
@@ -38,7 +38,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
     private ArrayList<String> files;
     private VenuePhotoUploadAdapter adapter;
     @NonNull
-    public VenueOrm venueOrm;
+    public Venue venue;
     private Button btnAddVenuePhotoCamera;
     private AlertDialog dialog;
     private Button btnAddVenuePhotoGallery;
@@ -86,7 +86,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
 
     private void setupViews(AlertDialog dialog) {
         TextView txtVenueTitle = (TextView) dialog.findViewById(R.id.txtAddPhotoTitle);
-        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venueOrm.name));
+        txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venue.name));
         btnUploadVenuePhotos = (Button) dialog.findViewById(R.id.btnUploadVenuePhotos);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         venuePhotosRecyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerViewPhotosList);
@@ -125,7 +125,7 @@ public class VenueUploadPhotoDialogFragment extends DialogFragment {
                 final ArrayList<String> checkedItems = adapter.getCheckedFilesPath();
                 if (checkedItems.size() != 0) {
                     UploadVenuePhotosTask task = new UploadVenuePhotosTask();
-                    task.execute(new UploadVenuePhotosTask.VenueAddPhotoRequest(venueOrm.slug, checkedItems));
+                    task.execute(new UploadVenuePhotosTask.VenueAddPhotoRequest(venue.slug, checkedItems));
                     dismiss();
                 } else {
                     Snackbar.make(getActivity().findViewById(R.id.venueActivityRootLayout), R.string.select_some_files_to_upload, Snackbar.LENGTH_LONG).show();

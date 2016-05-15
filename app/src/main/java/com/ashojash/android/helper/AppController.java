@@ -12,12 +12,11 @@ import android.support.multidex.MultiDexApplication;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
-import com.activeandroid.ActiveAndroid;
-import com.ashojash.android.orm.OrmListener;
 import com.ashojash.android.ui.UiUtils;
 import com.ashojash.android.utils.ObscuredSharedPrefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.google.gson.Gson;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
 
@@ -33,26 +32,27 @@ public class AppController extends MultiDexApplication {
     public static SharedPreferences.Editor editor;
     public static SharedPreferences obsPref;
     public static SharedPreferences.Editor obsEditor;
+    public static final Gson gson = new Gson();
     public static int widthPx;
     public static int heightPx;
     public static int widthDp;
     public static int heightDp;
     private Tracker mTracker;
     public static final int ANDROID_VERSION = Build.VERSION.SDK_INT;
+    public static String citySlug;
+
 
     @Override
-
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         instance = this;
-        ActiveAndroid.initialize(getApplicationContext());
         initializeSharedPrefs();
         initializePhoneDimes();
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
-        new OrmListener();
+        citySlug = AppController.defaultPref.getString("current_city_slug", null);
     }
 
     private void initializePhoneDimes() {
@@ -67,8 +67,8 @@ public class AppController extends MultiDexApplication {
             widthPx = display.getWidth();
             heightPx = display.getHeight();
         }
-        widthDp = (int) UiUtils.convertPixelsToDp(widthPx);
-        heightDp = (int) UiUtils.convertPixelsToDp(heightPx);
+        widthDp = (int) UiUtils.px2dp(widthPx);
+        heightDp = (int) UiUtils.px2dp(heightPx);
     }
 
     private void initializeSharedPrefs() {

@@ -79,4 +79,6 @@ public final class VenueApiEvents {
 
     public static class OnPhotoAdded {
     }
+
+
 }

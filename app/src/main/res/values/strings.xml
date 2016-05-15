@@ -107,9 +107,9 @@
     <string name="what_you_need_to_know">چی باید بدونید</string>
     <string name="no_reviews_added_yet">هنوز مروری برای اینجا اضافه نشده :(</string>
     <string name="no_menu_item_yet">منویی برای اینجا اضافه نشده :(</string>
-    <string name="title_sample_menus">منو</string>
     <string name="item_price">{{itemPrice}} تومان</string>
     <string name="no_photo_item_yet">تصویری هنوز اضافه نشده :(</string>
+    <string name="title_menu">منو</string>
     <string name="title_photos">تصاویر</string>
     <string name="review_count_not_enough">تعداد آرا هنوز کافی نیست</string>
     <string name="review_based_on_count">"بر اساس {{venueReviewCount}} رأی"</string>
@@ -154,5 +154,7 @@
     <string name="finished">پایان!</string>
     <string name="uploading_photos_finished">آپلود عکس ها با موفقیت به پایان رسید.</string>
     <string name="uploading_photo_finished">آپلود عکس با موفقیت به پایان رسید.</string>
-    <string name="city_select">انتخاب شهر</string>
+    <string name="title_city_select">انتخاب شهر</string>
+    <string name="title_info">اطلاعات</string>
+    <string name="title_reviews">مرورها</string>
 </resources>

@@ -21,12 +21,12 @@ import com.mypopsy.widget.internal.ViewUtils;
 /*
 * Checked for bus and json
 * */
-public class SearchActivity extends ToolbarActivity implements
+public class SearchActivity extends BaseActivity implements
         ActionMenuView.OnMenuItemClickListener {
     public FloatingSearchView mSearchView;
     private static final String VENUE_SEARCH_REQUEST_TAG = "VENUE_SEARCH";
     private SearchFragment searchFragment;
-//    private static final String CITY_SLUG = AppController.defaultPref.getString("current_city_slug", null);
+//    private static final String citySlug = AppController.defaultPref.getString("current_city_slug", null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

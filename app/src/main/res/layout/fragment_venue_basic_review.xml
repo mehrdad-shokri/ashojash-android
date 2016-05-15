@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/reviewRootLayoutVenueReviewFragment"
+                android:id="@+id/rootView"
                 android:paddingRight="15dp"
                 android:paddingLeft="15dp">
 
@@ -30,7 +30,7 @@
             android:layout_alignParentLeft="false"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/imgDivider"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
 
     <android.support.v7.widget.RecyclerView

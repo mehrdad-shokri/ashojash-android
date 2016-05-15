@@ -52,6 +52,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     private GoogleSignInOptions gso;
     public static final int GET_ACCOUNT_PERMISSION_REQUEST_CODE = 79;
     private static boolean hasFinished = false;
+    private AshojashSnackbar.AshojashSnackbarBuilder builder;
 
     public GoogleOauthFragment() {
     }
@@ -74,6 +75,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
                 .requestServerAuthCode(serverClientID, false)
                 .requestEmail()
                 .build();
+        builder = new AshojashSnackbar.AshojashSnackbarBuilder(getActivity().findViewById(R.id.rootView));
     }
 
 
@@ -142,7 +144,6 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_GET_TOKEN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
@@ -217,13 +218,16 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
 
     @Subscribe
     public void onEvent(OnApiResponseErrorEvent event) {
-        showRetrievingErrorSnackbar();
-        uiDismissProgressDialog();
+        if (event.object instanceof UserApiEvents.OnUserGoogleHandled) {
+            builder.message(R.string.error_retrieving_data).duration(Snackbar.LENGTH_LONG).build().show();
+            uiDismissProgressDialog();
+        }
     }
 
     @Subscribe
     public void onEvent(OnApiRequestErrorEvent event) {
-        AshojashSnackbar.make(getActivity(), R.string.error_connecting_to_server, Snackbar.LENGTH_LONG).show();
+        builder = new AshojashSnackbar.AshojashSnackbarBuilder(getActivity().findViewById(R.id.rootView));
+        builder.message(R.string.error_connecting_to_server).duration(Snackbar.LENGTH_LONG).build().show();
         uiDismissProgressDialog();
     }
 
@@ -235,10 +239,8 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         progressDialog = ProgressDialog.show(getActivity(), null, getResources().getString(R.string.logging_in), true, false);
     }
 
-
     private void uiShowNewUserRegisteredDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
-//        dialogBuilder.setView(R.layout.dialog_google_register_finished);
         LayoutInflater inflater = AppController.layoutInflater;
         View dialogView = inflater.inflate(R.layout.dialog_google_register_finished, null);
         dialogBuilder.setView(dialogView);
@@ -257,16 +259,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     }
 
 
-    private void showRetrievingErrorSnackbar() {
-        Snackbar snackbar = Snackbar.make(rootLayout, R.string.error_retrieving_data, Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    private void uiShowErrorConnectingToServerErrorSnackbar() {
-    }
-
-
     private void uiShowErrorConnectingToGoogleSnackbar() {
-        AshojashSnackbar.make(getActivity(), R.string.error_connecting_to_google, Snackbar.LENGTH_LONG).show();
+        builder.message(R.string.error_connecting_to_google).duration(Snackbar.LENGTH_LONG).build().show();
     }
 }

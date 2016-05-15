@@ -58,18 +58,15 @@ public class UserApi {
     public static void login(String login, String password) {
         loginCall = API.login(login, password);
         loginCall.enqueue(new ApiCallback<User>() {
+
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (call.isCanceled()) return;
-                if (response.isSuccessful()) {
-                    BUS.post(new UserApiEvents.OnUserLoggedIn(response.body()));
-                } else {
-                    if (response.code() == 400) {
-                        BUS.post(new ErrorEvents.OnUserLoginFailed(ErrorUtils.parseError(response)));
-                    } else {
-                        BUS.post(new OnApiResponseErrorEvent(new ApiResponseError()));
-                    }
+                if (response.code() == 400) {
+                    BUS.post(new ErrorEvents.OnUserLoginFailed(ErrorUtils.parseError(response)));
+                    return;
                 }
+                handleResponse(response, new UserApiEvents.OnUserLoggedIn(response.body()));
             }
         });
     }
@@ -81,22 +78,21 @@ public class UserApi {
     public static void register(String name, String username, String password, String email) {
         registerCall = API.register(name, username, password, email);
         registerCall.enqueue(new ApiCallback<UserRegistered>() {
-            @Override
-            public void onResponse(Call<UserRegistered> call, Response<UserRegistered> response) {
-                if (call.isCanceled()) return;
-                if (response.isSuccessful()) {
-                    BUS.post(new UserApiEvents.onUserRegistered(response.body()));
-                } else {
-                    if (response.code() == 400) {
-                        ApiResponseError validationError = ErrorUtils.parseError(response);
-                        Gson gson = new Gson();
-                        BUS.post(new ErrorEvents.OnUserRegistrationFailed(gson.fromJson(validationError.message, ValidationError.class)));
-                    } else {
-                        BUS.post(new OnApiResponseErrorEvent(new ApiResponseError()));
-                    }
-                }
-            }
-        });
+                                 @Override
+                                 public void onResponse(Call<UserRegistered> call, Response<UserRegistered> response) {
+                                     if (call.isCanceled()) return;
+
+                                     if (response.code() == 400) {
+                                         ApiResponseError validationError = ErrorUtils.parseError(response);
+                                         Gson gson = new Gson();
+                                         BUS.post(new ErrorEvents.OnUserRegistrationFailed(gson.fromJson(validationError.message, ValidationError.class)));
+                                         return;
+                                     }
+                                     handleResponse(response, new UserApiEvents.onUserRegistered(response.body()));
+                                 }
+                             }
+
+        );
     }
 
 

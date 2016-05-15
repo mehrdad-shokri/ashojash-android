@@ -15,12 +15,12 @@ public final class BusProvider {
     public static EventBus getInstance() {
         return bus;
     }
-    public static void register(Object object)
-    {
-        bus.register(object);
-    }
-    public static  void unregister(Object object)
-    {
-        bus.unregister(object);
-    }
+//    public static void register(Object object)
+//    {
+//        bus.register(object);
+//    }
+//    public static  void unregister(Object object)
+//    {
+//        bus.unregister(object);
+//    }
 }

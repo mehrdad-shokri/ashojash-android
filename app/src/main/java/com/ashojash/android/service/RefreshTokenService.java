@@ -26,16 +26,14 @@ public class RefreshTokenService extends Service {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         if (!BusProvider.getInstance().isRegistered(this))
-            BusProvider.register(this);
+            BusProvider.getInstance().register(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BusProvider.unregister(this);
+        BusProvider.getInstance().unregister(this);
     }
-
-    String TAG = AppController.TAG;
 
     @Subscribe
     public void onEvent(UserApiEvents.OnTokenRefreshed event) {

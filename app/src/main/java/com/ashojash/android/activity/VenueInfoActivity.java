@@ -3,15 +3,14 @@ package com.ashojash.android.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.fragment.VenueInfoFragment;
 import com.ashojash.android.fragment.VenueMapFragment;
-import com.mikepenz.materialdrawer.AccountHeader;
 /*
 * Completed
 * */
 public class VenueInfoActivity extends BaseActivity {
-    private AccountHeader headerResult;
     protected Toolbar toolbar;
     private String slug;
 
@@ -74,6 +73,6 @@ public class VenueInfoActivity extends BaseActivity {
 
     private void setupViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbarTop);
-        toolbar.setTitle("VenueOrm name");
+        ((TextView) toolbar.findViewById(R.id.txtToolbarTitle)).setText(R.string.title_info);
     }
 }
