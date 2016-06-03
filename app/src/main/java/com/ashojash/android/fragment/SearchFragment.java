@@ -87,6 +87,7 @@ public class SearchFragment extends Fragment {
             public void onClick(Venue venue) {
                 Intent intent = new Intent(AppController.currentActivity, VenueActivity.class);
                 intent.putExtra("slug", venue.slug);
+                intent.putExtra("venue", AppController.gson.toJson(venue));
                 AppController.currentActivity.startActivity(intent);
             }
         });

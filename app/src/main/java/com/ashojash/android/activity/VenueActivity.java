@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -69,13 +68,11 @@ public class VenueActivity extends BaseActivity {
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-    private static final String TAG = "VenueActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         slug = getIntent().getStringExtra("slug");
-        Log.d(TAG, "onCreate: slug: " + slug);
         setContentView(R.layout.activity_venue);
         AppController application = (AppController) getApplication();
         mTracker = application.getDefaultTracker();

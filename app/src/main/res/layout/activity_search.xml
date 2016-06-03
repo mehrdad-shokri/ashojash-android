@@ -19,15 +19,30 @@
                      android:layout_below="@id/toolbarTopContainer">
         </FrameLayout>
     </RelativeLayout>
-    <com.mypopsy.widget.FloatingSearchView
-            android:id="@+id/search"
+
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="6dp"
-            android:paddingLeft="6dp"
-            android:background="#90000000"
-            app:fsv_cornerRadius="5dp"
-            android:hint="@string/search_hint"
-            app:fsv_menu="@menu/search"
-            app:theme="@style/CustomFloatingSearchViewTheme"/>
+            android:layout_height="wrap_content">
+
+        <include
+                android:id="@+id/toolbarTop"
+                layout="@layout/toolbar_search_background"/>
+
+        <com.mypopsy.widget.FloatingSearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fsv_cornerRadius="0dp"
+                android:paddingRight="2dp"
+                android:paddingLeft="2dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:contentInsetEnd="5dp"
+                app:contentInsetStart="5dp"
+                android:background="#90000000"
+                android:hint="@string/search_hint"
+                app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
+                app:fsv_menu="@menu/search"
+                app:theme="@style/CustomFloatingSearchViewTheme"/>
+    </RelativeLayout>
 </FrameLayout>

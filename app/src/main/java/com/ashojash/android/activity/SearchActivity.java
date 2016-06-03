@@ -24,16 +24,16 @@ import com.mypopsy.widget.internal.ViewUtils;
 public class SearchActivity extends BaseActivity implements
         ActionMenuView.OnMenuItemClickListener {
     public FloatingSearchView mSearchView;
-    private static final String VENUE_SEARCH_REQUEST_TAG = "VENUE_SEARCH";
     private SearchFragment searchFragment;
-//    private static final String citySlug = AppController.defaultPref.getString("current_city_slug", null);
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        setupSearch();
         Bundle bundle = getIntent().getExtras();
+        query = bundle.getString("query");
+        setupSearch();
         searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         addFragment(R.id.fragmentSearchContainer, searchFragment);
@@ -42,7 +42,7 @@ public class SearchActivity extends BaseActivity implements
     private void setupSearch() {
         mSearchView = (FloatingSearchView) findViewById(R.id.search);
         mSearchView.setOnMenuItemClickListener(this);
-        mSearchView.setText(null);
+        mSearchView.setText(query);
         showSearchProgress(false);
         showClearButton(false);
         updateNavigationIcon();
