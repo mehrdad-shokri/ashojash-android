@@ -11,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public final class UrlController {
-        private static String BASE_URL = "http://www.ashojash.com/api/";
-//    private static String BASE_URL = "http://192.168.1.5/api/";
+//        private static String BASE_URL = "http://www.ashojash.com/api/";
+    private static String BASE_URL = "http://192.168.43.148/api/";
     private final static Retrofit RETROFIT;
     private final static Retrofit AUTH_RETROFIT;
 

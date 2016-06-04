@@ -116,6 +116,11 @@ public class CollectionActivity extends BottomToolbarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         BusProvider.getInstance().unregister(this);

@@ -54,7 +54,7 @@ public class MainActivity extends BottomToolbarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupSearch();
-        attachShy(0, this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView), findViewById(R.id.mainActivityNestedScrollView));
+        attachShy(0, this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView), findViewById(R.id.nestedScrollView));
         contentContainer = (ViewGroup) findViewById(R.id.contentContainer);
         builder = new AshojashSnackbar.AshojashSnackbarBuilder(findViewById(R.id.rootView));
         if (CITY_SLUG == null) {

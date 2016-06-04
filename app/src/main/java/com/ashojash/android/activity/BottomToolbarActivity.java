@@ -1,12 +1,13 @@
 package com.ashojash.android.activity;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.util.Log;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
@@ -30,12 +31,6 @@ public class BottomToolbarActivity extends BaseActivity {
 
     protected void attachShy(final int position, Activity activity, Bundle savedInstanceState, CoordinatorLayout layout, View contentView) {
         mBottomBar = BottomBar.attachShy(layout, contentView, savedInstanceState);
-        String TAG = AppController.TAG;
-        if (activity instanceof MainActivity) {
-            Log.d(TAG, "attachShy: instance of main activity");
-        } else if (activity instanceof CollectionActivity) {
-            Log.d(TAG, "attachShy: instance of collection activity");
-        }
         setupBottomBar(position, activity);
     }
 
@@ -96,10 +91,10 @@ public class BottomToolbarActivity extends BaseActivity {
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                     startActivity(intent);
                                     overridePendingTransition(0, 0);
+                                    activity.finish();
                                 }
                             });
-                        }
-                        if (position == 1 && selectedTab == 0) {
+                        } else if (position == 1 && selectedTab == 0) {
                             AsyncTask.execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -112,6 +107,7 @@ public class BottomToolbarActivity extends BaseActivity {
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                                     startActivity(intent);
                                     overridePendingTransition(0, 0);
+                                    activity.finish();
                                 }
                             });
                         }
@@ -119,6 +115,13 @@ public class BottomToolbarActivity extends BaseActivity {
 
                     @Override
                     public void onTabReSelected(int position) {
+                        if (activity instanceof MainActivity) {
+                            NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
+                            ObjectAnimator.ofInt(nestedScrollView, "scrollY", 0).setDuration(200).start();
+                        } else if (activity instanceof CollectionActivity) {
+                            activity.finish();
+                            activity.overridePendingTransition(0,0);
+                        }
                     }
                 });
 

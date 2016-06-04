@@ -20,7 +20,7 @@
 
         <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:id="@+id/mainActivityNestedScrollView"
+                android:id="@+id/nestedScrollView"
                 android:layout_height="wrap_content">
 
             <LinearLayout
