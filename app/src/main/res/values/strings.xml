@@ -157,4 +157,5 @@
     <string name="title_city_select">انتخاب شهر</string>
     <string name="title_info">اطلاعات</string>
     <string name="title_reviews">مرورها</string>
+    <string name="hello_world"/>
 </resources>
