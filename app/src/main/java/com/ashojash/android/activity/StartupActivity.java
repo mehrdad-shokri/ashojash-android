@@ -3,7 +3,9 @@ package com.ashojash.android.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import com.ashojash.android.city_list.CityListActivity;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.main.MainActivity;
 import com.ashojash.android.utils.AlarmUtils;
 
 /*

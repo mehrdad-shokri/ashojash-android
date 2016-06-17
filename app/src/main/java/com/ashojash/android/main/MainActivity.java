@@ -1,4 +1,4 @@
-package com.ashojash.android.activity;
+package com.ashojash.android.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +14,14 @@ import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.ashojash.android.R;
+import com.ashojash.android.activity.BottomToolbarActivity;
+import com.ashojash.android.city_list.CityListActivity;
+import com.ashojash.android.activity.SearchActivity;
+import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.adapter.VenueSearchResultAdapter;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.event.VenueCollectionEvents;
-import com.ashojash.android.fragment.*;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;

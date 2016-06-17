@@ -66,7 +66,10 @@ public class ObscuredSharedPrefs implements SharedPreferences {
 
         @Override
         public SharedPreferences.Editor putStringSet(String s, Set<String> set) {
-            throw new UnsupportedOperationException(); // left as an exercise to the reader
+            for (String value : set) {
+                putString(s,value);
+            }
+            return this;
         }
 
         @Override

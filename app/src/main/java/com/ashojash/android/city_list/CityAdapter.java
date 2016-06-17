@@ -1,4 +1,4 @@
-package com.ashojash.android.adapter;
+package com.ashojash.android.city_list;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

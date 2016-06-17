@@ -11,6 +11,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
+import com.ashojash.android.main.MainActivity;
 import com.ashojash.android.utils.AuthUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;

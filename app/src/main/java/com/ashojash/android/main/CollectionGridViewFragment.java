@@ -1,4 +1,4 @@
-package com.ashojash.android.fragment;
+package com.ashojash.android.main;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,13 +18,13 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionHorizontalFragment extends Fragment {
+public class CollectionGridViewFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<VenueCollection> venueCollectionList;
     private Gson gson = new Gson();
     private CollectionVerticalAdapter adapter;
 
-    public CollectionHorizontalFragment() {
+    public CollectionGridViewFragment() {
     }
 
     @Nullable

@@ -30,5 +30,4 @@ public class AlarmUtils {
             getInstance(context).setRepeating(AlarmManager.RTC_WAKEUP, triggerAt, interval, refreshTokenPendingIntent);
         }
     }
-
 }

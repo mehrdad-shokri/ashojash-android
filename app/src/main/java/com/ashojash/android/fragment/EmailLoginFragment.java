@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.ashojash.android.R;
-import com.ashojash.android.activity.MainActivity;
+import com.ashojash.android.main.MainActivity;
 import com.ashojash.android.event.ErrorEvents;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;

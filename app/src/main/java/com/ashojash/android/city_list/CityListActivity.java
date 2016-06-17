@@ -1,11 +1,11 @@
-package com.ashojash.android.activity;
+package com.ashojash.android.city_list;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.fragment.CityListFragment;
+import com.ashojash.android.activity.BaseActivity;
 
 public class CityListActivity extends BaseActivity {
     @Override
