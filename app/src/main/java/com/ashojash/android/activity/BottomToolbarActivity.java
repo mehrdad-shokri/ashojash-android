@@ -11,7 +11,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.main.MainActivity;
 import com.ashojash.android.utils.AuthUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -46,10 +45,10 @@ public class BottomToolbarActivity extends BaseActivity {
         switch (position) {
             case 0:
                 homeColor = R.color.bottom_nav_item_selected;
-                profileColor = R.color.default_line_indicator_unselected_color;
+                profileColor = R.color.bottom_nav_item_unselected;
                 break;
             case 1:
-                homeColor = R.color.default_underline_indicator_selected_color;
+                homeColor = R.color.bottom_nav_item_unselected;
                 profileColor = R.color.bottom_nav_item_selected;
                 break;
         }
@@ -125,7 +124,6 @@ public class BottomToolbarActivity extends BaseActivity {
                         }
                     }
                 });
-
             }
         });
     }

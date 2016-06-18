@@ -1,4 +1,4 @@
-package com.ashojash.android.main;
+package com.ashojash.android.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;

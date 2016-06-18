@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Ashojash</string>
     <string name="title_profile">پروفایل</string>
     <string name="action_settings">تنظیمات</string>
     <string name="action_search">جست‌وجو</string>
@@ -81,11 +80,6 @@
     <string name="btn_logout_from_google">Logout from Google</string>
     <string name="btn_revoke_access">Revoke Access</string>
     <string name="install_google_play_services">برای ورود با گوگل google play servies را نصب نمائید</string>
-    <!-- Production client id-->
-    <string name="server_client_id">346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com</string>
-
-    <!--Development client id-->
-    <!--<string name="server_client_id">346904023124-73h70s03c0dipla8ltcbcd2ko076ft43.apps.googleusercontent.com</string>-->
     <string name="title_google_registeration_finished">پایان ثبت نام!</string>
     <string name="message_registration_finished_google">حساب کاربری‌تان با موفقیت ساخته شد. \nیک دنیا غذا و نوشیدنی
         منتظر شماست!

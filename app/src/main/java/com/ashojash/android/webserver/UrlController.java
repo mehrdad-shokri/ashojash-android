@@ -1,5 +1,6 @@
 package com.ashojash.android.webserver;
 
+import com.ashojash.android.BuildConfig;
 import com.ashojash.android.utils.AuthUtils;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -11,8 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
 
 public final class UrlController {
-//        private static String BASE_URL = "http://www.ashojash.com/api/";
-    private static String BASE_URL = "http://192.168.43.148/api/";
+    private static String BASE_URL = BuildConfig.BASE_URL;
     private final static Retrofit RETROFIT;
     private final static Retrofit AUTH_RETROFIT;
 

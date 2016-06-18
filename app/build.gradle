@@ -1,24 +1,19 @@
 apply plugin: 'com.android.application'
-
 android {
     productFlavors {
-        local {
-            minSdkVersion 21 //The important bit.
+        dev {
+            minSdkVersion 21
+            applicationIdSuffix '.debug'
+            buildConfigField 'String', 'BASE_URL', '"http://ashojash.com/api/"'
+            resValue "string", "google_maps_api_key", GOOGLE_MAPS_API_KEY_DEV
+            resValue "string", "server_client_id", SERVER_CLIENT_ID_DEV
         }
         prod {
-            minSdkVersion 15 //Example. Set to your real requirement.
+            buildConfigField 'String', 'BASE_URL', '"http://www.ashojash.com/api/"'
+            resValue "string", "google_maps_api_key", GOOGLE_MAPS_API_KEY_PROD
+            resValue "string", "server_client_id", SERVER_CLIENT_ID_PROD
         }
     }
-    signingConfigs {
-        ashojash {
-            keyAlias 'ashojash'
-            keyPassword 'Lifeissohappy95'
-            storeFile file('E:/programming/android/project/Ashojash/keystore.jks')
-            storePassword 'Lifeissohappy95'
-        }
-    }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.ashojash.android"
         minSdkVersion 15
@@ -28,6 +23,16 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        ashojash {
+            keyAlias 'ashojash'
+            keyPassword KEY_PASSWORD
+            storeFile file('E:/programming/android/project/Ashojash/keystore.jks')
+            storePassword STORE_PASSWORD
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -39,8 +44,12 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.ashojash
+        }
+        debug {
+            versionNameSuffix '-DEBUG'
         }
     }
     lintOptions {
@@ -66,11 +75,9 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.2.0'
     compile 'com.mikepenz:iconics-core:2.5.1@aar'
     compile 'com.mikepenz:google-material-typeface:2.1.0.1.original@aar'
-    compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.github.bumptech.glide:glide:3.5.2'
-    compile 'com.google.android.gms:play-services:8.4.0'
-    compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.google.android.gms:play-services-analytics:8.4.0'
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.github.renaudcerrato:FloatingSearchView:1.0.0'
@@ -94,3 +101,8 @@ dependencies {
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
 }
 apply plugin: 'com.google.gms.google-services'
+android.variantFilter { variant ->
+    if((variant.buildType.name.equals('debug') && variant.getFlavors().get(0).name.equals('prod')||(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('dev')))) {
+        variant.setIgnore(true);
+    }
+}
