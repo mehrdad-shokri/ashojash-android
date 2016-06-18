@@ -14,13 +14,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import com.ashojash.android.R;
-import com.ashojash.android.main.MainActivity;
+import com.ashojash.android.activity.MainActivity;
 import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
@@ -153,6 +154,10 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
                 UserApi.google(authCode);
             } else {
                 uiShowErrorConnectingToGoogleSnackbar();
+                String TAG = AppController.TAG;
+                Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusMessage());
+                Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusCode());
+                Log.d(TAG, "onActivityResult: " + result.getStatus().toString());
             }
         }
     }

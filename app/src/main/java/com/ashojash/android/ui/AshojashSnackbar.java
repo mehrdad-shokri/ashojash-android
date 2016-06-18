@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 import com.ashojash.android.helper.AppController;
 
-/**
- * Changes Snackbar's textColor to white
- */
 public class AshojashSnackbar {
 
     private static Snackbar make(Activity activity, String message, int duration) {
@@ -57,30 +54,19 @@ public class AshojashSnackbar {
             return this;
         }
 
-
         public AshojashSnackbarBuilder duration(int duration) {
             this.duration = duration;
             return this;
         }
 
         public Snackbar build() {
-            setupParams();
+            if (messageId != -1)
+                message = res.getString(messageId);
             if (view != null) {
                 return AshojashSnackbar.make(view, message, duration);
             } else {
                 return AshojashSnackbar.make(activity, message, duration);
             }
         }
-
-        String TAG = AppController.TAG;
-
-        private void setupParams() {
-            Log.d(TAG, "setupParams: " + messageId);
-            Log.d(TAG, "setupParams: " + message);
-            if (messageId != -1)
-                message = res.getString(messageId);
-        }
-
     }
-
 }

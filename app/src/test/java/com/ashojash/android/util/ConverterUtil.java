@@ -22,7 +22,6 @@ public class ConverterUtil {
         final float EXPECTED = 212;
 //        assertEquals("Conversion from celsius to fahrenheit failed", actual, EXPECTED, .01);
         assertThat("the reason to be equal", "this is a string", allOf(is("first matcher"), is("second matcher")));
-        Basre
     }
 
     @Test

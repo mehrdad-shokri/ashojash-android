@@ -1,4 +1,4 @@
-package com.ashojash.android.main;
+package com.ashojash.android.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,19 +18,19 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionVerticalFragment extends Fragment {
+public class CollectionGridViewFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<VenueCollection> venueCollectionList;
     private Gson gson = new Gson();
     private CollectionVerticalAdapter adapter;
 
-    public CollectionVerticalFragment() {
+    public CollectionGridViewFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_collection_vertical, container, false);
+        return inflater.inflate(R.layout.fragment_venue_vertical, container, false);
     }
 
     @Override
@@ -38,16 +38,15 @@ public class CollectionVerticalFragment extends Fragment {
         super.onResume();
         setupViews();
         Bundle bundle = getArguments();
-        venueCollectionList = gson.fromJson(bundle.getString("collections"), new TypeToken<ArrayList<VenueCollection>>() {
+        venueCollectionList = gson.fromJson(bundle.getString("collection"), new TypeToken<ArrayList<VenueCollection>>() {
         }.getType());
         adapter = new CollectionVerticalAdapter(venueCollectionList);
         recyclerView.setAdapter(adapter);
-
     }
+
 
     private void setupViews() {
         recyclerView = (RecyclerView) getView().findViewById(R.id.recyclerView);
-        recyclerView.setNestedScrollingEnabled(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(AppController.context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
