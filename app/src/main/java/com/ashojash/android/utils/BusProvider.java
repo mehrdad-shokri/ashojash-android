@@ -5,22 +5,14 @@ import org.greenrobot.eventbus.EventBus;
 public final class BusProvider {
     private static final EventBus bus;
 
-    static {
-        bus = EventBus.getDefault();
+    private BusProvider() {
     }
 
-    private BusProvider() {
+    static {
+        bus = EventBus.getDefault();
     }
 
     public static EventBus getInstance() {
         return bus;
     }
-//    public static void register(Object object)
-//    {
-//        bus.register(object);
-//    }
-//    public static  void unregister(Object object)
-//    {
-//        bus.unregister(object);
-//    }
 }

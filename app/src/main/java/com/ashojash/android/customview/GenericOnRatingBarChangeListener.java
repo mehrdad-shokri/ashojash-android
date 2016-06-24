@@ -2,9 +2,6 @@ package com.ashojash.android.customview;
 
 import android.widget.RatingBar;
 
-/**
- * Created by admin on 1/30/2016.
- */
 public class GenericOnRatingBarChangeListener implements RatingBar.OnRatingBarChangeListener {
 
     @Override
