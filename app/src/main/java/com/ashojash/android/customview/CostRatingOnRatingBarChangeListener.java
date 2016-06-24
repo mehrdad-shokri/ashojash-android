@@ -5,9 +5,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import com.ashojash.android.R;
 
-/**
- * Created by admin on 1/30/2016.
- */
 public class CostRatingOnRatingBarChangeListener extends GenericOnRatingBarChangeListener {
     private TextView txtCostReviewIndicator;
 
