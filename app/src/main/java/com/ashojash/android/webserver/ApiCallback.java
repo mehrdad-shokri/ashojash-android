@@ -20,7 +20,7 @@ public abstract class ApiCallback<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        BusProvider.getInstance().post(new OnApiRequestErrorEvent(new ApiRequestError(t.getMessage())));
+        BUS.post(new OnApiRequestErrorEvent(new ApiRequestError(t.getMessage())));
     }
 
 
