@@ -13,7 +13,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.ObscuredSharedPrefs;
+import com.ashojash.android.util.ObscuredSharedPrefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;

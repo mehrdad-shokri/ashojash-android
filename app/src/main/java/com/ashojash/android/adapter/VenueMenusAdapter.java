@@ -9,9 +9,11 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Menu;
-import com.ashojash.android.ui.UiUtils;
 
 import java.util.List;
+
+import static com.ashojash.android.ui.UiUtils.formatCurrency;
+import static com.ashojash.android.ui.UiUtils.toPersianNumber;
 
 public class VenueMenusAdapter extends RecyclerView.Adapter<VenueMenusAdapter.ViewHolder> {
     private static final Context CONTEXT = AppController.context;
@@ -44,8 +46,8 @@ public class VenueMenusAdapter extends RecyclerView.Adapter<VenueMenusAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Menu menu = menuList.get(position);
         holder.txtMenuItemName.setText(menu.name);
-        holder.txtMenuItemPrice.setText(CONTEXT.getString(R.string.item_price).replace("{{itemPrice}}", UiUtils.toPersianNumber(UiUtils.formatCurrency(String.valueOf(menu.price)))));
-        if (onCardClickListener !=null)
+        holder.txtMenuItemPrice.setText(CONTEXT.getString(R.string.item_price).replace("{{itemPrice}}", toPersianNumber(formatCurrency(menu.price))));
+        if (onCardClickListener != null)
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

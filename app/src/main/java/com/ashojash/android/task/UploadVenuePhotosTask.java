@@ -7,7 +7,7 @@ import android.support.v7.app.NotificationCompat;
 import com.ashojash.android.R;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.UserApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -22,7 +22,7 @@ public class UploadVenuePhotosTask extends AsyncTask<UploadVenuePhotosTask.Venue
     private int filesCount;
 
     public UploadVenuePhotosTask() {
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override

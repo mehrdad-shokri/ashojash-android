@@ -14,7 +14,6 @@ import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.ashojash.android.R;
-import com.ashojash.android.city_list.CityListActivity;
 import com.ashojash.android.adapter.VenueSearchResultAdapter;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueApiEvents;
@@ -25,7 +24,7 @@ import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.VenueApi;
 import com.ashojash.android.webserver.VenueCollectionApi;
 import com.google.gson.Gson;
@@ -352,13 +351,13 @@ public class MainActivity extends BottomToolbarActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     private void cancelSearch() {

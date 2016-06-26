@@ -26,8 +26,9 @@ import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.AuthUtil;
+import com.ashojash.android.util.BusUtil;
+import com.ashojash.android.util.ValidatorUtil;
 import com.ashojash.android.webserver.UserApi;
 import com.ashojash.android.webserver.VenueApi;
 import com.bumptech.glide.Glide;
@@ -123,13 +124,13 @@ public class VenueActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
 
@@ -151,7 +152,7 @@ public class VenueActivity extends BaseActivity {
         addPhotoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AuthUtils.isUserLoggedIn()) {
+                if (AuthUtil.isUserLoggedIn()) {
                     VenueUploadPhotoDialogFragment photoUploadDialogFragment = VenueUploadPhotoDialogFragment.newInstance();
                     photoUploadDialogFragment.venue = venue;
                     photoUploadDialogFragment.show(getSupportFragmentManager(), "VENUE_PHOTO_UPLOAD_FRAGMENT");
@@ -163,7 +164,7 @@ public class VenueActivity extends BaseActivity {
         addReviewFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AuthUtils.isUserLoggedIn()) {
+                if (AuthUtil.isUserLoggedIn()) {
                     setupAddReview();
                 } else {
                     showLoginForm();
@@ -288,9 +289,8 @@ public class VenueActivity extends BaseActivity {
                 boolean isEditTextEmpty = reviewText.equals(getResources().getString(R.string.adding_review_hint)) || (reviewText.length() == 0);
                 if (isEditTextEmpty) {
                     reviewTextWrapper.setError(getResources().getString(R.string.review_field_required));
-                } else if (!UiUtils.isTextInPersian(reviewText)) {
+                } else if (!ValidatorUtil.isReviewInPersian(reviewText)) {
                     reviewTextWrapper.setError(getResources().getString(R.string.error_enter_review_in_persian));
-
                 } else if (reviewText.length() < 35) {
                     reviewTextWrapper.setError(getString(R.string.review_under_limit));
                 } else {

@@ -4,21 +4,16 @@ import com.ashojash.android.event.CityApiEvents;
 import com.ashojash.android.model.City;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import retrofit2.http.GET;
 
 import java.util.List;
 
-public class CityApi {
-    private static final Retrofit retrofit;
-
-    static {
-        retrofit = UrlController.getInstance();
+public class CityApi extends BaseApi {
+    private CityApi() {
     }
 
-
     public static void getAllCities() {
-        CityApi.EndPoints api = retrofit.create(CityApi.EndPoints.class);
+        CityApi.EndPoints api = RETROFIT.create(CityApi.EndPoints.class);
         Call<List<City>> call = api.all();
         call.enqueue(new ApiCallback<List<City>>() {
             @Override

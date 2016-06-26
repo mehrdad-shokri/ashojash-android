@@ -42,7 +42,7 @@ public class VenuePhotosAdapter extends RecyclerView.Adapter<VenuePhotosAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Photo photo = photoList.get(position);
-        Glide.with(CONTEXT).load(UiUtils.setUrlWidth(240, photo.url)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgVenuePhoto);
+        Glide.with(CONTEXT).load(UiUtils.setUrlWidth(photo.url, 240)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgVenuePhoto);
         if (onCardClickListener != null)
             holder.imgVenuePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
