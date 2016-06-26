@@ -1,11 +1,11 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Token;
 import com.ashojash.android.model.User;
 import org.json.JSONException;
 
-public final class AuthUtils {
+public final class AuthUtil {
 
 
     public static boolean isUserLoggedIn() {
@@ -35,9 +35,6 @@ public final class AuthUtils {
 
 
     public static boolean GoogleLogIn(User user) throws JSONException {
-//        JSONObject data = response.getJSONObject("data");
-//        StructUser user = JsonParser.parseUserJsonObject(data.getJSONObject("user"));
-
         boolean isNewUser = user.googleOAuth.isNewUser;
         AppController.editor.putString("username", user.username);
         AppController.editor.putString("email", user.email);

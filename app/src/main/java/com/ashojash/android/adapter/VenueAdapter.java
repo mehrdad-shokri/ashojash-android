@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.VenueUtils;
+import com.ashojash.android.ui.VenueUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -60,8 +60,8 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.ViewHolder> 
         holder.txtVenueName.setText(venue.name);
         setVenueScoreBackgroundDrawable(holder, venue);
 
-        holder.txtVenueScore.setText(VenueUtils.getVenueScoreText(venue.score));
-        holder.txtVenueCost.setText(Html.fromHtml(VenueUtils.getCostSign(venue.cost)));
+        holder.txtVenueScore.setText(VenueUtil.getVenueScoreText(venue.score));
+        holder.txtVenueCost.setText(Html.fromHtml(VenueUtil.getCostSign(venue.cost)));
         if (onItemClickListener != null)
             holder.rootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,9 +97,9 @@ public class VenueAdapter extends RecyclerView.Adapter<VenueAdapter.ViewHolder> 
     private void setVenueScoreBackgroundDrawable(ViewHolder holder, Venue venue) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            holder.txtVenueScore.setBackground(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(venue.score)));
+            holder.txtVenueScore.setBackground(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(venue.score)));
         } else {
-            holder.txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(venue.score)));
+            holder.txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(venue.score)));
         }
     }
 }

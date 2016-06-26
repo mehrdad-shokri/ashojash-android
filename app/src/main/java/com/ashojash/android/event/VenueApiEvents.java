@@ -81,4 +81,9 @@ public final class VenueApiEvents {
     }
 
 
+    public static class onPhotoUploadValidationFailed {
+    }
+
+    public static class OnReviewAddFailed {
+    }
 }

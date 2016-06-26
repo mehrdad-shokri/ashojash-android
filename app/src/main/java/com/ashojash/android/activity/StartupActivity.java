@@ -3,9 +3,8 @@ package com.ashojash.android.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import com.ashojash.android.city_list.CityListActivity;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.utils.AlarmUtils;
+import com.ashojash.android.util.AlarmUtil;
 
 /*
 * Checked for bus and json
@@ -22,7 +21,7 @@ public class StartupActivity extends BaseActivity {
         boolean isFirstVisit = AppController.defaultPref.getBoolean("is_first_visit", true);
         String citySlug = AppController.defaultPref.getString("current_city_slug", null);
         Intent intent;
-        AlarmUtils.setRefreshTokenAlarm(AppController.context);
+        AlarmUtil.setRefreshTokenAlarm(AppController.context);
         if (isFirstVisit || (citySlug == null)) {
             AppController.editor.putBoolean("is_first_visit", false);
             AppController.editor.commit();

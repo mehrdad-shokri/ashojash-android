@@ -33,7 +33,6 @@ public class VenueCollectionApi extends BaseApi {
         });
     }
 
-
     public static void index(String citySlug, String collectionSlug) {
         indexCall = API.index(citySlug, collectionSlug);
         indexCall.enqueue(new ApiCallback<VenueCollection>() {

@@ -1,4 +1,4 @@
-package com.ashojash.android.city_list;
+package com.ashojash.android.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +48,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final City city = cityList.get(position);
-        Glide.with(context).load(UiUtils.setUrlWidth(80, city.photo.url)).centerCrop().placeholder(R.drawable.city_list_loader).error(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary))).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imageView);
+        Glide.with(context).load(UiUtils.setUrlWidth(city.photo.url, 80)).centerCrop().placeholder(R.drawable.city_list_loader).error(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary))).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imageView);
         holder.textCityName.setText(city.name);
         holder.imgIconic.setImageDrawable(new IconicsDrawable(context).icon(GoogleMaterial.Icon.gmd_keyboard_arrow_left).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary)));
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {

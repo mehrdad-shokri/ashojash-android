@@ -1,4 +1,4 @@
-package com.ashojash.android.city_list;
+package com.ashojash.android.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
+import com.ashojash.android.adapter.CityAdapter;
 import com.ashojash.android.event.CityApiEvents;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.City;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.CityApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -52,12 +53,12 @@ public class CityListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onStop() {
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
         super.onStop();
     }
 

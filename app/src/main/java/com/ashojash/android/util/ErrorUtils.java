@@ -1,4 +1,4 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import com.ashojash.android.model.ApiResponseError;
 import com.ashojash.android.webserver.UrlController;

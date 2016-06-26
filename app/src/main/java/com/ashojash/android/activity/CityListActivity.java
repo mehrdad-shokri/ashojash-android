@@ -1,11 +1,11 @@
-package com.ashojash.android.city_list;
+package com.ashojash.android.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.activity.BaseActivity;
+import com.ashojash.android.fragment.CityListFragment;
 
 public class CityListActivity extends BaseActivity {
     @Override
@@ -13,10 +13,7 @@ public class CityListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_list);
         setupView();
-        addFragment(R.id.fragmentCityListContainer, new CityListFragment());
     }
-
-    private static final String TAG = "CityListActivity";
 
     private void setupView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarTop);
@@ -30,5 +27,6 @@ public class CityListActivity extends BaseActivity {
                 finish();
             }
         });
+        addFragment(R.id.fragmentCityListContainer, new CityListFragment());
     }
 }

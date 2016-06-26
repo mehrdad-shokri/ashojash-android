@@ -8,13 +8,8 @@ import android.view.inputmethod.InputMethodManager;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public final class UiUtils {
     private static String[] persianNumbers = new String[]{"۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"};
-    private final static String PERSIAN_SENTENCE_REGEX = "[\\u0600-\\u06FF\\uFB8A\\u067E\\u0686\\u06AF .!?:)(,;1234567890%-_@]+$";
-    private final static String PERSIAN_NAME_REGEX = "[\\u0600-\\u06FF\\uFB8A\\u067E\\u0686\\u06AF ]+$";
 
     public static void hideKeyboard() {
         View view = AppController.currentActivity.getCurrentFocus();
@@ -73,16 +68,15 @@ public final class UiUtils {
         return (result);
     }
 
-    public static boolean isTextInPersian(String text) {
-        Pattern pattern = Pattern.compile(PERSIAN_SENTENCE_REGEX);
-        Matcher matcher = pattern.matcher(text);
-        return matcher.matches();
+    public static String formatCurrency(int price) {
+        return formatCurrency(String.valueOf(price));
     }
 
-    public static String setUrlWidth(int dp, String url) {
-        String newUrl = url + ("?w=" + dp2px(dp));
+    public static String setUrlWidth(String url, int px) {
+        String newUrl = url + ("?w=" + px);
         return newUrl;
     }
+
     public static int getStatusBarHeight(Context context) {
         return getStatusBarHeight(context, false);
     }
@@ -95,11 +89,9 @@ public final class UiUtils {
         }
 
         int dimenResult = context.getResources().getDimensionPixelSize(R.dimen.tool_bar_top_padding);
-        //if our dimension is 0 return 0 because on those devices we don't need the height
         if (dimenResult == 0 && !force) {
             return 0;
         } else {
-            //if our dimens is > 0 && the result == 0 use the dimenResult else the result;
             return result == 0 ? dimenResult : result;
         }
     }

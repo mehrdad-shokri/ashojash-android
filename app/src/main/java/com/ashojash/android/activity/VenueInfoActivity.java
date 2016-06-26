@@ -28,8 +28,8 @@ public class VenueInfoActivity extends BaseActivity {
     }
 
     /*private void setupNavigationDrawer() {
-        if (AuthUtils.isUserLoggedIn()) {
-            StructUser user = AuthUtils.getAuthUser();
+        if (AuthUtil.isUserLoggedIn()) {
+            StructUser user = AuthUtil.getAuthUser();
             headerResult = new AccountHeaderBuilder()
                     .withActivity(this)
                     .withSelectionListEnabledForSingleProfile(false)

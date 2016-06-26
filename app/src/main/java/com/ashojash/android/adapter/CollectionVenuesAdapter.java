@@ -14,7 +14,7 @@ import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.VenueUtils;
+import com.ashojash.android.ui.VenueUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -62,9 +62,9 @@ public class CollectionVenuesAdapter extends RecyclerView.Adapter<CollectionVenu
     private void updateVenueScoreBackgroundDrawable(TextView textView, float score) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            textView.setBackground(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(score)));
+            textView.setBackground(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(score)));
         } else {
-            textView.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(score)));
+            textView.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(score)));
         }
     }
 

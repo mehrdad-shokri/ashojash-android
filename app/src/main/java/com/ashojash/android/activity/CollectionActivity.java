@@ -22,7 +22,7 @@ import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.VenueCollectionApi;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -112,7 +112,7 @@ public class CollectionActivity extends BottomToolbarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
@@ -123,6 +123,6 @@ public class CollectionActivity extends BottomToolbarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 }

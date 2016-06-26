@@ -1,7 +1,7 @@
 package com.ashojash.android.webserver;
 
 import com.ashojash.android.BuildConfig;
-import com.ashojash.android.utils.AuthUtils;
+import com.ashojash.android.util.AuthUtil;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 
-public final class UrlController {
+public final class UrlController extends BaseApi {
     private static String BASE_URL = BuildConfig.BASE_URL;
     private final static Retrofit RETROFIT;
     private final static Retrofit AUTH_RETROFIT;
@@ -38,7 +38,7 @@ public final class UrlController {
         OkHttpClient authHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                final String TOKEN = AuthUtils.getToken();
+                final String TOKEN = AuthUtil.getToken();
                 Request original = chain.request();
                 Request.Builder requestBuilder = original.newBuilder()
                         .header("Authorization", "Bearer " + TOKEN)

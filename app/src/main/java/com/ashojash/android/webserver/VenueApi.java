@@ -57,38 +57,6 @@ public final class VenueApi extends BaseApi {
         if (indexCall != null) indexCall.cancel();
     }
 
-
-    public static void topVenues(String citySlug) {
-        Call<List<Venue>> call = API.topVenues(citySlug);
-        call.enqueue(new ApiCallback<List<Venue>>() {
-            @Override
-            public void onResponse(Call<List<Venue>> call, Response<List<Venue>> response) {
-                handleResponse(response, new VenueApiEvents.OnTopVenuesResult(response.body()));
-
-            }
-        });
-    }
-
-    public static void nearbyVenues(String citySlug, double lat, double lng) {
-        Call<List<Venue>> call = API.nearby(citySlug, lat, lng);
-        call.enqueue(new ApiCallback<List<Venue>>() {
-            @Override
-            public void onResponse(Call<List<Venue>> call, Response<List<Venue>> response) {
-                handleResponse(response, new VenueApiEvents.OnNearbyVenuesResult(response.body()));
-            }
-        });
-    }
-
-    public static void selectedVenues(String citySlug) {
-        Call<List<Venue>> call = API.selected(citySlug);
-        call.enqueue(new ApiCallback<List<Venue>>() {
-            @Override
-            public void onResponse(Call<List<Venue>> call, Response<List<Venue>> response) {
-                handleResponse(response, new VenueApiEvents.OnSelectedVenuesResult(response.body()));
-            }
-        });
-    }
-
     public static void menus(String venueSlug) {
         Call<List<Menu>> call = API.menus(venueSlug);
         call.enqueue(new ApiCallback<List<Menu>>() {
@@ -128,16 +96,6 @@ public final class VenueApi extends BaseApi {
 
 
     private interface Endpoints {
-        //list all venueOrm related API endpoints
-        @GET("{citySlug}/venue/top")
-        Call<List<Venue>> topVenues(@Path("citySlug") String citySlug);
-
-        @GET("{citySlug}/venue/nearby/lat/{lat}/lng/{lng}")
-        Call<List<Venue>> nearby(@Path("citySlug") String citySlug, @Path("lat") double lat, @Path("lng") double lng);
-
-        @GET("{citySlug}/venue/selected")
-        Call<List<Venue>> selected(@Path("citySlug") String citySlug);
-
         @GET("venue/search/city/{citySlug}")
         Call<VenuePaginated> search(@Path("citySlug") String citySlug, @Query("q") String query, @Query("l") int limit);
 

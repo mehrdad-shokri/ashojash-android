@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.ui.VenueUtils;
+import com.ashojash.android.ui.VenueUtil;
 
 public class VenueScoreIndicator extends LinearLayout {
     private TextView txtVenueScore;
@@ -63,12 +63,12 @@ public class VenueScoreIndicator extends LinearLayout {
 
 
     private void updateVenueText(double score) {
-        txtVenueScore.setText(VenueUtils.getVenueScoreText(score));
+        txtVenueScore.setText(VenueUtil.getVenueScoreText(score));
         txtVenueScore.setTextColor(Color.WHITE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            txtVenueScore.setBackgroundResource(VenueUtils.getVenueScoreDrawableId(score));
+            txtVenueScore.setBackgroundResource(VenueUtil.getVenueScoreDrawableId(score));
         } else {
-            txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(score)));
+            txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(score)));
         }
         invalidate();
     }

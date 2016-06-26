@@ -5,8 +5,8 @@ import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.model.*;
-import com.ashojash.android.utils.BusProvider;
-import com.ashojash.android.utils.ErrorUtils;
+import com.ashojash.android.util.BusUtil;
+import com.ashojash.android.util.ErrorUtils;
 import com.google.gson.Gson;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -14,13 +14,12 @@ import okhttp3.RequestBody;
 import org.greenrobot.eventbus.EventBus;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import retrofit2.http.*;
 
 import java.io.File;
 import java.io.IOException;
 
-public class UserApi {
+public class UserApi extends BaseApi {
 
     private static Call<User> loginCall;
     private static Call<UserRegistered> registerCall;
@@ -31,18 +30,14 @@ public class UserApi {
     private UserApi() {
     }
 
-    private static final Retrofit RETROFIT;
-    private static final Retrofit AUTH_RETROFIT;
     private static final UserApi.Endpoints API;
     private static final UserApi.Endpoints AUTH_API;
     private static final EventBus BUS;
 
     static {
-        RETROFIT = UrlController.getInstance();
         API = RETROFIT.create(UserApi.Endpoints.class);
-        AUTH_RETROFIT = UrlController.getAuthInstance();
         AUTH_API = AUTH_RETROFIT.create(UserApi.Endpoints.class);
-        BUS = BusProvider.getInstance();
+        BUS = BusUtil.getInstance();
     }
 
     public static void google(String authCode) {
@@ -111,9 +106,8 @@ public class UserApi {
                     if (response.code() == 400) {
                         BUS.post(new ErrorEvents.OnReviewAddFailed(ErrorUtils.parseError(response)));
                     } else {
-                        BUS.post(new OnApiResponseErrorEvent(new ApiResponseError()));
+                        handleResponse(response, new VenueApiEvents.OnReviewAddFailed());
                     }
-//                handleResponse(response, new VenueApiEvents.OnReviewAdded());
                 }
             }
         });
@@ -133,10 +127,10 @@ public class UserApi {
                 BUS.post(new VenueApiEvents.OnPhotoAdded());
             } else {
                 ApiResponseError validationError = ErrorUtils.parseError(response);
-                BUS.post(new OnApiResponseErrorEvent(validationError));
+                BUS.post(new OnApiResponseErrorEvent(validationError, new VenueApiEvents.onPhotoUploadValidationFailed()));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            BUS.post(new OnApiResponseErrorEvent(new ApiResponseError(), new VenueApiEvents.onPhotoUploadValidationFailed()));
         }
     }
 

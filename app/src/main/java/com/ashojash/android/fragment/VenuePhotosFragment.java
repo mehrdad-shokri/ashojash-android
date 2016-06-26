@@ -18,7 +18,7 @@ import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Photo;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.VenueApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -55,13 +55,13 @@ public class VenuePhotosFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     @Subscribe
