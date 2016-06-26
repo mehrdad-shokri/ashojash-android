@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.ui.VenueUtils;
+import com.ashojash.android.ui.VenueUtil;
 
 public class VenueScoreArc extends ImageView {
     private Paint paint;
@@ -66,7 +66,7 @@ public class VenueScoreArc extends ImageView {
     private String TAG = AppController.TAG;
 
     public void updateVenueArc(double score) {
-        paint.setColor(VenueUtils.getVenueScoreColor(score));
+        paint.setColor(VenueUtil.getVenueScoreColor(score));
         invalidate();
     }
 }

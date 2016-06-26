@@ -28,8 +28,8 @@ import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.User;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.AuthUtil;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.UserApi;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -52,7 +52,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
     private ViewGroup rootLayout;
     private GoogleSignInOptions gso;
     public static final int GET_ACCOUNT_PERMISSION_REQUEST_CODE = 79;
-    private static boolean hasFinished = false;
+    private static boolean hasFinishedGoogleSignIn = false;
     private AshojashSnackbar.AshojashSnackbarBuilder builder;
 
     public GoogleOauthFragment() {
@@ -129,7 +129,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         super.onStart();
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
 
@@ -139,7 +139,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     @Override
@@ -206,10 +206,10 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
 
     @Subscribe
     public void onEvent(UserApiEvents.OnUserGoogleHandled event) {
-        if (hasFinished) return;
+        if (hasFinishedGoogleSignIn) return;
         User user = event.user;
         boolean isNewUser = user.googleOAuth.isNewUser;
-        AuthUtils.updateTokenPayload(user.token);
+        AuthUtil.updateTokenPayload(user.token);
         uiDismissProgressDialog();
         if (isNewUser) uiShowNewUserRegisteredDialog();
         else {
@@ -218,7 +218,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
             startActivity(intent);
             getActivity().finish();
         }
-        hasFinished = true;
+        hasFinishedGoogleSignIn = true;
     }
 
     @Subscribe

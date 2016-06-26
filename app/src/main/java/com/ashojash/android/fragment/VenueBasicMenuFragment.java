@@ -23,7 +23,7 @@ import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Menu;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
@@ -86,13 +86,13 @@ public class VenueBasicMenuFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     @Subscribe

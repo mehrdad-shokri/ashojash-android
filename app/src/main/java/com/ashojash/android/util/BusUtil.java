@@ -1,11 +1,11 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import org.greenrobot.eventbus.EventBus;
 
-public final class BusProvider {
+public final class BusUtil {
     private static final EventBus bus;
 
-    private BusProvider() {
+    private BusUtil() {
     }
 
     static {

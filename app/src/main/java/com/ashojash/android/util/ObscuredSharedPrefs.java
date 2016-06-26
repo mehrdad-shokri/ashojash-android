@@ -1,4 +1,4 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -67,7 +67,7 @@ public class ObscuredSharedPrefs implements SharedPreferences {
         @Override
         public SharedPreferences.Editor putStringSet(String s, Set<String> set) {
             for (String value : set) {
-                putString(s,value);
+                putString(s, value);
             }
             return this;
         }

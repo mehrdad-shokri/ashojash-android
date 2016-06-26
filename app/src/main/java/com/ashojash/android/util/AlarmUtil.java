@@ -1,4 +1,4 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,7 +9,7 @@ import com.ashojash.android.service.RefreshTokenService;
 
 import java.util.Random;
 
-public class AlarmUtils {
+public class AlarmUtil {
 
     private static AlarmManager alarmManager;
 

@@ -1,9 +1,13 @@
 package com.ashojash.android.model;
 
-public class ApiRequestError {
-    public String message;
+import retrofit2.Call;
 
-    public ApiRequestError(String message) {
+public class ApiRequestError<T> {
+    public String message;
+    public Call<T> call;
+
+    public ApiRequestError(Call<T> call,String message) {
         this.message = message;
+        this.call = call;
     }
 }

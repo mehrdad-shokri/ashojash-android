@@ -3,13 +3,13 @@ package com.ashojash.android.ui;
 import android.graphics.Color;
 import com.ashojash.android.R;
 
-public final class VenueUtils {
+public final class VenueUtil {
+
     public static String getVenueScoreText(double score) {
         if (score == 0)
             return "-";
         return String.valueOf(score);
     }
-
 
     public static int getVenueScoreDrawableId(double score) {
         if (score < 1 || score > 5)
@@ -54,8 +54,7 @@ public final class VenueUtils {
             return Color.parseColor("#5ba829");
         if (score < 4.75)
             return Color.parseColor("#3f7e00");
-        if (score <= 5)
-        {
+        if (score <= 5) {
             return Color.parseColor("#305d02");
         }
         return Color.parseColor("#c1c1c1");

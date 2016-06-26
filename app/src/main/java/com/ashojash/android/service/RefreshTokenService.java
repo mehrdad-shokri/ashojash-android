@@ -9,8 +9,8 @@ import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Token;
-import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.AuthUtil;
+import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.webserver.UserApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -25,25 +25,25 @@ public class RefreshTokenService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        if (!BusProvider.getInstance().isRegistered(this))
-            BusProvider.getInstance().register(this);
+        if (!BusUtil.getInstance().isRegistered(this))
+            BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     @Subscribe
     public void onEvent(UserApiEvents.OnTokenRefreshed event) {
         Token token = event.token;
-        AuthUtils.updateTokenPayload(token);
+        AuthUtil.updateTokenPayload(token);
     }
 
     @Subscribe
     public void onEvent(OnApiResponseErrorEvent event) {
-        AuthUtils.logoutUser();
+        AuthUtil.logoutUser();
     }
 
     @Subscribe

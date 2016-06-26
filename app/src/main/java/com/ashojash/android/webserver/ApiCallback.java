@@ -3,8 +3,8 @@ package com.ashojash.android.webserver;
 import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.model.ApiRequestError;
-import com.ashojash.android.utils.BusProvider;
-import com.ashojash.android.utils.ErrorUtils;
+import com.ashojash.android.util.BusUtil;
+import com.ashojash.android.util.ErrorUtils;
 import org.greenrobot.eventbus.EventBus;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,21 +14,19 @@ public abstract class ApiCallback<T> implements Callback<T> {
     private final static EventBus BUS;
 
     static {
-        BUS = BusProvider.getInstance();
+        BUS = BusUtil.getInstance();
     }
-
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        BusProvider.getInstance().post(new OnApiRequestErrorEvent(new ApiRequestError(t.getMessage())));
+        BUS.post(new OnApiRequestErrorEvent(new ApiRequestError(call, t.getMessage())));
     }
 
-
-    protected void handleResponse(Response<?> response, Object object) {
+    protected void handleResponse(Response<?> response, Object event) {
         if (response.isSuccessful()) {
-            BusProvider.getInstance().post(object);
+            BUS.post(event);
         } else {
-            BUS.post(new OnApiResponseErrorEvent(ErrorUtils.parseError(response), object));
+            BUS.post(new OnApiResponseErrorEvent(ErrorUtils.parseError(response), event));
         }
     }
 }

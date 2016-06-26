@@ -23,8 +23,8 @@ import com.ashojash.android.model.UserRegistered;
 import com.ashojash.android.model.ValidationError;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.AuthValidator;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.BusUtil;
+import com.ashojash.android.util.ValidatorUtil;
 import com.ashojash.android.webserver.UserApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -66,16 +66,16 @@ public class EmailRegisterFragment extends Fragment {
 
     private boolean validateInputs() {
         boolean canSendDataToServer = true;
-        int emailValidationCode = AuthValidator.validateEmail(email);
-        int nameValidationCode = AuthValidator.validateName(name);
-        int usernameValidationCode = AuthValidator.validateUsername(username);
-        int passwordValidationCode = AuthValidator.validatePassword(password);
+        int emailValidationCode = ValidatorUtil.validateEmail(email);
+        int nameValidationCode = ValidatorUtil.validateName(name);
+        int usernameValidationCode = ValidatorUtil.validateUsername(username);
+        int passwordValidationCode = ValidatorUtil.validatePassword(password);
         if (emailValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = emailValidationCode;
-            if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 emailWrapper.setError(getResources().getString(R.string.email_field_required));
-            else if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
+            else if (ERROR_CODE == ValidatorUtil.REG_NOT_MATCH)
                 emailWrapper.setError(getResources().getString(R.string.email_not_valid));
         } else {
             emailWrapper.setError("");
@@ -83,13 +83,13 @@ public class EmailRegisterFragment extends Fragment {
         if (nameValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = nameValidationCode;
-            if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
+            if (ERROR_CODE == ValidatorUtil.REG_NOT_MATCH)
                 nameWrapper.setError(getResources().getString(R.string.name_reg_not_match));
-            else if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 nameWrapper.setError(getResources().getString(R.string.name_field_required));
-            else if (ERROR_CODE == AuthValidator.FIELD_UNDER_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_UNDER_LIMIT)
                 nameWrapper.setError(getResources().getString(R.string.name_under_limit));
-            else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_EXCEEDS_LIMIT)
                 nameWrapper.setError(getResources().getString(R.string.name_under_limit));
         } else {
             nameWrapper.setError("");
@@ -97,11 +97,11 @@ public class EmailRegisterFragment extends Fragment {
         if (passwordValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = passwordValidationCode;
-            if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 passwordWrapper.setError(getResources().getString(R.string.password_field_required));
-            else if (ERROR_CODE == AuthValidator.FIELD_UNDER_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_UNDER_LIMIT)
                 passwordWrapper.setError(getResources().getString(R.string.password_under_limit));
-            else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_EXCEEDS_LIMIT)
                 passwordWrapper.setError(getResources().getString(R.string.password_under_limit));
 
         } else {
@@ -110,13 +110,13 @@ public class EmailRegisterFragment extends Fragment {
         if (usernameValidationCode < 0) {
             canSendDataToServer = false;
             final int ERROR_CODE = usernameValidationCode;
-            if (ERROR_CODE == AuthValidator.REG_NOT_MATCH)
+            if (ERROR_CODE == ValidatorUtil.REG_NOT_MATCH)
                 usernameWrapper.setError(getResources().getString(R.string.username_reg_not_match));
-            if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 usernameWrapper.setError(getResources().getString(R.string.username_field_required));
-            else if (ERROR_CODE == AuthValidator.FIELD_UNDER_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_UNDER_LIMIT)
                 usernameWrapper.setError(getResources().getString(R.string.username_under_limit));
-            else if (ERROR_CODE == AuthValidator.FIELD_EXCEEDS_LIMIT)
+            else if (ERROR_CODE == ValidatorUtil.FIELD_EXCEEDS_LIMIT)
                 usernameWrapper.setError(getResources().getString(R.string.username_under_limit));
         } else {
             usernameWrapper.setError("");
@@ -129,13 +129,13 @@ public class EmailRegisterFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     @Subscribe

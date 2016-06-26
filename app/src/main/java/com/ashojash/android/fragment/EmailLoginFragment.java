@@ -19,9 +19,9 @@ import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.utils.AuthUtils;
-import com.ashojash.android.utils.AuthValidator;
-import com.ashojash.android.utils.BusProvider;
+import com.ashojash.android.util.AuthUtil;
+import com.ashojash.android.util.BusUtil;
+import com.ashojash.android.util.ValidatorUtil;
 import com.ashojash.android.webserver.UserApi;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -56,20 +56,20 @@ public class EmailLoginFragment extends Fragment {
 
     private boolean validateInputs() {
         boolean canSendDataToServer = true;
-        int passwordValidationCode = AuthValidator.validateLoginPassword(password);
+        int passwordValidationCode = ValidatorUtil.validateLoginPassword(password);
         if (passwordValidationCode < 0) {
             canSendDataToServer = false;
-            final int ERROR_CODE = AuthValidator.validatePassword(password);
-            if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            final int ERROR_CODE = ValidatorUtil.validatePassword(password);
+            if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 passwordWrapper.setError(getResources().getString(R.string.password_field_required));
         } else {
             passwordWrapper.setError("");
         }
-        int loginValidationCode = AuthValidator.validateLogin(login);
+        int loginValidationCode = ValidatorUtil.validateLogin(login);
         if (loginValidationCode < 0) {
             canSendDataToServer = false;
-            final int ERROR_CODE = AuthValidator.validateUsername(login);
-            if (ERROR_CODE == AuthValidator.FIELD_REQUIRED)
+            final int ERROR_CODE = ValidatorUtil.validateUsername(login);
+            if (ERROR_CODE == ValidatorUtil.FIELD_REQUIRED)
                 loginWrapper.setError(getResources().getString(R.string.login_field_required));
         } else {
             loginWrapper.setError("");
@@ -79,7 +79,7 @@ public class EmailLoginFragment extends Fragment {
 
     @Subscribe
     public void onEvent(UserApiEvents.OnUserLoggedIn event) {
-        AuthUtils.EmailLogin(event.user);
+        AuthUtil.EmailLogin(event.user);
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         getActivity().finish();
@@ -115,13 +115,13 @@ public class EmailLoginFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        BusProvider.getInstance().register(this);
+        BusUtil.getInstance().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        BusProvider.getInstance().unregister(this);
+        BusUtil.getInstance().unregister(this);
     }
 
     private void dismissProgressDialog() {

@@ -16,7 +16,7 @@ import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;
-import com.ashojash.android.ui.VenueUtils;
+import com.ashojash.android.ui.VenueUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -84,9 +84,9 @@ public class VenueHeroBigFragment extends Fragment {
     private void updateVenueScoreBackgroundDrawable() {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            txtVenueScore.setBackground(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(venue.score)));
+            txtVenueScore.setBackground(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(venue.score)));
         } else {
-            txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtils.getVenueScoreDrawableId(venue.score)));
+            txtVenueScore.setBackgroundDrawable(AppController.context.getResources().getDrawable(VenueUtil.getVenueScoreDrawableId(venue.score)));
         }
     }
 }

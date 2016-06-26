@@ -1,4 +1,4 @@
-package com.ashojash.android.utils;
+package com.ashojash.android.util;
 
 import android.content.Context;
 import android.location.Location;

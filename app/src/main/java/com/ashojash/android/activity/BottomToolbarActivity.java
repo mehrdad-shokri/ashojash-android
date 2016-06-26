@@ -11,7 +11,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.utils.AuthUtils;
+import com.ashojash.android.util.AuthUtil;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.roughike.bottombar.BottomBar;
@@ -29,8 +29,8 @@ public class BottomToolbarActivity extends BaseActivity {
             mBottomBar.onSaveInstanceState(outState);
     }
 
-    protected void attachShy(final int position, Activity activity, Bundle savedInstanceState, CoordinatorLayout layout, View contentView) {
-        mBottomBar = BottomBar.attachShy(layout, contentView, savedInstanceState);
+    protected void attachShy(final int position, Activity activity, Bundle savedInstanceState, CoordinatorLayout coordinatorLayout, View contentView) {
+        mBottomBar = BottomBar.attachShy(coordinatorLayout, contentView, savedInstanceState);
         setupBottomBar(position, activity);
     }
 
@@ -53,7 +53,7 @@ public class BottomToolbarActivity extends BaseActivity {
                 break;
         }
         Resources res = AppController.context.getResources();
-        if (AuthUtils.isUserLoggedIn()) {
+        if (AuthUtil.isUserLoggedIn()) {
             mBottomBar.setItems(
 
                     new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(ICON_SIZE
@@ -120,7 +120,7 @@ public class BottomToolbarActivity extends BaseActivity {
                             ObjectAnimator.ofInt(nestedScrollView, "scrollY", 0).setDuration(200).start();
                         } else if (activity instanceof CollectionActivity) {
                             activity.finish();
-                            activity.overridePendingTransition(0,0);
+                            activity.overridePendingTransition(0, 0);
                         }
                     }
                 });
