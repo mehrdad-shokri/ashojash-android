@@ -22,7 +22,7 @@ import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Menu;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.BusUtil;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -106,10 +106,10 @@ public class VenueBasicMenuFragment extends Fragment {
             showErrorViews();
             btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
-            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
             return;
         }
-        btnSeeMore.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
+        btnSeeMore.setText(UiUtil.toPersianNumber(getString(R.string.venue_see_all_menus).replace("{{venueMenusCount}}", String.valueOf(menusCount))));
         VenueMenusAdapter adapter = new VenueMenusAdapter(menuList);
         adapter.setOnItemClickLister(new OnCardClickListener() {
             @Override
@@ -118,7 +118,7 @@ public class VenueBasicMenuFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
-        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(menuList.size() * 65 + 90)));
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(menuList.size() * 65 + 90)));
         btnSeeMore.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         hideErrorViews();
@@ -128,7 +128,7 @@ public class VenueBasicMenuFragment extends Fragment {
     public void onError(OnApiResponseErrorEvent event) {
         btnSeeMore.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }

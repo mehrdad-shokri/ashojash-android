@@ -12,119 +12,160 @@ import android.view.View;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.util.AuthUtil;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_explore;
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_face;
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_home;
+
 public class BottomToolbarActivity extends BaseActivity {
-    private BottomBar mBottomBar;
-    private static final int ICON_SIZE = 26;
+  private static final int MAIN_ACTIVITY_BOTTOMBAR_POSITION = 0;
+  private static final int MAPS_ACTIVITY_BOTTOMBAR_POSITION = 1;
+  private static final int PROFILE_ACTIVITY_BOTTOMBAR_POSITION = 2;
+  public BottomBar mBottomBar;
+  private static final int ICON_SIZE = 26;
+  private int SELECTED_TAB_COLOR;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mBottomBar != null)
-            mBottomBar.onSaveInstanceState(outState);
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    if (mBottomBar != null) mBottomBar.onSaveInstanceState(outState);
+  }
+
+  protected void attachShy(Activity activity, Bundle savedInstanceState,
+      CoordinatorLayout coordinatorLayout, View contentView) {
+    mBottomBar = BottomBar.attachShy(coordinatorLayout, contentView, savedInstanceState);
+    int position = getActivityPosition(activity);
+    setupBottomBar(position, activity);
+  }
+
+  protected void attach(Activity activity, Bundle savedInstanceState) {
+    int position = getActivityPosition(activity);
+    mBottomBar = BottomBar.attach(activity, savedInstanceState);
+    setupBottomBar(position, activity);
+  }
+
+  private int getActivityPosition(Activity activity) {
+    int position = 0;
+    if (activity instanceof GuestProfileActivity) {
+      position = PROFILE_ACTIVITY_BOTTOMBAR_POSITION;
+    } else if (activity instanceof CollectionActivity) {
+      position = MAIN_ACTIVITY_BOTTOMBAR_POSITION;
+    } else if (activity instanceof MapsActivity) position = MAPS_ACTIVITY_BOTTOMBAR_POSITION;
+    return position;
+  }
+
+  private void setupBottomBar(final int position, final Activity activity) {
+    mBottomBar.setDefaultTabPosition(position);
+    mBottomBar.setActiveTabColor(R.color.bottom_nav_item_selected);
+    int collectionColor = 0, profileColor = 0, mapColor = 0;
+    final Resources res = AppController.context.getResources();
+    final int selectedColor = res.getColor(R.color.bottom_nav_item_selected);
+    int unselectedColor = res.getColor(R.color.bottom_nav_item_unselected);
+    switch (position) {
+      case MAIN_ACTIVITY_BOTTOMBAR_POSITION:
+        collectionColor = selectedColor;
+        profileColor = mapColor = unselectedColor;
+        break;
+      case MAPS_ACTIVITY_BOTTOMBAR_POSITION:
+        mapColor = selectedColor;
+        collectionColor = profileColor = selectedColor;
+        break;
+      case PROFILE_ACTIVITY_BOTTOMBAR_POSITION:
+        profileColor = selectedColor;
+        mapColor = collectionColor = unselectedColor;
+        break;
     }
 
-    protected void attachShy(final int position, Activity activity, Bundle savedInstanceState, CoordinatorLayout coordinatorLayout, View contentView) {
-        mBottomBar = BottomBar.attachShy(coordinatorLayout, contentView, savedInstanceState);
-        setupBottomBar(position, activity);
+    final IconicsDrawable mainDrawable =
+        new IconicsDrawable(this).icon(gmd_home).color(collectionColor).sizeDp(24);
+    final IconicsDrawable mapDrawable = new IconicsDrawable(AppController.context).icon(gmd_explore)
+        .color(mapColor)
+        .sizeDp(ICON_SIZE);
+    final IconicsDrawable profileDrawable =
+        new IconicsDrawable(AppController.context).icon(gmd_face)
+            .color(profileColor)
+            .sizeDp(ICON_SIZE);
+    BottomBarTab mainTab = new BottomBarTab(mainDrawable, null);
+    BottomBarTab mapTab = new BottomBarTab(mapDrawable, null);
+    BottomBarTab profileTab = new BottomBarTab(profileDrawable, null);
+    if (AuthUtil.isUserLoggedIn()) {
+      mBottomBar.setItems(mainTab, mapTab);
+    } else {
+      mBottomBar.setItems(mainTab, mapTab, profileTab);
     }
-
-    protected void attach(int position, Activity activity, Bundle savedInstanceState) {
-        mBottomBar = BottomBar.attach(activity, savedInstanceState);
-        setupBottomBar(position, activity);
-    }
-
-    private void setupBottomBar(final int position, final Activity activity) {
-        mBottomBar.setDefaultTabPosition(position);
-        int homeColor = 0, profileColor = 0;
-        switch (position) {
-            case 0:
-                homeColor = R.color.bottom_nav_item_selected;
-                profileColor = R.color.bottom_nav_item_unselected;
-                break;
-            case 1:
-                homeColor = R.color.bottom_nav_item_unselected;
-                profileColor = R.color.bottom_nav_item_selected;
-                break;
-        }
-        Resources res = AppController.context.getResources();
-        if (AuthUtil.isUserLoggedIn()) {
-            mBottomBar.setItems(
-
-                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(ICON_SIZE
-                    ).color(res.getColor(homeColor)), null)
-            );
-        } else {
-            mBottomBar.setItems(
-                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_home).sizeDp(ICON_SIZE
-                    ).color(res.getColor(homeColor)), null),
-                    new BottomBarTab(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_account_circle).sizeDp(ICON_SIZE).color(res.getColor(profileColor)), null)
-            );
-        }
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
+    AsyncTask.execute(new Runnable() {
+      @Override public void run() {
+        mBottomBar.setOnTabClickListener(new OnTabClickListener() {
+          @Override public void onTabSelected(int selectedTab) {
+            if (position != MAIN_ACTIVITY_BOTTOMBAR_POSITION
+                && selectedTab == MAIN_ACTIVITY_BOTTOMBAR_POSITION) {
+              mainDrawable.color(selectedColor);
+              AsyncTask.execute(new Runnable() {
+                @Override public void run() {
+                  try {
+                    Thread.sleep(100);
+                  } catch (InterruptedException e) {
                     e.printStackTrace();
+                  }
+                  Intent intent = new Intent(activity, MainActivity.class);
+                  intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                  startActivity(intent);
+                  overridePendingTransition(0, 0);
+                  activity.finish();
                 }
-                mBottomBar.setOnTabClickListener(new OnTabClickListener() {
-                    @Override
-                    public void onTabSelected(int selectedTab) {
-                        if (position == 0 && selectedTab == 1) {
-                            AsyncTask.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent intent = new Intent(activity, GuestProfileActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                    startActivity(intent);
-                                    overridePendingTransition(0, 0);
-                                    activity.finish();
-                                }
-                            });
-                        } else if (position == 1 && selectedTab == 0) {
-                            AsyncTask.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    Intent intent = new Intent(activity, MainActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                    startActivity(intent);
-                                    overridePendingTransition(0, 0);
-                                    activity.finish();
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onTabReSelected(int position) {
-                        if (activity instanceof MainActivity) {
-                            NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
-                            ObjectAnimator.ofInt(nestedScrollView, "scrollY", 0).setDuration(200).start();
-                        } else if (activity instanceof CollectionActivity) {
-                            activity.finish();
-                            activity.overridePendingTransition(0, 0);
-                        }
-                    }
-                });
+              });
+            } else if (position != MAPS_ACTIVITY_BOTTOMBAR_POSITION
+                && selectedTab == MAPS_ACTIVITY_BOTTOMBAR_POSITION) {
+              mapDrawable.color(selectedColor);
+              AsyncTask.execute(new Runnable() {
+                @Override public void run() {
+                  try {
+                    Thread.sleep(100);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                  Intent intent = new Intent(activity, MapsActivity.class);
+                  intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                  startActivity(intent);
+                  overridePendingTransition(0, 0);
+                  activity.finish();
+                }
+              });
+            } else if (position != PROFILE_ACTIVITY_BOTTOMBAR_POSITION
+                && selectedTab == PROFILE_ACTIVITY_BOTTOMBAR_POSITION) {
+              profileDrawable.color(selectedColor);
+              AsyncTask.execute(new Runnable() {
+                @Override public void run() {
+                  try {
+                    Thread.sleep(100);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                  Intent intent = new Intent(activity, GuestProfileActivity.class);
+                  intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                  startActivity(intent);
+                  overridePendingTransition(0, 0);
+                  activity.finish();
+                }
+              });
             }
+          }
+
+          @Override public void onTabReSelected(int position) {
+            if (activity instanceof MainActivity) {
+              NestedScrollView nestedScrollView =
+                  (NestedScrollView) findViewById(R.id.nestedScrollView);
+              ObjectAnimator.ofInt(nestedScrollView, "scrollY", 0).setDuration(150).start();
+            } else if (activity instanceof CollectionActivity) {
+              activity.finish();
+              activity.overridePendingTransition(0, 0);
+            }
+          }
         });
-    }
+      }
+    });
+  }
 }

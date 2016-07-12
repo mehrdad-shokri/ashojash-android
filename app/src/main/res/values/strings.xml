@@ -151,5 +151,15 @@
     <string name="title_city_select">انتخاب شهر</string>
     <string name="title_info">اطلاعات</string>
     <string name="title_reviews">مرورها</string>
-    <string name="hello_world"/>
+
+    <string name="letsgo">بزن بریم</string>
+    <string name="permission_location_rationale">برای پیشنهاد رستوران های اطراف، اجازه بدید که موقعیت رو بدونیم.</string>
+    <string name="button_allow">حَله</string>
+    <string name="button_deny">نه</string>
+    <string name="permission_call_neverask">مطمئنی با من اینکارو کردی</string>
+    <string name="permission_call_denied">مجوزی داده نشد.</string>
+    <string name="permission_location_settings">برای دیدن رستورانهای اطراف\n به آشوجاش اجازه مکانیابی رو بدید.</string>
+    <string name="no_permission_granted">مجوزی داده نشد</string>
+    <string name="error_location_service_not_turned_on">برای پیشنهاد مکان های اطراف سرویس مکانیابی نیاز است.</string>
+    <string name="search_this_area">جست و جوی این منطقه</string>
 </resources>

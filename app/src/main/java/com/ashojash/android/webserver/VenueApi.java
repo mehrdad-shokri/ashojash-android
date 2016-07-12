@@ -16,6 +16,7 @@ public final class VenueApi extends BaseApi {
     private static Call<Venue> indexCall;
     private static Call<VenuePaginated> searchCall;
     private static Call<List<Review>> reviewsCall;
+    private static Call<List<Venue>> nearbyCall;
 
     private VenueApi() {
     }
@@ -90,6 +91,17 @@ public final class VenueApi extends BaseApi {
         });
     }
 
+    public static void nearby(double lat, double lng, double distance, int limit) {
+        nearbyCall = API.nearby(lat, lng, distance, limit);
+        nearbyCall.enqueue(new ApiCallback<List<Venue>>() {
+            @Override
+            public void onResponse(Call<List<Venue>> call, Response<List<Venue>> response) {
+                if (call.isCanceled()) return;
+                handleResponse(response, new VenueApiEvents.OnNearbyVenuesResult(response.body()));
+            }
+        });
+    }
+
     public static void cancelReviewsCall() {
         if (reviewsCall != null) reviewsCall.cancel();
     }
@@ -110,5 +122,8 @@ public final class VenueApi extends BaseApi {
 
         @GET("venue/{venueSlug}/photos")
         Call<List<Photo>> photos(@Path("venueSlug") String venueSlug);
+
+        @GET("venue/nearby/lat/{lat}/lng/{lng}")
+        Call<List<Venue>> nearby(@Path("lat") double lat, @Path("lng") double lng, @Query("distance") double distance, @Query("limit") int limit);
     }
 }

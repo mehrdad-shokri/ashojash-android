@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.ui.VenueUtil;
+import com.ashojash.android.util.UiUtil;
+import com.ashojash.android.util.VenueUtil;
 
 public class VenueScoreIndicator extends LinearLayout {
     private TextView txtVenueScore;
@@ -57,7 +57,7 @@ public class VenueScoreIndicator extends LinearLayout {
         if (count == 0) {
             txtVenueScoreCount.setText(getResources().getString(R.string.review_count_not_enough));
         } else {
-            txtVenueScoreCount.setText(getResources().getString(R.string.review_based_on_count).replace("{{venueReviewCount}}", UiUtils.toPersianNumber(String.valueOf(count))));
+            txtVenueScoreCount.setText(getResources().getString(R.string.review_based_on_count).replace("{{venueReviewCount}}", UiUtil.toPersianNumber(String.valueOf(count))));
         }
     }
 

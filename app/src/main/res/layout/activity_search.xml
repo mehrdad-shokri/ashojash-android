@@ -43,6 +43,6 @@
                 android:hint="@string/search_hint"
                 app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
                 app:fsv_menu="@menu/search"
-                app:theme="@style/CustomFloatingSearchViewTheme"/>
+                app:theme="@style/AshojashFloatingSearchViewTheme"/>
     </RelativeLayout>
 </FrameLayout>

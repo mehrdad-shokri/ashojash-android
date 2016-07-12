@@ -22,7 +22,7 @@ import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.UserRegistered;
 import com.ashojash.android.model.ValidationError;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.util.ValidatorUtil;
 import com.ashojash.android.webserver.UserApi;
@@ -172,7 +172,7 @@ public class EmailRegisterFragment extends Fragment {
     }
 
     private void registerUser() {
-        UiUtils.hideKeyboard();
+        UiUtil.hideKeyboard();
         username = usernameWrapper.getEditText().getText().toString();
         password = passwordWrapper.getEditText().getText().toString();
         email = emailWrapper.getEditText().getText().toString();

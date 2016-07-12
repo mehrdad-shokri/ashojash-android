@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.CollectionSlideShowAdapter;
 import com.ashojash.android.model.VenueCollection;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.relex.circleindicator.CircleIndicator;
@@ -39,7 +39,7 @@ public class CollectionsSlideShowFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-        params.setMargins(0, (int) UiUtils.dp2px(20), 0, 0);
+        params.setMargins(0, (int) UiUtil.dp2px(20), 0, 0);
         view.setLayoutParams(params);
         super.onViewCreated(view, savedInstanceState);
     }

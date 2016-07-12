@@ -12,8 +12,8 @@ import com.ashojash.android.model.Menu;
 
 import java.util.List;
 
-import static com.ashojash.android.ui.UiUtils.formatCurrency;
-import static com.ashojash.android.ui.UiUtils.toPersianNumber;
+import static com.ashojash.android.util.UiUtil.formatCurrency;
+import static com.ashojash.android.util.UiUtil.toPersianNumber;
 
 public class VenueMenusAdapter extends RecyclerView.Adapter<VenueMenusAdapter.ViewHolder> {
     private static final Context CONTEXT = AppController.context;

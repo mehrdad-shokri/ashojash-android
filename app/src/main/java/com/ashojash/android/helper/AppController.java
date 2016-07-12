@@ -12,8 +12,9 @@ import android.support.multidex.MultiDexApplication;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.EventProvider;
 import com.ashojash.android.util.ObscuredSharedPrefs;
+import com.ashojash.android.util.UiUtil;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -67,8 +68,8 @@ public class AppController extends MultiDexApplication {
             widthPx = display.getWidth();
             heightPx = display.getHeight();
         }
-        widthDp = (int) UiUtils.px2dp(widthPx);
-        heightDp = (int) UiUtils.px2dp(heightPx);
+        widthDp = (int) UiUtil.px2dp(widthPx);
+        heightDp = (int) UiUtil.px2dp(heightPx);
     }
 
     private void initializeSharedPrefs() {
@@ -105,4 +106,6 @@ public class AppController extends MultiDexApplication {
         }
         return mTracker;
     }
+
+    public static EventProvider eventProvider = new EventProvider();
 }

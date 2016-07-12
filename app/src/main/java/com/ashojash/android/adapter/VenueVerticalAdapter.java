@@ -14,7 +14,7 @@ import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
@@ -40,7 +40,7 @@ public class VenueVerticalAdapter extends RecyclerView.Adapter<VenueVerticalAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (venueList.size() - 1 == position)
-            holder.root.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(200)));
+            holder.root.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(200)));
 
         final Venue venue = venueList.get(position);
         holder.root.setOnClickListener(new View.OnClickListener() {

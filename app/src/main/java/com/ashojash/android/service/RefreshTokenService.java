@@ -24,6 +24,7 @@ public class RefreshTokenService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+//        LocalBroadcastManager.getInstance(this).
         super.onStart(intent, startId);
         if (!BusUtil.getInstance().isRegistered(this))
             BusUtil.getInstance().register(this);

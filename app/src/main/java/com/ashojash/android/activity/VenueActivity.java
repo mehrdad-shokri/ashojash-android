@@ -25,7 +25,7 @@ import com.ashojash.android.fragment.*;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.AuthUtil;
 import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.util.ValidatorUtil;
@@ -145,7 +145,7 @@ public class VenueActivity extends BaseActivity {
         addReviewFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_rate_review).actionBar().color(Color.WHITE));
         addPhotoFab.setImageDrawable(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_add_a_photo).actionBar().color(Color.WHITE));
         CollapsingToolbarLayout.LayoutParams params = (CollapsingToolbarLayout.LayoutParams) toolbar.getLayoutParams();
-        params.height = params.height + UiUtils.getStatusBarHeight(this);
+        params.height = params.height + UiUtil.getStatusBarHeight(this);
         toolbar.setLayoutParams(params);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

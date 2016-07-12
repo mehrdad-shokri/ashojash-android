@@ -22,7 +22,7 @@ import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Review;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.BusUtil;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -101,7 +101,7 @@ public class VenueBasicReviewFragment extends Fragment {
     public void onEvent(OnApiResponseErrorEvent event) {
         btnSeeMore.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }
@@ -117,10 +117,10 @@ public class VenueBasicReviewFragment extends Fragment {
             btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             showErrorViews();
-            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
             return;
         }
-        btnSeeMore.setText(UiUtils.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
+        btnSeeMore.setText(UiUtil.toPersianNumber(getString(R.string.venue_see_all_reviews).replace("{{venueReviewsCount}}", String.valueOf(reviewsCount))));
         adapter = new VenueReviewsAdapter(reviewList);
         adapter.setOnItemClickListener(new OnCardClickListener() {
             @Override
@@ -130,7 +130,7 @@ public class VenueBasicReviewFragment extends Fragment {
         });
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
-        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(reviewList.size() * 75 + 100)));
+        rootLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(reviewList.size() * 75 + 100)));
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 //        recyclerView.setLayoutManager(layoutManager);
         btnSeeMore.setVisibility(View.VISIBLE);

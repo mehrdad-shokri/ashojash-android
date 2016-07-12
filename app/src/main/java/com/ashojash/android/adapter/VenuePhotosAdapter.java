@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Photo;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -42,7 +42,7 @@ public class VenuePhotosAdapter extends RecyclerView.Adapter<VenuePhotosAdapter.
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Photo photo = photoList.get(position);
-        Glide.with(CONTEXT).load(UiUtils.setUrlWidth(photo.url, 240)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgVenuePhoto);
+        Glide.with(CONTEXT).load(UiUtil.setUrlWidth(photo.url, 240)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imgVenuePhoto);
         if (onCardClickListener != null)
             holder.imgVenuePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override

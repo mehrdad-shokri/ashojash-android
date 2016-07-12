@@ -1,5 +1,6 @@
 package com.ashojash.android.ui;
 
+import com.ashojash.android.util.UiUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
@@ -8,7 +9,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class UiUtilsTest {
+public class UiUtilTest {
 
     @Before
     public void setUp() throws Exception {
@@ -18,7 +19,7 @@ public class UiUtilsTest {
     @Test
     public void should_convert_number_to_a_persian_number() {
         String number = "0123456789 hello world";
-        String result = UiUtils.toPersianNumber(number);
+        String result = UiUtil.toPersianNumber(number);
         assertThat(result, equalTo("۰۱۲۳۴۵۶۷۸۹ hello world"));
     }
 
@@ -26,18 +27,18 @@ public class UiUtilsTest {
     public void should_append_width_to_a_url() {
         int px = 50;
         String url = "example.com/user/photo/mehrdad";
-        String expectedUrl = UiUtils.setUrlWidth(url, px);
+        String expectedUrl = UiUtil.setUrlWidth(url, px);
         assertThat(expectedUrl, is(url + "?w=50"));
     }
 
     @Test
     public void should_format_currency_correctly() {
         String price = "15000";
-        String expected = UiUtils.formatCurrency(price);
+        String expected = UiUtil.formatCurrency(price);
         assertThat(expected, is("15,000"));
 
         price = "100";
-        expected = UiUtils.formatCurrency(price);
+        expected = UiUtil.formatCurrency(price);
         assertThat(expected, is("100"));
     }
 

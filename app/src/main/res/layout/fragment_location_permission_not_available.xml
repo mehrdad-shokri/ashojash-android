@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.heinrichreimersoftware.materialintro.view.parallax.ParallaxRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rootView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+            android:layout_width="wrap_content"
+            tools:text="بزن بریم"
+            android:text="بزن بریم"
+            android:id="@+id/title"
+            android:textSize="25sp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#666"
+            app:layout_parallaxFactor="2"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imageView"/>
+    <com.ashojash.android.ui.PlayGifView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/imageView"
+            android:layout_centerInParent="true"
+            app:layout_parallaxFactor=".9"
+    />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:text="برای پیشنهاد رستورانهای اطراف،\nآشوجاش به مجوز مکانیابی نیاز داره."
+            tools:text="برای پیشنهاد رستورانهای اطراف،\nآشوجاش به مجوز مکانیابی نیاز داره"
+            android:id="@+id/description"
+            android:layout_below="@id/imageView"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="#666"
+            android:layout_marginTop="15dp"
+            app:layout_parallaxFactor="2"
+            android:layout_height="wrap_content"/>
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:text="@string/give_permission"
+            android:layout_centerHorizontal="true"
+            app:layout_parallaxFactor="2"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/description"/>
+
+</com.heinrichreimersoftware.materialintro.view.parallax.ParallaxRelativeLayout>

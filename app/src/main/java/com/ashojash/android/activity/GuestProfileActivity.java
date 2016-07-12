@@ -18,7 +18,7 @@ public class GuestProfileActivity extends BottomToolbarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest);
         setupViews();
-        attach(1, this, savedInstanceState);
+        attach(this, savedInstanceState);
     }
 
     private void setupViews() {

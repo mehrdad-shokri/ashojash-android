@@ -1,6 +1,7 @@
 package com.ashojash.android.ui;
 
 import com.ashojash.android.R;
+import com.ashojash.android.util.VenueUtil;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;

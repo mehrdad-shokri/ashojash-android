@@ -18,7 +18,7 @@ import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.UserApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.AuthUtil;
 import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.util.ValidatorUtil;
@@ -140,7 +140,7 @@ public class EmailLoginFragment extends Fragment {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UiUtils.hideKeyboard();
+                UiUtil.hideKeyboard();
                 login = loginWrapper.getEditText().getText().toString();
                 password = passwordWrapper.getEditText().getText().toString();
                 if (validateInputs()) signInUser();

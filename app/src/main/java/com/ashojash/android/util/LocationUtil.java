@@ -5,6 +5,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,7 +29,6 @@ public class LocationUtil {
 
         //don't start listeners if no provider is enabled
         if (!gps_enabled && !network_enabled) {
-
             return false;
         }
         if (gps_enabled)
@@ -129,4 +131,10 @@ public class LocationUtil {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
+
+    public static LatLngBounds toBounds(LatLng center, double radius) {
+        LatLng southwest = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 225);
+        LatLng northeast = SphericalUtil.computeOffset(center, radius * Math.sqrt(2.0), 45);
+        return new LatLngBounds(southwest, northeast);
+    }
 }

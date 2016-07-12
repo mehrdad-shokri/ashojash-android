@@ -37,7 +37,6 @@ public final class VenueApiEvents {
         public List<Venue> venueList;
 
         public OnNearbyVenuesResult(List<Venue> venueList) {
-
             this.venueList = venueList;
         }
     }

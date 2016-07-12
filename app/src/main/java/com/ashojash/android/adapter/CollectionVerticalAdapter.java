@@ -14,7 +14,7 @@ import com.ashojash.android.R;
 import com.ashojash.android.activity.CollectionActivity;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.VenueCollection;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -39,7 +39,7 @@ public class CollectionVerticalAdapter extends RecyclerView.Adapter<CollectionVe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (collectionList.size() - 1 == position)
-            holder.root.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(200)));
+            holder.root.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(200)));
         final VenueCollection collection = collectionList.get(position);
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +58,8 @@ public class CollectionVerticalAdapter extends RecyclerView.Adapter<CollectionVe
 
         } else {
             holder.descriptionContainer.setVisibility(View.GONE);
-            FrameLayout.LayoutParams layoutParams = new CardView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(200));
-            layoutParams.setMargins(0, 0, 0, (int) UiUtils.dp2px(8));
+            FrameLayout.LayoutParams layoutParams = new CardView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(200));
+            layoutParams.setMargins(0, 0, 0, (int) UiUtil.dp2px(8));
             holder.root.setLayoutParams(layoutParams);
         }
     }

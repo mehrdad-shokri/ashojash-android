@@ -9,4 +9,5 @@
     <item name="collectionHero" type="id"></item>
     <item name="collectionsSlideshow" type="id"></item>
     <item name="collectionsVerticalNormal" type="id"></item>
+    <item name="navigationBarCover" type="id"></item>
 </resources>

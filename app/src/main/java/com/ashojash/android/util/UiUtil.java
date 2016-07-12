@@ -1,14 +1,16 @@
-package com.ashojash.android.ui;
+package com.ashojash.android.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 
-public final class UiUtils {
+public final class UiUtil {
     private static String[] persianNumbers = new String[]{"۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"};
 
     public static void hideKeyboard() {
@@ -95,4 +97,26 @@ public final class UiUtils {
             return result == 0 ? dimenResult : result;
         }
     }
+
+    public static BitmapDrawable writeOnDrawable(int drawableId, String text) {
+        Bitmap bm = BitmapFactory.decodeResource(AppController.context.getResources(), drawableId).copy(Bitmap.Config.ARGB_8888, true);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(45);
+        Canvas canvas = new Canvas(bm);
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+        canvas.drawText(text, bm.getWidth() / 2, /*bm.getHeight() / 2*/yPos, paint);
+        return new BitmapDrawable(bm);
+    }
+    public static int getNavBarHeight(){
+        Resources resources = AppController.context.getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
 }

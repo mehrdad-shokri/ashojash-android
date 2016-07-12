@@ -51,7 +51,7 @@ public class CollectionActivity extends BottomToolbarActivity {
         CollectionSlug = getIntent().getStringExtra("slug");
         collection = AppController.gson.fromJson(getIntent().getStringExtra("collection"), VenueCollection.class);
         setupView();
-        attachShy(0, this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView), findViewById(R.id.nestedScrollView));
+        attachShy(this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView), findViewById(R.id.nestedScrollView));
         requestCollectionVenues();
     }
 

@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.ui.UiUtils;
-import com.ashojash.android.ui.VenueUtil;
+import com.ashojash.android.util.UiUtil;
+import com.ashojash.android.util.VenueUtil;
 
 public class VenueScoreArc extends ImageView {
     private Paint paint;
@@ -47,8 +47,8 @@ public class VenueScoreArc extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPath.moveTo(0, getHeight() - UiUtils.dp2px(115));
-        mPath.cubicTo(0, getHeight() - UiUtils.dp2px(115), getWidth() / 2, 50 * getHeight() / 100, getWidth(), getHeight() - UiUtils.dp2px(115)); /*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more */
+        mPath.moveTo(0, getHeight() - UiUtil.dp2px(115));
+        mPath.cubicTo(0, getHeight() - UiUtil.dp2px(115), getWidth() / 2, 50 * getHeight() / 100, getWidth(), getHeight() - UiUtil.dp2px(115)); /*the anchors you want, the curve will tend to reach these anchor points; look at the wikipedia article to understand more */
         paint.setAntiAlias(true);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);

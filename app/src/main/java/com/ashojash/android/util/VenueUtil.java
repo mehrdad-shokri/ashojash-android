@@ -1,4 +1,4 @@
-package com.ashojash.android.ui;
+package com.ashojash.android.util;
 
 import android.graphics.Color;
 import com.ashojash.android.R;

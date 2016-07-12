@@ -1,19 +1,25 @@
 <resources>
 
-    <style name="AshojashTheme" parent="AshojashMaterialTheme.Base">
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
-        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
-        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
-        <item name="android:navigationBarColor">@color/black</item>
-    </style>
+  <style name="AshojashTheme" parent="AshojashMaterialTheme.Base">
+    <item name="android:windowContentTransitions">true</item>
+    <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+    <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+    <item name="android:navigationBarColor">@color/black</item>
+  </style>
 
-    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:textColorPrimary">#333</item>
-        <item name="android:background">#efefef</item>
-        <item name="android:navigationBarColor">@color/black</item>
-    </style>
+
+  <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="android:textColorPrimary">#333</item>
+    <item name="android:background">#efefef</item>
+    <item name="android:navigationBarColor">@color/black</item>
+  </style>
+
+  <style name="SplashTheme" parent="SplashThemeBase">
+    <item name="android:navigationBarColor">#610008</item>
+    <item name="android:statusBarColor">#610008</item>
+  </style>
 
 </resources>

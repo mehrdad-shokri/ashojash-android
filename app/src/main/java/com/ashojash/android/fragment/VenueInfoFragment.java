@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 
 
 public class VenueInfoFragment extends Fragment {
@@ -46,7 +46,7 @@ public class VenueInfoFragment extends Fragment {
             txtVenuePhone.setVisibility(View.GONE);
             txtVenuePhoneTitle.setVisibility(View.GONE);
         }
-        txtVenuePhone.setText(UiUtils.toPersianNumber(venue.phone));
+        txtVenuePhone.setText(UiUtil.toPersianNumber(venue.phone));
         txtVenueAddress.setText(venue.location.address);
     }
 }

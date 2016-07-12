@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.City;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -48,7 +48,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final City city = cityList.get(position);
-        Glide.with(context).load(UiUtils.setUrlWidth(city.photo.url, 80)).centerCrop().placeholder(R.drawable.city_list_loader).error(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary))).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imageView);
+        Glide.with(context).load(UiUtil.setUrlWidth(city.photo.url, 80)).centerCrop().placeholder(R.drawable.city_list_loader).error(new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary))).diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.imageView);
         holder.textCityName.setText(city.name);
         holder.imgIconic.setImageDrawable(new IconicsDrawable(context).icon(GoogleMaterial.Icon.gmd_keyboard_arrow_left).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary)));
         holder.rootLayout.setOnClickListener(new View.OnClickListener() {

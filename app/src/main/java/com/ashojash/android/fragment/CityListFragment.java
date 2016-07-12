@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.ashojash.android.R;
 import com.ashojash.android.activity.MainActivity;
 import com.ashojash.android.adapter.CityAdapter;
 import com.ashojash.android.event.CityApiEvents;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.City;
@@ -70,7 +72,6 @@ public class CityListFragment extends Fragment {
         adapter.setOnItemClickListener(new CityAdapter.OnItemClickListener() {
             @Override
             public void onClick(City city) {
-
                 AppController.editor.putString("current_city_slug", city.slug);
                 AppController.editor.commit();
                 AppController.citySlug = city.slug;
@@ -92,6 +93,12 @@ public class CityListFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
             }
         }).show();
+    }
+
+    @Subscribe
+    public void onEvent(OnApiRequestErrorEvent e) {
+        String TAG = AppController.TAG;
+        Log.d(TAG, "onEvent: " + e.error.message);
     }
 
     private void setupViews() {

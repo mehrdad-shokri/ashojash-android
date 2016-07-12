@@ -29,4 +29,11 @@ public class BaseActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         return fragment;
     }
+
+    protected void removeFragment(Fragment fragment) {
+        if (fragment == null) return;
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.remove(fragment);
+        fragmentTransaction.commit();
+    }
 }

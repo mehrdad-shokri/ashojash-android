@@ -1,75 +1,93 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:id="@+id/rootView"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
-    <RelativeLayout
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progressbar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        app:indicator="Pacman"
+        app:indicator_color="@color/colorPrimary"
+        app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
+        />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+      <LinearLayout
+          android:id="@+id/contentContainer"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:focusableInTouchMode="true"
+          android:orientation="vertical"
+          >
+
+        <LinearLayout
+            android:id="@+id/topMenuContainerMainActivity"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            >
 
-        <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/progressbar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
-                app:indicator="Pacman"
-                app:indicator_color="@color/colorPrimary"/>
+          <include
+              layout="@layout/toolbar_top"
+              android:id="@+id/toolbarTop"
+              />
+        </LinearLayout>
+      </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <LinearLayout
+        android:id="@+id/navigationBarBehind"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="#000"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
+  </RelativeLayout>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fitsSystemWindows="true"
+      >
 
+    <include
+        layout="@layout/toolbar_search_background"
+        android:id="@+id/toolbarTop"
+        />
 
-        <android.support.v4.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:id="@+id/nestedScrollView"
-                android:layout_height="wrap_content">
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusableInTouchMode="true"
-                    android:id="@+id/contentContainer"
-                    android:orientation="vertical">
-
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/topMenuContainerMainActivity"
-                        android:visibility="invisible">
-
-                    <include
-                            android:id="@+id/toolbarTop"
-                            layout="@layout/toolbar_top"/>
-                </LinearLayout>
-
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-    </RelativeLayout>
-
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <include
-                android:id="@+id/toolbarTop"
-                layout="@layout/toolbar_search_background"/>
-
-        <com.mypopsy.widget.FloatingSearchView
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fsv_cornerRadius="0dp"
-                android:paddingRight="2dp"
-                android:paddingLeft="2dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:contentInsetEnd="5dp"
-                app:contentInsetStart="5dp"
-                android:background="#90000000"
-                android:hint="@string/search_hint"
-                app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
-                app:fsv_menu="@menu/search"
-                app:theme="@style/CustomFloatingSearchViewTheme"/>
-    </RelativeLayout>
+    <com.mypopsy.widget.FloatingSearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#90000000"
+        android:hint="@string/search_hint"
+        android:paddingBottom="2dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp"
+        app:contentInsetEnd="5dp"
+        app:contentInsetStart="5dp"
+        app:fsv_cornerRadius="0dp"
+        app:fsv_menu="@menu/search"
+        app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
+        app:theme="@style/AshojashFloatingSearchViewTheme"
+        />
+  </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
 

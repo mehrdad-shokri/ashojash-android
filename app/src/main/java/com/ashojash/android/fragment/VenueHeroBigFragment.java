@@ -16,7 +16,7 @@ import com.ashojash.android.activity.VenueActivity;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;
-import com.ashojash.android.ui.VenueUtil;
+import com.ashojash.android.util.VenueUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;

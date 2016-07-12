@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tool="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@id/rootView"
+              android:background="#00ffffff">
+    <RelativeLayout
+            android:layout_width="200dp"
+            android:background="@drawable/shape_rectangle"
+            android:layout_height="60dp">
+        <ImageView android:layout_width="60dp"
+                   android:layout_height="60dp"
+                   android:scaleType="centerCrop"
+                   android:adjustViewBounds="true"
+                   android:layout_alignParentRight="true"
+                   android:layout_alignParentTop="true"
+                   android:layout_marginLeft="5dp"
+                   android:id="@+id/imgVenueImg"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_toLeftOf="@id/imgVenueImg"
+                      android:layout_centerVertical="true"
+                      android:gravity="right"
+                      android:orientation="vertical">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/txtVenueName"
+                      android:textSize="14sp"
+                      android:ellipsize="end"
+                      android:maxLines="1"
+                      android:textStyle="bold"
+                      tool:text="اسم رستوران"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="13sp"
+                      android:maxLines="1"
+                      android:ellipsize="end"
+                      android:id="@+id/txtVenueAddress"
+                      tool:text="ارومیه، خیابان امام"
+                      android:layout_below="@+id/txtVenueName"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="@drawable/shape_triangle"
+            android:rotation="180"/>
+</LinearLayout>

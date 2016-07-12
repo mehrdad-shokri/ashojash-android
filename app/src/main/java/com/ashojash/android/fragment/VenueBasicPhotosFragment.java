@@ -20,7 +20,7 @@ import com.ashojash.android.adapter.VenuePhotosAdapter;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.model.Photo;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.util.BusUtil;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -93,7 +93,7 @@ public class VenueBasicPhotosFragment extends Fragment {
     public void onEvent(OnApiResponseErrorEvent event) {
         btnSeeMore.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
-        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+        getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
         showErrorViews();
         txtError.setText(R.string.error_retrieving_data);
     }
@@ -109,10 +109,10 @@ public class VenueBasicPhotosFragment extends Fragment {
             btnSeeMore.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             showErrorViews();
-            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtils.dp2px(80)));
+            getView().findViewById(R.id.rootView).setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) UiUtil.dp2px(80)));
             return;
         }
-//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / photoList.size() + UiUtils.dp2px(200)));
+//            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (AppController.widthPx / photoList.size() + UiUtil.dp2px(200)));
 //            rootLayout.setLayoutParams(layoutParams);
         VenuePhotosAdapter adapter = new VenuePhotosAdapter(photoList);
         adapter.setOnItemClickListener(new OnCardClickListener() {

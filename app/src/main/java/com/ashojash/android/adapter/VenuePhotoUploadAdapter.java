@@ -12,7 +12,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import com.ashojash.android.R;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.ui.UiUtils;
+import com.ashojash.android.util.UiUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -85,8 +85,8 @@ public class VenuePhotoUploadAdapter extends RecyclerView.Adapter<VenuePhotoUplo
     String TAG = AppController.TAG;
 
     private void setPhoto(String mCurrentPhotoPath, ImageView mImageView) {
-        int targetW = (int) UiUtils.dp2px(72);
-        int targetH = (int) UiUtils.dp2px(72);
+        int targetW = (int) UiUtil.dp2px(72);
+        int targetH = (int) UiUtil.dp2px(72);
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmScaledOptions = new BitmapFactory.Options();
         bmScaledOptions.inJustDecodeBounds = true;

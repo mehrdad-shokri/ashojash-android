@@ -1,18 +1,5 @@
 package com.ashojash.android.webserver;
 
-<<<<<<< HEAD
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.BDDMockito.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.core.Every.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.CoreMatchers.*;
-
-
-public class ApiCallbackTest {
-=======
 import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.model.ApiRequestError;
@@ -98,5 +85,4 @@ public class ApiCallbackTest {
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(null, newValue);
     }
->>>>>>> release/1.0.3
 }

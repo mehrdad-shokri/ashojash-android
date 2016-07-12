@@ -5,4 +5,9 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#fe339a</item>
     </style>
+
+    <style name="HintText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">@color/hint_text_color</item>
+    </style>
 </resources>
