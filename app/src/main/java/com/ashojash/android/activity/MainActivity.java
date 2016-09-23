@@ -1,33 +1,22 @@
 package com.ashojash.android.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.ActionMenuView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Gravity;
-import android.view.HapticFeedbackConstants;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 import com.ashojash.android.R;
-import com.ashojash.android.adapter.VenueSearchResultAdapter;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
-import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.event.VenueCollectionEvents;
 import com.ashojash.android.fragment.CollectionHeroFragment;
 import com.ashojash.android.fragment.CollectionVerticalFragment;
@@ -38,27 +27,18 @@ import com.ashojash.android.fragment.VenueHeroNormalFragment;
 import com.ashojash.android.fragment.VenueSlideShowFragment;
 import com.ashojash.android.fragment.VenueVerticalFragment;
 import com.ashojash.android.helper.AppController;
-import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueCollection;
 import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.util.UiUtil;
-import com.ashojash.android.webserver.VenueApi;
 import com.ashojash.android.webserver.VenueCollectionApi;
 import com.google.gson.Gson;
-import com.mypopsy.drawable.SearchArrowDrawable;
-import com.mypopsy.widget.FloatingSearchView;
-import com.mypopsy.widget.internal.ViewUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.greenrobot.eventbus.Subscribe;
 
-public class MainActivity extends BottomToolbarActivity
-    implements ActionMenuView.OnMenuItemClickListener {
-
-  private FloatingSearchView mSearchView;
+public class MainActivity extends BottomToolbarActivity {
   private static String CITY_SLUG = AppController.citySlug;
-  private String searchQuery;
   private ArrayList<VenueCollection> collectionsSlideShow, collectionsVerticalNormal,
       collectionsHero;
   //    private ArrayList<Venue> venueSlideShow, venueHeroBig, venueHeroNormal;
@@ -72,96 +52,11 @@ public class MainActivity extends BottomToolbarActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     contentContainer = (ViewGroup) findViewById(R.id.contentContainer);
-    setupSearch();
     attachShy(this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView),
         findViewById(R.id.nestedScrollView));
     setupBottomNavBar();
     builder = new AshojashSnackbar.AshojashSnackbarBuilder(findViewById(R.id.rootView));
     VenueCollectionApi.collections(CITY_SLUG);
-  }
-
-  private void setupSearch() {
-    mSearchView = (FloatingSearchView) findViewById(R.id.search);
-    mSearchView.setOnMenuItemClickListener(this);
-    mSearchView.setText(null);
-    showClearButton(false);
-    showSearchProgress(false);
-    updateNavigationIcon();
-    mSearchView.setOnSearchFocusChangedListener(
-        new FloatingSearchView.OnSearchFocusChangedListener() {
-          @Override public void onFocusChanged(final boolean focused) {
-            boolean textEmpty = mSearchView.getText().length() == 0;
-            showClearButton(focused && !textEmpty);
-            if (!focused) {
-              showSearchProgress(false);
-              cancelSearch();
-            }
-          }
-        });
-    mSearchView.setOnIconClickListener(new FloatingSearchView.OnIconClickListener() {
-      @Override public void onNavigationClick() {
-        mSearchView.setActivated(!mSearchView.isActivated());
-      }
-    });
-
-    mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
-      @Override public void onSearchAction(CharSequence query) {
-        if (query.length() < 3) {
-          Toast.makeText(MainActivity.this, R.string.search_enter_min_three_char_to_start_search,
-              Toast.LENGTH_SHORT).show();
-          return;
-        }
-        mSearchView.setActivated(false);
-        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-        intent.putExtra("query", String.valueOf(query));
-        startActivity(intent);
-      }
-    });
-    mSearchView.addTextChangedListener(new TextWatcher() {
-      @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
-
-      @Override public void onTextChanged(CharSequence query, int start, int before, int count) {
-        int queryLength = query.length();
-        showClearButton(queryLength > 0 && mSearchView.isActivated());
-        if (queryLength >= 3) {
-          cancelSearch();
-          showSearchProgress(mSearchView.isActivated());
-          searchQuery = query.toString().trim();
-          search(searchQuery);
-        } else {
-          cancelSearch();
-          showSearchProgress(false);
-        }
-      }
-
-      @Override public void afterTextChanged(Editable s) {
-
-      }
-    });
-  }
-
-  private void search(String query) {
-    VenueApi.search(CITY_SLUG, query, 4);
-  }
-
-  @Subscribe public void onEvent(VenueApiEvents.OnSearchResultsReady event) {
-    List<Venue> venueList = event.venuePaginated.data;
-    VenueSearchResultAdapter adapter = new VenueSearchResultAdapter(venueList);
-    adapter.setOnItemClickListener(new VenueSearchResultAdapter.OnItemClickListener() {
-      @Override public void onClick(Venue venue) {
-        Intent intent = new Intent(AppController.currentActivity, VenueActivity.class);
-        intent.putExtra("slug", venue.slug);
-        intent.putExtra("venue", AppController.gson.toJson(venue));
-        AppController.currentActivity.startActivity(intent);
-      }
-    });
-    mSearchView.setAdapter(adapter);
-    if (venueList.size() == 0) {
-      builder.message(R.string.no_results_found).duration(Snackbar.LENGTH_LONG).build().show();
-    }
-    showSearchProgress(false);
-    adapter.notifyDataSetChanged();
   }
 
   @Subscribe public void onEvent(VenueCollectionEvents.OnVenueCollectionsResponse response) {
@@ -174,24 +69,13 @@ public class MainActivity extends BottomToolbarActivity
 
   @Subscribe public void onEvent(OnApiResponseErrorEvent event) {
     builder.duration(Snackbar.LENGTH_INDEFINITE).message(R.string.error_retrieving_data);
-
-    if (event.object instanceof VenueCollectionEvents.OnVenueCollectionsResponse) {
-      showMainProgressBar(false);
-      builder.build().setAction(R.string.try_again, new View.OnClickListener() {
-        @Override public void onClick(View view) {
-          VenueCollectionApi.collections(CITY_SLUG);
-          showMainProgressBar(true);
-        }
-      }).show();
-    } else if (event.object instanceof VenueApiEvents.OnSearchResultsReady) {
-      showSearchProgress(false);
-      builder.build().setAction(R.string.try_again, new View.OnClickListener() {
-        @Override public void onClick(View view) {
-          search(searchQuery);
-          showSearchProgress(true);
-        }
-      }).show();
-    }
+    showMainProgressBar(false);
+    builder.build().setAction(R.string.try_again, new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        VenueCollectionApi.collections(CITY_SLUG);
+        showMainProgressBar(true);
+      }
+    }).show();
   }
 
   private void addViewsToActivity() {
@@ -368,8 +252,14 @@ public class MainActivity extends BottomToolbarActivity
 
   private void setupBottomNavBar() {
     final int bottomNavigationBarHeight = UiUtil.getNavBarHeight();
+    final int statusBarHeight = UiUtil.getStatusBarHeight();
     boolean hasMenuKey = ViewConfiguration.get(AppController.context).hasPermanentMenuKey();
     boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+    View toolbarTop=findViewById(R.id.toolbarTop);
+    LinearLayout.LayoutParams toolbarTopLayoutParam =
+        (LinearLayout.LayoutParams) toolbarTop.getLayoutParams();
+    toolbarTopLayoutParam.setMargins(0,statusBarHeight , 0, 0);
+    toolbarTop.setLayoutParams(toolbarTopLayoutParam);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && (!hasMenuKey && !hasBackKey)) {
       {
         final ViewGroup bottomBarOverload = (ViewGroup) findViewById(R.id.navigationBarBehind);
@@ -432,47 +322,7 @@ public class MainActivity extends BottomToolbarActivity
     BusUtil.getInstance().unregister(this);
   }
 
-  private void cancelSearch() {
-    //        AppController.getInstance().cancelPendingRequests(VENUE_SEARCH_REQUEST_TAG);
-  }
-
-  private void updateNavigationIcon() {
-    Context context = mSearchView.getContext();
-    Drawable drawable = new SearchArrowDrawable(context);
-    drawable = DrawableCompat.wrap(drawable);
-    drawable.mutate();
-    DrawableCompat.setTint(drawable,
-        ViewUtils.getThemeAttrColor(context, R.attr.colorControlNormal));
-    mSearchView.setIcon(drawable);
-  }
-
-  private void showSearchProgress(boolean show) {
-    mSearchView.getMenu().findItem(R.id.menu_progress).setVisible(show);
-  }
-
   private void showMainProgressBar(boolean show) {
     findViewById(R.id.progressbar).setVisibility(show ? View.VISIBLE : View.GONE);
-  }
-
-  private void showClearButton(boolean show) {
-    mSearchView.getMenu().findItem(R.id.menu_clear).setVisible(show);
-  }
-
-  @Override public boolean onMenuItemClick(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_clear:
-        mSearchView.setText(null);
-        mSearchView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-        break;
-    }
-    return true;
-  }
-
-  @Override public void onBackPressed() {
-    if (mSearchView.isActivated()) {
-      mSearchView.setActivated(false);
-    } else {
-      super.onBackPressed();
-    }
   }
 }

@@ -162,4 +162,5 @@
     <string name="no_permission_granted">مجوزی داده نشد</string>
     <string name="error_location_service_not_turned_on">برای پیشنهاد مکان های اطراف سرویس مکانیابی نیاز است.</string>
     <string name="search_this_area">جست و جوی این منطقه</string>
+    <string name="search_ashojash">جستوجوی آشوجاش</string>
 </resources>

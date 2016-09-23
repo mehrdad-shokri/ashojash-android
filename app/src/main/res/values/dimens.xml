@@ -16,4 +16,5 @@
   <dimen name="bottom_navabar_height">30dp</dimen>
   <dimen name="tool_bar_top_padding">0dp</dimen>
   <dimen name="toolbar_bar_title_size">18sp</dimen>
+  <dimen name="toolbar_height">56dp</dimen>
 </resources>

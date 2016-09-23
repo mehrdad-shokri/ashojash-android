@@ -24,7 +24,6 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         >
 
       <LinearLayout
@@ -34,20 +33,11 @@
           android:focusableInTouchMode="true"
           android:orientation="vertical"
           >
-
-        <LinearLayout
-            android:id="@+id/topMenuContainerMainActivity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+        <include
+            layout="@layout/toolbar_top"
+            android:id="@+id/toolbarTop"
             android:visibility="invisible"
-            >
-
-          <include
-              layout="@layout/toolbar_top"
-              android:id="@+id/toolbarTop"
-              />
-        </LinearLayout>
+            />
       </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
     <LinearLayout
@@ -60,34 +50,6 @@
         >
     </LinearLayout>
   </RelativeLayout>
-  <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:fitsSystemWindows="true"
-      >
 
-    <include
-        layout="@layout/toolbar_search_background"
-        android:id="@+id/toolbarTop"
-        />
-
-    <com.mypopsy.widget.FloatingSearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#90000000"
-        android:hint="@string/search_hint"
-        android:paddingBottom="2dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="2dp"
-        app:contentInsetEnd="5dp"
-        app:contentInsetStart="5dp"
-        app:fsv_cornerRadius="0dp"
-        app:fsv_menu="@menu/search"
-        app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
-        app:theme="@style/AshojashFloatingSearchViewTheme"
-        />
-  </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
 
