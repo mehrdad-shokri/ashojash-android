@@ -1,9 +1,9 @@
 package com.ashojash.android.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.ashojash.android.R;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueCollectionEvents;
@@ -28,7 +29,6 @@ import com.ashojash.android.fragment.VenueSlideShowFragment;
 import com.ashojash.android.fragment.VenueVerticalFragment;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.VenueCollection;
-import com.ashojash.android.ui.AshojashSnackbar;
 import com.ashojash.android.util.BusUtil;
 import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.webserver.VenueCollectionApi;
@@ -46,19 +46,32 @@ public class MainActivity extends BottomToolbarActivity {
       venueVerticalNormal;
   private ViewGroup contentContainer;
   private Boolean isFirstGroupAdded = false;
-  private AshojashSnackbar.AshojashSnackbarBuilder builder;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     contentContainer = (ViewGroup) findViewById(R.id.contentContainer);
+    findViewById(R.id.searchBarInitiator).setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        startSearchActivity();
+      }
+    });
+    findViewById(R.id.edtSearchInitiator).setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        startSearchActivity();
+      }
+    });
     attachShy(this, savedInstanceState, (CoordinatorLayout) findViewById(R.id.rootView),
         findViewById(R.id.nestedScrollView));
     setupBottomNavBar();
-    builder = new AshojashSnackbar.AshojashSnackbarBuilder(findViewById(R.id.rootView));
     VenueCollectionApi.collections(CITY_SLUG);
-    //new AshojashSnackbar.AshojashSnackbarBuilder(this).message("Test snackbar").duration(Snackbar.LENGTH_INDEFINITE).build().show();
-    //Snackbar.make(contentContainer, "test snackbar", Snackbar.LENGTH_INDEFINITE).show();
+  }
+
+  private void startSearchActivity() {
+    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+    startActivity(intent);
+    overridePendingTransition(0, 0);
+    finish();
   }
 
   @Subscribe public void onEvent(VenueCollectionEvents.OnVenueCollectionsResponse response) {
@@ -70,14 +83,8 @@ public class MainActivity extends BottomToolbarActivity {
   }
 
   @Subscribe public void onEvent(OnApiResponseErrorEvent event) {
-    builder.duration(Snackbar.LENGTH_INDEFINITE).message(R.string.error_retrieving_data);
     showMainProgressBar(false);
-    builder.build().setAction(R.string.try_again, new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        VenueCollectionApi.collections(CITY_SLUG);
-        showMainProgressBar(true);
-      }
-    }).show();
+    Toast.makeText(this, R.string.error_retrieving_data, Toast.LENGTH_LONG);
   }
 
   private void addViewsToActivity() {

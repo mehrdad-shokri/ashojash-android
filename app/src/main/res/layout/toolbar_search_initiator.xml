@@ -11,13 +11,15 @@
     android:background="@drawable/search_initiator_background"
     android:gravity="center_vertical|end"
     >
-  <EditText
+  <TextView
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="15dp"
       android:layout_weight="1"
+      android:id="@+id/edtSearchInitiator"
       android:background="@android:color/transparent"
-      android:hint="@string/search_ashojash"
+      android:text="@string/search_ashojash"
+      android:textSize="15sp"
       android:textColorHint="@color/gray_600"
       />
   <com.mikepenz.iconics.view.IconicsImageView
