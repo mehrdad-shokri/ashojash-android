@@ -95,7 +95,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.google.android.gms:play-services-analytics:8.4.0'
     compile 'com.google.android.gms:play-services-identity:8.4.0'
-    compile 'com.github.renaudcerrato:FloatingSearchView:1.0.0'
     compile 'com.github.renaudcerrato:ToggleDrawable:1.0.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.1'
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
