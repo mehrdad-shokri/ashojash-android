@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -57,6 +58,8 @@ public class MainActivity extends BottomToolbarActivity {
     setupBottomNavBar();
     builder = new AshojashSnackbar.AshojashSnackbarBuilder(findViewById(R.id.rootView));
     VenueCollectionApi.collections(CITY_SLUG);
+    //new AshojashSnackbar.AshojashSnackbarBuilder(this).message("Test snackbar").duration(Snackbar.LENGTH_INDEFINITE).build().show();
+    //Snackbar.make(contentContainer, "test snackbar", Snackbar.LENGTH_INDEFINITE).show();
   }
 
   @Subscribe public void onEvent(VenueCollectionEvents.OnVenueCollectionsResponse response) {
@@ -92,7 +95,7 @@ public class MainActivity extends BottomToolbarActivity {
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
       params.gravity = Gravity.TOP;
-      handlePadding(view);
+      //handlePadding(view);
       handleMargins(params);
       addFragment(R.id.venueHeroBig, fragment);
       contentContainer.addView(view, params);
@@ -108,7 +111,7 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      handlePadding(view);
+      //handlePadding(view);
       handleMargins(params);
       addFragment(R.id.venueHeroNormal, fragment);
       contentContainer.addView(view, params);
@@ -123,7 +126,7 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      handlePadding(view);
+      //handlePadding(view);
       handleMargins(params);
       addFragment(R.id.collectionHero, fragment);
       contentContainer.addView(view, params);
@@ -139,7 +142,8 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      handlePadding(view);
+      //handlePadding(view);
+      handleMargins(params);
       contentContainer.addView(view, params);
     }
 
@@ -154,6 +158,8 @@ public class MainActivity extends BottomToolbarActivity {
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
       view.setId(R.id.collectionsSlideshow);
+      //handlePadding(view);
+      handleMargins(params);
       contentContainer.addView(view, params);
     }
     if (venueVerticalNormal.size() > 0) {
@@ -164,10 +170,12 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout view = new FrameLayout(this);
       view.setId(R.id.venuesVerticalNormal);
       addFragment(R.id.venuesVerticalNormal, fragment);
-      handlePadding(view);
-      contentContainer.addView(view,
+      //handlePadding(view);
+      FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-              FrameLayout.LayoutParams.WRAP_CONTENT));
+              FrameLayout.LayoutParams.WRAP_CONTENT);
+      handleMargins(params);
+      contentContainer.addView(view, params);
     }
     if (collectionsVerticalNormal.size() > 0) {
       CollectionVerticalFragment fragment = new CollectionVerticalFragment();
@@ -179,23 +187,26 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      handlePadding(view);
+      //handlePadding(view);
       handleMargins(params);
       addFragment(R.id.collectionsVerticalNormal, fragment);
       contentContainer.addView(view, params);
     }
   }
 
-  private void handlePadding(FrameLayout view) {
+  /*private void handlePadding(FrameLayout view) {
     if (isFirstGroupAdded) {
       view.setPadding(0, (int) UiUtil.dp2px(20), 0, 0);
     } else {
       isFirstGroupAdded = true;
     }
-  }
+  }*/
 
   private void handleMargins(FrameLayout.LayoutParams view) {
+    String TAG = "Ashojas";
+    Log.d(TAG, "handle margin");
     if (isFirstGroupAdded) {
+      Log.d("ashojash", "handleMargins: isFirstGroupAdded");
       view.setMargins(0, (int) UiUtil.dp2px(15), 0, 0);
     } else {
       isFirstGroupAdded = true;
@@ -255,11 +266,18 @@ public class MainActivity extends BottomToolbarActivity {
     final int statusBarHeight = UiUtil.getStatusBarHeight();
     boolean hasMenuKey = ViewConfiguration.get(AppController.context).hasPermanentMenuKey();
     boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-    View toolbarTop=findViewById(R.id.toolbarTop);
-    LinearLayout.LayoutParams toolbarTopLayoutParam =
-        (LinearLayout.LayoutParams) toolbarTop.getLayoutParams();
-    toolbarTopLayoutParam.setMargins(0,statusBarHeight , 0, 0);
+    View toolbarTop = findViewById(R.id.toolbarTop);
+    CoordinatorLayout.LayoutParams toolbarTopLayoutParam =
+        (CoordinatorLayout.LayoutParams) toolbarTop.getLayoutParams();
+    toolbarTopLayoutParam.setMargins(0, statusBarHeight, 0, 0);
     toolbarTop.setLayoutParams(toolbarTopLayoutParam);
+
+    View toolbarTopContainer = findViewById(R.id.toolbarTopContainer);
+    LinearLayout.LayoutParams toolbarTopContainerLayoutParam =
+        (LinearLayout.LayoutParams) toolbarTopContainer.getLayoutParams();
+    toolbarTopContainerLayoutParam.setMargins(0, statusBarHeight, 0, 0);
+    toolbarTopContainer.setLayoutParams(toolbarTopContainerLayoutParam);
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && (!hasMenuKey && !hasBackKey)) {
       {
         final ViewGroup bottomBarOverload = (ViewGroup) findViewById(R.id.navigationBarBehind);
@@ -269,23 +287,26 @@ public class MainActivity extends BottomToolbarActivity {
             WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         mBottomBar.setPadding(0, 0, 0, bottomNavigationBarHeight);
         NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
-
         if (nestedScrollView != null) {
           nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+
             boolean isFirstScroll = true;
 
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX,
                 int oldScrollY) {
+              Log.d("ashojash", "onscorll: ");
               if (scrollY > oldScrollY) {
                 bottomBarOverload.setVisibility(View.GONE);
                 mBottomBar.setPadding(0, 0, 0, 0);
                 if (isFirstScroll) {
                   isFirstScroll = false;
+                  //mBottomBar.hide();
                   mBottomBar.setVisibility(View.GONE);
                 }
               } else {
                 bottomBarOverload.setVisibility(View.VISIBLE);
+                //mBottomBar.show();
                 mBottomBar.setVisibility(View.VISIBLE);
                 mBottomBar.setPadding(0, 0, 0, bottomNavigationBarHeight);
               }

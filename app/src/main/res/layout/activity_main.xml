@@ -35,7 +35,7 @@
           >
         <include
             layout="@layout/toolbar_top"
-            android:id="@+id/toolbarTop"
+            android:id="@+id/toolbarTopContainer"
             android:visibility="invisible"
             />
       </LinearLayout>
@@ -50,6 +50,16 @@
         >
     </LinearLayout>
   </RelativeLayout>
-
+  <LinearLayout
+      android:id="@+id/toolbarTop"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/toolbar_height"
+      android:background="@color/colorPrimary"
+      >
+    <include
+        layout="@layout/toolbar_search_initiator"
+        android:id="@+id/searchBarInitiator"
+        />
+  </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

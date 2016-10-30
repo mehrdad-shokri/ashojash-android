@@ -1,75 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:orientation="vertical"
-                                                 android:id="@+id/rootView"
-                                                 android:layout_height="match_parent"
-                                                 android:layout_width="match_parent">
-
-    <fragment
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-    />
-    <FrameLayout android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:id="@+id/error"
-                 android:visibility="gone"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     >
-    </FrameLayout>
 
-
-    <ImageView android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:paddingBottom="5dp"
-               android:paddingLeft="5dp"
-               android:src="@drawable/ic_map_logotype"
-               android:layout_gravity="left|bottom"/>
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:id="@id/progressbar"
-                  android:layout_gravity="center"
-                  android:gravity="center"
-                  android:visibility="gone"
-                  android:background="#8f000000">
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:gravity="center"
-                      android:background="@drawable/map_packman_background"
+  <fragment
+      android:id="@+id/map"
+      android:name="com.google.android.gms.maps.SupportMapFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
+  <FrameLayout
+      android:id="@+id/error"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone"
+      >
+  </FrameLayout>
+  <LinearLayout
+      android:id="@id/progressbar"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_gravity="center"
+      android:background="#8f000000"
+      android:gravity="center"
+      android:visibility="gone"
+      >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/map_packman_background"
+        android:gravity="center"
         >
-            <com.wang.avi.AVLoadingIndicatorView
-                    android:id="@+id/progressbar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true"
-                    app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
-                    app:indicator="Pacman"
-                    app:indicator_color="@color/colorPrimary"/>
-        </LinearLayout>
+      <com.wang.avi.AVLoadingIndicatorView
+          android:id="@+id/progressbar"
+          android:layout_width="50dp"
+          android:layout_height="50dp"
+          android:layout_centerInParent="true"
+          app:indicator="Pacman"
+          app:indicator_color="@color/colorPrimary"
+          app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
+          />
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton android:layout_width="wrap_content"
-                                                        android:layout_height="wrap_content"
-                                                        android:visibility="gone"
-                                                        android:id="@+id/myLocationFab"
-                                                        android:layout_margin="16dp"
-                                                        android:clickable="true"
-                                                        app:elevation="4dp"
-                                                        app:backgroundTint="#fff"
-                                                        android:layout_gravity="right|bottom"/>
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/btnSearchArea"
-                  android:visibility="gone"
-                  android:layout_marginTop="10dp"
-                  android:gravity="top|center_horizontal">
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textColor="#666"
-                  android:layout_gravity="center"
-                  android:gravity="center"
-                  android:textSize="12sp"
-                  android:background="@drawable/shape_map_search_area_background"
-                  android:text="@string/search_this_area"/>
-    </LinearLayout>
+  </LinearLayout>
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/myLocationFab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="right|bottom"
+      android:layout_margin="16dp"
+      android:clickable="true"
+      android:visibility="gone"
+      app:backgroundTint="#fff"
+      app:elevation="4dp"
+      />
+  <LinearLayout
+      android:id="@+id/btnSearchArea"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:gravity="top|center_horizontal"
+      android:visibility="gone"
+      >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_map_search_area_background"
+        android:gravity="center"
+        android:text="@string/search_this_area"
+        android:textColor="#666"
+        android:textSize="12sp"
+        />
+  </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
