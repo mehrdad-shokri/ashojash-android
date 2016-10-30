@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -95,8 +94,8 @@ public class MainActivity extends BottomToolbarActivity {
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
       params.gravity = Gravity.TOP;
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       addFragment(R.id.venueHeroBig, fragment);
       contentContainer.addView(view, params);
     }
@@ -111,8 +110,8 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       addFragment(R.id.venueHeroNormal, fragment);
       contentContainer.addView(view, params);
     }
@@ -126,8 +125,8 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       addFragment(R.id.collectionHero, fragment);
       contentContainer.addView(view, params);
     }
@@ -142,8 +141,8 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       contentContainer.addView(view, params);
     }
 
@@ -158,8 +157,8 @@ public class MainActivity extends BottomToolbarActivity {
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
       view.setId(R.id.collectionsSlideshow);
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       contentContainer.addView(view, params);
     }
     if (venueVerticalNormal.size() > 0) {
@@ -170,11 +169,11 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout view = new FrameLayout(this);
       view.setId(R.id.venuesVerticalNormal);
       addFragment(R.id.venuesVerticalNormal, fragment);
-      //handlePadding(view);
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       contentContainer.addView(view, params);
     }
     if (collectionsVerticalNormal.size() > 0) {
@@ -187,31 +186,31 @@ public class MainActivity extends BottomToolbarActivity {
       FrameLayout.LayoutParams params =
           new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
               FrameLayout.LayoutParams.WRAP_CONTENT);
-      //handlePadding(view);
-      handleMargins(params);
+      handlePadding(view);
+      //handleMargins(params);
       addFragment(R.id.collectionsVerticalNormal, fragment);
       contentContainer.addView(view, params);
     }
   }
 
-  /*private void handlePadding(FrameLayout view) {
+  private void handlePadding(FrameLayout view) {
     if (isFirstGroupAdded) {
       view.setPadding(0, (int) UiUtil.dp2px(20), 0, 0);
     } else {
       isFirstGroupAdded = true;
     }
-  }*/
+  }
+  /*
 
   private void handleMargins(FrameLayout.LayoutParams view) {
-    String TAG = "Ashojas";
-    Log.d(TAG, "handle margin");
+    String TAG = "Ashojash";
     if (isFirstGroupAdded) {
-      Log.d("ashojash", "handleMargins: isFirstGroupAdded");
       view.setMargins(0, (int) UiUtil.dp2px(15), 0, 0);
     } else {
       isFirstGroupAdded = true;
     }
   }
+  */
 
   private void handleCollection(List<VenueCollection> collections) {
     venueSlideShow = new ArrayList<>();
@@ -295,18 +294,15 @@ public class MainActivity extends BottomToolbarActivity {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX,
                 int oldScrollY) {
-              Log.d("ashojash", "onscorll: ");
               if (scrollY > oldScrollY) {
                 bottomBarOverload.setVisibility(View.GONE);
                 mBottomBar.setPadding(0, 0, 0, 0);
                 if (isFirstScroll) {
                   isFirstScroll = false;
-                  //mBottomBar.hide();
                   mBottomBar.setVisibility(View.GONE);
                 }
               } else {
                 bottomBarOverload.setVisibility(View.VISIBLE);
-                //mBottomBar.show();
                 mBottomBar.setVisibility(View.VISIBLE);
                 mBottomBar.setPadding(0, 0, 0, bottomNavigationBarHeight);
               }
