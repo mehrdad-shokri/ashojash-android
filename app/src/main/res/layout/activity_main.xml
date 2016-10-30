@@ -12,11 +12,11 @@
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressbar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerInParent="true"
-        app:indicator="Pacman"
-        app:indicator_color="@color/colorPrimary"
+        app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
+        app:indicatorColor="@color/colorPrimary"
         app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
         />
 
@@ -24,7 +24,6 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         >
 
       <LinearLayout
@@ -34,20 +33,11 @@
           android:focusableInTouchMode="true"
           android:orientation="vertical"
           >
-
-        <LinearLayout
-            android:id="@+id/topMenuContainerMainActivity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+        <include
+            layout="@layout/toolbar_top"
+            android:id="@+id/toolbarTopContainer"
             android:visibility="invisible"
-            >
-
-          <include
-              layout="@layout/toolbar_top"
-              android:id="@+id/toolbarTop"
-              />
-        </LinearLayout>
+            />
       </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
     <LinearLayout
@@ -60,34 +50,16 @@
         >
     </LinearLayout>
   </RelativeLayout>
-  <RelativeLayout
+  <LinearLayout
+      android:id="@+id/toolbarTop"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:fitsSystemWindows="true"
+      android:layout_height="@dimen/toolbar_height"
+      android:background="@color/colorPrimary"
       >
-
     <include
-        layout="@layout/toolbar_search_background"
-        android:id="@+id/toolbarTop"
+        layout="@layout/toolbar_search_initiator"
+        android:id="@+id/searchBarInitiator"
         />
-
-    <com.mypopsy.widget.FloatingSearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#90000000"
-        android:hint="@string/search_hint"
-        android:paddingBottom="2dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="2dp"
-        app:contentInsetEnd="5dp"
-        app:contentInsetStart="5dp"
-        app:fsv_cornerRadius="0dp"
-        app:fsv_menu="@menu/search"
-        app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
-        app:theme="@style/AshojashFloatingSearchViewTheme"
-        />
-  </RelativeLayout>
+  </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

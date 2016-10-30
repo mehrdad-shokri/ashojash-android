@@ -11,7 +11,7 @@
             android:src="@drawable/location"
             android:layout_centerInParent="true"
             android:id="@+id/imageView"
-            app:layout_parallaxFactor="2"
+            app:layout_parallaxFactor=".5"
             android:scaleType="fitXY"
             android:layout_height="300dp"/>
 
@@ -24,7 +24,7 @@
             android:layout_below="@id/imageView"
             android:textSize="28sp"
             android:textColor="#fff"
-            app:layout_parallaxFactor="2"
+            app:layout_parallaxFactor=".5"
             android:layout_centerHorizontal="true"
     />
 
@@ -34,7 +34,7 @@
             tools:textColor="#666"
             android:id="@+id/description"
             android:layout_below="@id/title"
-            app:layout_parallaxFactor="2"
+            app:layout_parallaxFactor=".5"
             android:textSize="17sp"
             android:textColor="#fff"
             android:layout_marginTop="15dp"

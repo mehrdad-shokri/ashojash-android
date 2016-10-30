@@ -22,53 +22,61 @@ import com.mikepenz.iconics.IconicsDrawable;
 
 public class CollectionHeroFragment extends Fragment {
 
-    private ImageView imgCollection;
-    private TextView txtCollectionName;
-    private ViewGroup rootView;
-    private Gson gson;
+  private ImageView imgCollection;
+  private TextView txtCollectionName;
+  private ViewGroup rootView;
+  private Gson gson;
 
+  public CollectionHeroFragment() {
+    gson = new Gson();
+  }
 
-    public CollectionHeroFragment() {
-        gson = new Gson();
+  @Nullable @Override
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_collection_hero, container, false);
+  }
+
+  private VenueCollection collection;
+
+  @Override public void onResume() {
+    super.onResume();
+    collection = gson.fromJson(getArguments().getString("collection"), VenueCollection.class);
+    if (collection == null) {
+      //            getActivity().getFragmentManager().popBackStack();
     }
+    setupViews();
+  }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_collection_hero, container, false);
+  private void setupViews() {
+    View view = getView();
+    rootView = (ViewGroup) view.findViewById(R.id.rootView);
+    rootView.setNestedScrollingEnabled(false);
+    imgCollection = (ImageView) view.findViewById(R.id.imgCollection);
+    txtCollectionName = (TextView) view.findViewById(R.id.txtCollectionName);
+    if (collection.shouldShowContent) {
+      imgCollection.setColorFilter(Color.rgb(190, 190, 190),
+          android.graphics.PorterDuff.Mode.MULTIPLY);
+      txtCollectionName.setText(collection.name);
     }
-
-    private VenueCollection collection;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        collection = gson.fromJson(getArguments().getString("collection"), VenueCollection.class);
-        if (collection == null) {
-//            getActivity().getFragmentManager().popBackStack();
-        }
-        setupViews();
-    }
-
-    private void setupViews() {
-        View view = getView();
-        rootView = (ViewGroup) view.findViewById(R.id.rootView);
-        imgCollection = (ImageView) view.findViewById(R.id.imgCollection);
-        txtCollectionName = (TextView) view.findViewById(R.id.txtCollectionName);
-        if (collection.shouldShowContent) {
-            imgCollection.setColorFilter(Color.rgb(190, 190, 190), android.graphics.PorterDuff.Mode.MULTIPLY);
-            txtCollectionName.setText(collection.name);
-        }
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AppController.currentActivity, CollectionActivity.class);
-                intent.putExtra("slug", collection.slug);
-                intent.putExtra("collection", gson.toJson(collection));
-                startActivity(intent);
-            }
-        });
-        IconicsDrawable errorIcon = new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error).sizeDp(12).color(AppController.context.getResources().getColor(R.color.text_primary));
-        Glide.with(AppController.context).load(collection.photo.url).centerCrop().placeholder(R.drawable.city_list_loader).error(errorIcon).diskCacheStrategy(DiskCacheStrategy.RESULT).into(imgCollection);
-    }
+    rootView.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        Intent intent = new Intent(AppController.currentActivity, CollectionActivity.class);
+        intent.putExtra("slug", collection.slug);
+        intent.putExtra("collection", gson.toJson(collection));
+        startActivity(intent);
+      }
+    });
+    IconicsDrawable errorIcon =
+        new IconicsDrawable(AppController.context).icon(GoogleMaterial.Icon.gmd_error)
+            .sizeDp(12)
+            .color(AppController.context.getResources().getColor(R.color.text_primary));
+    Glide.with(AppController.context)
+        .load(collection.photo.url)
+        .centerCrop()
+        .placeholder(R.drawable.city_list_loader)
+        .error(errorIcon)
+        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+        .into(imgCollection);
+  }
 }

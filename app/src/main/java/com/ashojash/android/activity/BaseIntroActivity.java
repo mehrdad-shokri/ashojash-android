@@ -147,7 +147,6 @@ public class BaseIntroActivity extends AppCompatActivity {
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
         }
-
         setContentView(R.layout.activity_intro);
         findViews();
     }

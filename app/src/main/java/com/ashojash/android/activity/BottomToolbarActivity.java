@@ -17,9 +17,9 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 
-import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_explore;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_face;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_home;
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_search;
 
 public class BottomToolbarActivity extends BaseActivity {
   private static final int MAIN_ACTIVITY_BOTTOMBAR_POSITION = 0;
@@ -81,7 +81,7 @@ public class BottomToolbarActivity extends BaseActivity {
 
     final IconicsDrawable mainDrawable =
         new IconicsDrawable(this).icon(gmd_home).color(collectionColor).sizeDp(24);
-    final IconicsDrawable mapDrawable = new IconicsDrawable(AppController.context).icon(gmd_explore)
+    final IconicsDrawable mapDrawable = new IconicsDrawable(AppController.context).icon(gmd_search)
         .color(mapColor)
         .sizeDp(ICON_SIZE);
     final IconicsDrawable profileDrawable =
