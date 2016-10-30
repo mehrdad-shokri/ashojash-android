@@ -141,6 +141,7 @@
     <string name="google_sign_permission_denied">برای ورود با گوگل باید اجازه‌ی مشاهده حساب‌های دستگاه را داشته باشیم.
     </string>
     <string name="give_permission">دادن اجازه</string>
+    <string name="location_agreement">باشه</string>
     <string name="menu.clear">پاک کردن</string>
     <string name="search_enter_min_three_char_to_start_search">برای شروع جست‌وجو حداقل 3 کاراکتر وارد کنید.</string>
     <string name="uploading_photos">در حال آپلود عکس ...</string>
@@ -161,5 +162,6 @@
     <string name="permission_location_settings">برای دیدن رستورانهای اطراف\n به آشوجاش اجازه مکانیابی رو بدید.</string>
     <string name="no_permission_granted">مجوزی داده نشد</string>
     <string name="error_location_service_not_turned_on">برای پیشنهاد مکان های اطراف سرویس مکانیابی نیاز است.</string>
-    <string name="search_this_area">جست و جوی این منطقه</string>
+    <string name="search_this_area">جستجوی این منطقه</string>
+    <string name="search_ashojash">جستجوی آشوجاش</string>
 </resources>
