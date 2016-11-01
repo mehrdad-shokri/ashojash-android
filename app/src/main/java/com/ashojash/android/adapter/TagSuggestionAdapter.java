@@ -1,6 +1,5 @@
 package com.ashojash.android.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import static com.ashojash.android.helper.AppController.context;
 
 public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdapter.ViewHolder> {
 
-  private static final Context CONTEXT = context;
   List<Tag> tagList;
 
   public TagSuggestionAdapter(List<Tag> tagList) {

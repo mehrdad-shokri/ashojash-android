@@ -17,7 +17,7 @@ android {
   defaultConfig {
     applicationId "com.ashojash.android"
     minSdkVersion 15
-    targetSdkVersion 23
+    targetSdkVersion 25
     versionCode 19
     versionName "1.1.2"
     multiDexEnabled true
@@ -107,6 +107,7 @@ dependencies {
   compile 'com.google.android.gms:play-services-identity:9.8.0'
   compile 'com.google.android.gms:play-services-auth:9.8.0'
   compile 'com.google.android.gms:play-services-gcm:9.8.0'
+  compile 'jp.wasabeef:glide-transformations:2.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
 android.variantFilter { variant ->

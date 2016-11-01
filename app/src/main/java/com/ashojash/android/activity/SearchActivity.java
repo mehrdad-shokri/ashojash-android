@@ -5,6 +5,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,6 +18,7 @@ import com.ashojash.android.fragment.LocationPermissionNotAvailableFragment;
 import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.fragment.NearbyVenuesFragment;
 import com.ashojash.android.fragment.TagsSuggestionFragment;
+import com.ashojash.android.fragment.VenueTagFragment;
 import com.ashojash.android.util.BusProvider;
 import com.ashojash.android.util.LocationRequestUtil;
 import com.ashojash.android.util.LocationUtil;
@@ -33,6 +36,8 @@ public class SearchActivity extends BottomToolbarActivity {
   private EditText edtLocationSearch;
   private ViewGroup errorView;
   private ViewGroup contentSurvey;
+  private ViewGroup venueTagView;
+  private ViewGroup nearbyVenues;
   private AVLoadingIndicatorView progressbar;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,15 +45,15 @@ public class SearchActivity extends BottomToolbarActivity {
     setContentView(R.layout.activity_search);
     setupViews(savedInstanceState);
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
       setupErrors(new LocationPermissionNotAvailableFragment());
     } else {
       requestLocationService();
     }
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
   }
 
   @Subscribe public void onEvent(PermissionEvents.OnPermissionGranted e) {
@@ -67,19 +72,19 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
     resetView();
-    setPending(true);
+    //setPending(true);
     final TagsSuggestionFragment tagsSuggestionFragment = new TagsSuggestionFragment();
     final NearbyVenuesFragment nearbyVenuesFragment = new NearbyVenuesFragment();
     LocationUtil util = new LocationUtil();
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
         Log.d(TAG, "gotLocation: " + location.toString());
-        VenueApi.nearby(location.getLatitude(), location.getLongitude(), .5, 10);
+        VenueApi.nearby(location.getLatitude(), location.getLongitude(), .5, 8);
         TagApi.suggestions();
       }
     });
-    addFragment(R.id.contentSurvey, tagsSuggestionFragment);
-    addFragment(R.id.contentSurvey, nearbyVenuesFragment);
+    addFragment(R.id.tagSuggestion, tagsSuggestionFragment);
+    addFragment(R.id.nearbyVenues, nearbyVenuesFragment);
   }
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
@@ -119,6 +124,7 @@ public class SearchActivity extends BottomToolbarActivity {
     removeFragment(getSupportFragmentManager().findFragmentById(R.id.error));
     errorView.setVisibility(GONE);
     contentSurvey.setVisibility(VISIBLE);
+    nearbyVenues.setVisibility(VISIBLE);
   }
 
   private void setupViews(Bundle savedInstanceState) {
@@ -126,7 +132,30 @@ public class SearchActivity extends BottomToolbarActivity {
     edtTermSearch = (EditText) findViewById(R.id.edtTermSearch);
     edtLocationSearch = (EditText) findViewById(R.id.edtLocationSearch);
     errorView = (ViewGroup) findViewById(R.id.error);
-    contentSurvey = (ViewGroup) findViewById(R.id.contentSurvey);
+    contentSurvey = (ViewGroup) findViewById(R.id.tagSuggestion);
+    venueTagView = (ViewGroup) findViewById(R.id.venueTag);
+    nearbyVenues = (ViewGroup) findViewById(R.id.nearbyVenues);
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
+    edtTermSearch.addTextChangedListener(new TextWatcher() {
+      @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      }
+
+      @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+      }
+
+      @Override public void afterTextChanged(Editable s) {
+        String term = s.toString();
+        VenueTagFragment fragment = new VenueTagFragment();
+        if (term.isEmpty()) {
+          nearbyVenues.setVisibility(VISIBLE);
+          contentSurvey.setVisibility(VISIBLE);
+          venueTagView.setVisibility(GONE);
+        } else {
+          nearbyVenues.setVisibility(GONE);
+          contentSurvey.setVisibility(GONE);
+          addFragment(R.id.venueTag, fragment);
+        }
+      }
+    });
   }
 }

@@ -165,6 +165,6 @@
     <string name="search_this_area">جستجوی این منطقه</string>
     <string name="search_ashojash">جستجوی آشوجاش</string>
     <string name="near_me">نزدیک من</string>
-    <string name="near_by_places">مکان های اطراف</string>
+    <string name="nearest_places">نزدیکترین مکان ها </string>
     <string name="quick_access">دسترسی سریع</string>
 </resources>

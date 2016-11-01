@@ -9,16 +9,6 @@
     android:background="#fff"
     android:gravity="center_vertical|end"
     >
-
-  <com.mikepenz.iconics.view.IconicsImageView
-      android:layout_width="20dp"
-      android:layout_height="20dp"
-      android:layout_marginRight="7dp"
-      app:iiv_color="@color/gray_600"
-      app:iiv_icon="gmd-map"
-      app:iiv_size="20dp"
-      android:layout_marginLeft="7dp"
-      />
   <EditText
       android:id="@+id/edtLocationSearch"
       android:layout_width="0dp"

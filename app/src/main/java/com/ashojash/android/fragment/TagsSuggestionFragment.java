@@ -14,6 +14,7 @@ import com.ashojash.android.event.TagApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Tag;
 import com.ashojash.android.util.BusUtil;
+import com.wang.avi.AVLoadingIndicatorView;
 import java.util.List;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -48,13 +49,14 @@ public class TagsSuggestionFragment extends Fragment {
 
   @Subscribe public void onEvent(TagApiEvents.OnTagsSuggestionsReady e) {
     tags = e.tags;
+    ((AVLoadingIndicatorView) getView().findViewById(R.id.progressbar)).smoothToHide();
     adapter = new TagSuggestionAdapter(tags);
     recyclerView.setAdapter(adapter);
+    recyclerView.setVisibility(View.VISIBLE);
+    recyclerView.setNestedScrollingEnabled(false);
   }
 
-  @Override
-
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
   }
 
