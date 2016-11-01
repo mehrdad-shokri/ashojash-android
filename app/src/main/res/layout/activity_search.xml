@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/colorPrimary"
+      android:orientation="vertical"
+      android:paddingBottom="4dp"
+      android:paddingTop="4dp"
+      >
+    <include
+        layout="@layout/term_search_bar"
+        />
+    <include
+        layout="@layout/location_search_bar"
+        />
+  </LinearLayout>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progressbar"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        app:indicatorColor="@color/colorPrimary"
+        app:indicatorName="BallPulseIndicator"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        />
+
+    <FrameLayout
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/contentSurvey"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+    </FrameLayout>
+  </RelativeLayout>
+
+
+</LinearLayout>

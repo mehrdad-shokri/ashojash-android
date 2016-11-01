@@ -23,7 +23,7 @@ import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.
 
 public class BottomToolbarActivity extends BaseActivity {
   private static final int MAIN_ACTIVITY_BOTTOMBAR_POSITION = 0;
-  private static final int MAPS_ACTIVITY_BOTTOMBAR_POSITION = 1;
+  private static final int SEARCH_ACTIVITY_BOTTOMBAR_POSITION = 1;
   private static final int PROFILE_ACTIVITY_BOTTOMBAR_POSITION = 2;
   public BottomBar mBottomBar;
   private static final int ICON_SIZE = 26;
@@ -53,7 +53,9 @@ public class BottomToolbarActivity extends BaseActivity {
       position = PROFILE_ACTIVITY_BOTTOMBAR_POSITION;
     } else if (activity instanceof CollectionActivity) {
       position = MAIN_ACTIVITY_BOTTOMBAR_POSITION;
-    } else if (activity instanceof MapsActivity) position = MAPS_ACTIVITY_BOTTOMBAR_POSITION;
+    } else if (activity instanceof SearchActivity || activity instanceof MapsActivity) {
+      position = SEARCH_ACTIVITY_BOTTOMBAR_POSITION;
+    }
     return position;
   }
 
@@ -69,7 +71,7 @@ public class BottomToolbarActivity extends BaseActivity {
         collectionColor = selectedColor;
         profileColor = mapColor = unselectedColor;
         break;
-      case MAPS_ACTIVITY_BOTTOMBAR_POSITION:
+      case SEARCH_ACTIVITY_BOTTOMBAR_POSITION:
         mapColor = selectedColor;
         collectionColor = profileColor = selectedColor;
         break;
@@ -117,8 +119,8 @@ public class BottomToolbarActivity extends BaseActivity {
                   activity.finish();
                 }
               });
-            } else if (position != MAPS_ACTIVITY_BOTTOMBAR_POSITION
-                && selectedTab == MAPS_ACTIVITY_BOTTOMBAR_POSITION) {
+            } else if (position != SEARCH_ACTIVITY_BOTTOMBAR_POSITION
+                && selectedTab == SEARCH_ACTIVITY_BOTTOMBAR_POSITION) {
               mapDrawable.color(selectedColor);
               AsyncTask.execute(new Runnable() {
                 @Override public void run() {
@@ -127,7 +129,7 @@ public class BottomToolbarActivity extends BaseActivity {
                   } catch (InterruptedException e) {
                     e.printStackTrace();
                   }
-                  Intent intent = new Intent(activity, MapsActivity.class);
+                  Intent intent = new Intent(activity, SearchActivity.class);
                   intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                   startActivity(intent);
                   overridePendingTransition(0, 0);
