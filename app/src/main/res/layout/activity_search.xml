@@ -4,26 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-  <LinearLayout
+  <FrameLayout
+      android:id="@+id/termFrameLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/colorPrimary"
-      android:orientation="vertical"
-      android:paddingBottom="4dp"
-      android:paddingTop="4dp"
-      >
-    <include
-        layout="@layout/term_search_bar"
-        />
-    <include
-        layout="@layout/location_search_bar"
-        />
-  </LinearLayout>
+      ></FrameLayout>
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
-
     <FrameLayout
         android:id="@+id/error"
         android:layout_width="match_parent"
@@ -47,21 +36,21 @@
             android:orientation="vertical"
             >
           <FrameLayout
-              android:id="@+id/tagSuggestion"
+              android:id="@+id/tagSuggestionFramelayout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:visibility="gone"
               >
           </FrameLayout>
           <FrameLayout
-              android:id="@+id/nearbyVenues"
+              android:id="@+id/nearbyVenuesFramelayout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:visibility="gone"
               >
           </FrameLayout>
           <FrameLayout
-              android:id="@+id/venueTag"
+              android:id="@+id/venueTagFramelayout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:visibility="gone"

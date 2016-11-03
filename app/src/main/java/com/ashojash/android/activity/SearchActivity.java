@@ -5,26 +5,28 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import com.ashojash.android.R;
 import com.ashojash.android.event.LocationEvents;
 import com.ashojash.android.event.PermissionEvents;
+import com.ashojash.android.event.SearchApiEvents;
 import com.ashojash.android.fragment.LocationPermissionNotAvailableFragment;
 import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.fragment.NearbyVenuesFragment;
+import com.ashojash.android.fragment.SearchBarFragment;
 import com.ashojash.android.fragment.TagsSuggestionFragment;
 import com.ashojash.android.fragment.VenueTagFragment;
+import com.ashojash.android.model.VenueTagCombined;
 import com.ashojash.android.util.BusProvider;
 import com.ashojash.android.util.LocationRequestUtil;
 import com.ashojash.android.util.LocationUtil;
 import com.ashojash.android.util.PermissionUtil;
+import com.ashojash.android.webserver.SearchApi;
 import com.ashojash.android.webserver.TagApi;
 import com.ashojash.android.webserver.VenueApi;
+import com.google.android.gms.maps.model.LatLng;
 import com.wang.avi.AVLoadingIndicatorView;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -32,13 +34,16 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SearchActivity extends BottomToolbarActivity {
-  private EditText edtTermSearch;
-  private EditText edtLocationSearch;
+
   private ViewGroup errorView;
   private ViewGroup contentSurvey;
   private ViewGroup venueTagView;
   private ViewGroup nearbyVenues;
   private AVLoadingIndicatorView progressbar;
+  private LatLng lastKnownLatLng;
+  private VenueTagFragment venueTagFragment;
+  private double DEFAULT_SEARCH_DISTANCE;
+  private int NEARBY_SEARCH_LIMIT;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -50,6 +55,27 @@ public class SearchActivity extends BottomToolbarActivity {
     } else {
       requestLocationService();
     }
+    SearchBarFragment searchBarFragment = new SearchBarFragment();
+    searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
+      @Override public void onTermChanged(String term) {
+        if (term.isEmpty()) {
+          nearbyVenues.setVisibility(VISIBLE);
+          contentSurvey.setVisibility(VISIBLE);
+          venueTagView.setVisibility(GONE);
+        } else {
+          SearchApi.cancelSuggest();
+          nearbyVenues.setVisibility(GONE);
+          contentSurvey.setVisibility(GONE);
+          venueTagView.setVisibility(VISIBLE);
+          if (lastKnownLatLng != null) {
+            SearchApi.suggest(term, lastKnownLatLng.latitude, lastKnownLatLng.longitude);
+          } else {
+            Log.d(TAG, "onTermChanged: unknown location");
+          }
+        }
+      }
+    });
+    addFragment(R.id.termFrameLayout, searchBarFragment);
   }
 
   @Override protected void onResume() {
@@ -63,11 +89,6 @@ public class SearchActivity extends BottomToolbarActivity {
     }
   }
 
-  private void requestLocationService() {
-    LocationRequestUtil locationRequestUtil = new LocationRequestUtil(this);
-    locationRequestUtil.settingsRequest();
-  }
-
   private static final String TAG = "SearchActivity";
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
@@ -75,16 +96,21 @@ public class SearchActivity extends BottomToolbarActivity {
     //setPending(true);
     final TagsSuggestionFragment tagsSuggestionFragment = new TagsSuggestionFragment();
     final NearbyVenuesFragment nearbyVenuesFragment = new NearbyVenuesFragment();
+    venueTagFragment = new VenueTagFragment();
     LocationUtil util = new LocationUtil();
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
-        Log.d(TAG, "gotLocation: " + location.toString());
-        VenueApi.nearby(location.getLatitude(), location.getLongitude(), .5, 8);
+        lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        DEFAULT_SEARCH_DISTANCE = .5;
+        NEARBY_SEARCH_LIMIT = 8;
+        VenueApi.nearby(location.getLatitude(), location.getLongitude(), DEFAULT_SEARCH_DISTANCE,
+            NEARBY_SEARCH_LIMIT);
         TagApi.suggestions();
       }
     });
-    addFragment(R.id.tagSuggestion, tagsSuggestionFragment);
-    addFragment(R.id.nearbyVenues, nearbyVenuesFragment);
+    addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);
+    addFragment(R.id.nearbyVenuesFramelayout, nearbyVenuesFragment);
+    addFragment(R.id.venueTagFramelayout, venueTagFragment);
   }
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
@@ -93,6 +119,11 @@ public class SearchActivity extends BottomToolbarActivity {
     bundle.putParcelable(LocationServiceNotAvailableFragment.STATUS_KEY, e.status);
     fragment.setArguments(bundle);
     setupErrors(fragment);
+  }
+
+  @Subscribe public void onEvent(SearchApiEvents.OnSuggestResultsReady e) {
+    VenueTagCombined combined = e.venueTagCombined;
+    venueTagFragment.setVenueTags(combined);
   }
 
   @Override protected void onStart() {
@@ -107,7 +138,6 @@ public class SearchActivity extends BottomToolbarActivity {
 
   private void setupErrors(Fragment fragment) {
     resetView();
-    //mapView.setVisibility(GONE);
     errorView.setVisibility(VISIBLE);
     addFragment(R.id.error, fragment);
   }
@@ -127,35 +157,17 @@ public class SearchActivity extends BottomToolbarActivity {
     nearbyVenues.setVisibility(VISIBLE);
   }
 
+  private void requestLocationService() {
+    LocationRequestUtil locationRequestUtil = new LocationRequestUtil(this);
+    locationRequestUtil.settingsRequest();
+  }
+
   private void setupViews(Bundle savedInstanceState) {
     attach(this, savedInstanceState);
-    edtTermSearch = (EditText) findViewById(R.id.edtTermSearch);
-    edtLocationSearch = (EditText) findViewById(R.id.edtLocationSearch);
     errorView = (ViewGroup) findViewById(R.id.error);
-    contentSurvey = (ViewGroup) findViewById(R.id.tagSuggestion);
-    venueTagView = (ViewGroup) findViewById(R.id.venueTag);
-    nearbyVenues = (ViewGroup) findViewById(R.id.nearbyVenues);
+    contentSurvey = (ViewGroup) findViewById(R.id.tagSuggestionFramelayout);
+    venueTagView = (ViewGroup) findViewById(R.id.venueTagFramelayout);
+    nearbyVenues = (ViewGroup) findViewById(R.id.nearbyVenuesFramelayout);
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
-    edtTermSearch.addTextChangedListener(new TextWatcher() {
-      @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
-
-      @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-      }
-
-      @Override public void afterTextChanged(Editable s) {
-        String term = s.toString();
-        VenueTagFragment fragment = new VenueTagFragment();
-        if (term.isEmpty()) {
-          nearbyVenues.setVisibility(VISIBLE);
-          contentSurvey.setVisibility(VISIBLE);
-          venueTagView.setVisibility(GONE);
-        } else {
-          nearbyVenues.setVisibility(GONE);
-          contentSurvey.setVisibility(GONE);
-          addFragment(R.id.venueTag, fragment);
-        }
-      }
-    });
   }
 }

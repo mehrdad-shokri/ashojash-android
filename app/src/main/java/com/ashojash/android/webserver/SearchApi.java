@@ -29,6 +29,10 @@ public class SearchApi extends BaseApi {
     });
   }
 
+  public static void cancelSuggest() {
+    suggestCall.cancel();
+  }
+
   private interface Endpoints {
     @POST("term/suggest") Call<VenueTagCombined> search(@Query("query") String query,
         @Query("lat") double lat, @Query("lng") double lng);
