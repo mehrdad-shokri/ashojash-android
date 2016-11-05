@@ -4,8 +4,9 @@ import com.ashojash.android.event.SearchApiEvents;
 import com.ashojash.android.model.VenueTagCombined;
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public class SearchApi extends BaseApi {
   private final static SearchApi.Endpoints API;
@@ -17,6 +18,8 @@ public class SearchApi extends BaseApi {
 
   private SearchApi() {
   }
+
+  private static final String TAG = "SearchApi";
 
   public static void suggest(String query, double lat, double lng) {
     suggestCall = API.search(query, lat, lng);
@@ -30,11 +33,11 @@ public class SearchApi extends BaseApi {
   }
 
   public static void cancelSuggest() {
-    suggestCall.cancel();
+    if (suggestCall != null) suggestCall.cancel();
   }
 
   private interface Endpoints {
-    @POST("term/suggest") Call<VenueTagCombined> search(@Query("query") String query,
-        @Query("lat") double lat, @Query("lng") double lng);
+    @FormUrlEncoded @POST("term/suggest") Call<VenueTagCombined> search(
+        @Field("query") String query, @Field("lat") double lat, @Field("lng") double lng);
   }
 }

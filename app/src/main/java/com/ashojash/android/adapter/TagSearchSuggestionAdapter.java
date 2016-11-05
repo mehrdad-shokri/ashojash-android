@@ -16,23 +16,24 @@ import java.util.List;
 
 import static com.ashojash.android.helper.AppController.context;
 
-public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdapter.ViewHolder> {
+public class TagSearchSuggestionAdapter
+    extends RecyclerView.Adapter<TagSearchSuggestionAdapter.ViewHolder> {
 
   List<Tag> tagList;
 
-  public TagSuggestionAdapter(List<Tag> tagList) {
+  public TagSearchSuggestionAdapter(List<Tag> tagList) {
     this.tagList = tagList;
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     View v = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.card_tag_suggestion, parent, false);
-    TagSuggestionAdapter.ViewHolder viewHolder = new TagSuggestionAdapter.ViewHolder(v);
+        .inflate(R.layout.card_tag_search_suggestion, parent, false);
+    TagSearchSuggestionAdapter.ViewHolder viewHolder = new TagSearchSuggestionAdapter.ViewHolder(v);
     return viewHolder;
   }
 
   @Override
-  public void onBindViewHolder(final TagSuggestionAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(final TagSearchSuggestionAdapter.ViewHolder holder, int position) {
     final Tag tag = tagList.get(position);
     holder.txtTagName.setText(tag.name);
     if (tag.photo != null) {
@@ -51,6 +52,7 @@ public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdap
       RelativeLayout.LayoutParams params =
           (RelativeLayout.LayoutParams) holder.txtTagName.getLayoutParams();
       params.addRule(RelativeLayout.CENTER_IN_PARENT);
+      params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
       holder.txtTagName.setLayoutParams(params);
     }
   }

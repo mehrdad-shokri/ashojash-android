@@ -17,30 +17,31 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.ashojash.android.helper.AppController.context;
 
-public class NearbyVenuesAdapter extends RecyclerView.Adapter<NearbyVenuesAdapter.ViewHolder> {
+public class VenueSearchSuggestionAdapter
+    extends RecyclerView.Adapter<VenueSearchSuggestionAdapter.ViewHolder> {
 
   List<Venue> venueList;
 
-  public NearbyVenuesAdapter(List<Venue> venueList) {
+  public VenueSearchSuggestionAdapter(List<Venue> venueList) {
     this.venueList = venueList;
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View v =
-        LayoutInflater.from(parent.getContext()).inflate(R.layout.card_venue_nearby, parent, false);
-    NearbyVenuesAdapter.ViewHolder viewHolder = new NearbyVenuesAdapter.ViewHolder(v);
+    View v = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.card_venue_search_suggestion, parent, false);
+    VenueSearchSuggestionAdapter.ViewHolder viewHolder = new VenueSearchSuggestionAdapter.ViewHolder(v);
     return viewHolder;
   }
 
   @Override
-  public void onBindViewHolder(final NearbyVenuesAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(final VenueSearchSuggestionAdapter.ViewHolder holder, int position) {
     final Venue venue = venueList.get(position);
     holder.txtVenueName.setText(venue.name);
     holder.imgVenuePhoto.post(new Runnable() {
       @Override public void run() {
         int itemHeight = holder.imgVenuePhoto.getHeight();
         Glide.with(context)
-            .load(UiUtil.setUrlWidth(venue.photo.url, itemHeight ))
+            .load(UiUtil.setUrlWidth(venue.photo.url, itemHeight))
             .bitmapTransform(new CropSquareTransformation(context),
                 new RoundedCornersTransformation(context, 4, 0))
             .diskCacheStrategy(DiskCacheStrategy.RESULT)

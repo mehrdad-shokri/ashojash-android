@@ -5,7 +5,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import com.ashojash.android.R;
@@ -44,6 +43,8 @@ public class SearchActivity extends BottomToolbarActivity {
   private VenueTagFragment venueTagFragment;
   private double DEFAULT_SEARCH_DISTANCE;
   private int NEARBY_SEARCH_LIMIT;
+  private String lastSearchedTerm;
+  private boolean wasLocationUnknown;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -57,8 +58,11 @@ public class SearchActivity extends BottomToolbarActivity {
     }
     SearchBarFragment searchBarFragment = new SearchBarFragment();
     searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
+
       @Override public void onTermChanged(String term) {
-        if (term.isEmpty()) {
+        if (lastSearchedTerm == term) return;
+        lastSearchedTerm = term;
+        if (lastSearchedTerm.isEmpty()) {
           nearbyVenues.setVisibility(VISIBLE);
           contentSurvey.setVisibility(VISIBLE);
           venueTagView.setVisibility(GONE);
@@ -68,11 +72,32 @@ public class SearchActivity extends BottomToolbarActivity {
           contentSurvey.setVisibility(GONE);
           venueTagView.setVisibility(VISIBLE);
           if (lastKnownLatLng != null) {
-            SearchApi.suggest(term, lastKnownLatLng.latitude, lastKnownLatLng.longitude);
+            SearchApi.suggest(lastSearchedTerm, lastKnownLatLng.latitude,
+                lastKnownLatLng.longitude);
           } else {
-            Log.d(TAG, "onTermChanged: unknown location");
+            wasLocationUnknown = true;
           }
         }
+      }
+
+      @Override public void onTermFocusChanged(boolean hasFocus) {
+
+      }
+
+      @Override public void onLocationChanged(String term) {
+
+      }
+
+      @Override public void onLocationFocusChanged(boolean hasFocus) {
+
+      }
+
+      @Override public void onTermSubmitted(String term) {
+
+      }
+
+      @Override public void onLocationSubmitted(String term) {
+
       }
     });
     addFragment(R.id.termFrameLayout, searchBarFragment);
@@ -93,7 +118,6 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
     resetView();
-    //setPending(true);
     final TagsSuggestionFragment tagsSuggestionFragment = new TagsSuggestionFragment();
     final NearbyVenuesFragment nearbyVenuesFragment = new NearbyVenuesFragment();
     venueTagFragment = new VenueTagFragment();
@@ -106,6 +130,9 @@ public class SearchActivity extends BottomToolbarActivity {
         VenueApi.nearby(location.getLatitude(), location.getLongitude(), DEFAULT_SEARCH_DISTANCE,
             NEARBY_SEARCH_LIMIT);
         TagApi.suggestions();
+        if (wasLocationUnknown && (lastSearchedTerm != null) && (!lastSearchedTerm.isEmpty())) {
+          SearchApi.suggest(lastSearchedTerm, lastKnownLatLng.latitude, lastKnownLatLng.longitude);
+        }
       }
     });
     addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);

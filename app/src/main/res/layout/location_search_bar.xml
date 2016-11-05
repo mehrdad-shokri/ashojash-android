@@ -17,6 +17,8 @@
       android:layout_weight="1"
       android:background="@android:color/transparent"
       android:imeOptions="actionSearch"
+      android:inputType="text"
+      android:maxLines="1"
       android:text="@string/near_me"
       android:textColor="@color/gray_300"
       android:textSize="16sp"

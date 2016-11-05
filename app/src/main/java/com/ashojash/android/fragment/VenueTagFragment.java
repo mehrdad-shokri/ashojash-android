@@ -9,18 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.ashojash.android.R;
-import com.ashojash.android.adapter.TagSuggestionAdapter;
+import com.ashojash.android.adapter.TagSearchSuggestionAdapter;
+import com.ashojash.android.adapter.VenueSearchSuggestionAdapter;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Tag;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueTagCombined;
-import com.ashojash.android.util.BusProvider;
 import java.util.List;
 
 public class VenueTagFragment extends Fragment {
-  private VenueTagCombined venueTagCombined;
-  private List<Venue> venueList;
-  private List<Tag> tagList;
 
   private RecyclerView tagRecyclerView;
   private RecyclerView venueRecyclerView;
@@ -30,38 +27,29 @@ public class VenueTagFragment extends Fragment {
     return inflater.inflate(R.layout.fragment_venue_tag_combined, container, false);
   }
 
-  @Override public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
     setupViews();
   }
 
-  @Override public void onStart() {
-    super.onStart();
-    BusProvider.getInstance().register(this);
-  }
-
-  @Override public void onStop() {
-    super.onStop();
-    BusProvider.getInstance().unregister(this);
-  }
-
   public void setVenueTags(VenueTagCombined venueTagCombined) {
-    venueList = venueTagCombined.venueList;
-    tagList = venueTagCombined.tagList;
-    TagSuggestionAdapter tagSuggestionAdapter = new TagSuggestionAdapter(tagList);
+    List<Venue> venueList = venueTagCombined.venues;
+    List<Tag> tagList = venueTagCombined.tags;
+    TagSearchSuggestionAdapter tagSuggestionAdapter = new TagSearchSuggestionAdapter(tagList);
     tagRecyclerView.setAdapter(tagSuggestionAdapter);
-
-    
+    VenueSearchSuggestionAdapter venueSearchSuggestionAdapter = new VenueSearchSuggestionAdapter(venueList);
+    venueRecyclerView.setAdapter(venueSearchSuggestionAdapter);
   }
 
   private void setupViews() {
-    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(AppController.context);
-    tagRecyclerView = (RecyclerView) getView().findViewWithTag(R.id.tagSuggestionFramelayout);
-    tagRecyclerView.setLayoutManager(layoutManager);
+    RecyclerView.LayoutManager tagLayoutManager = new LinearLayoutManager(AppController.context);
+    tagRecyclerView = (RecyclerView) getView().findViewById(R.id.tagSuggestionRecyclerView);
+    tagRecyclerView.setLayoutManager(tagLayoutManager);
     tagRecyclerView.setHasFixedSize(true);
     tagRecyclerView.setNestedScrollingEnabled(false);
-    venueRecyclerView = (RecyclerView) getView().findViewWithTag(R.id.venueSuggestion);
-    venueRecyclerView.setLayoutManager(layoutManager);
+    venueRecyclerView = (RecyclerView) getView().findViewById(R.id.venueSuggestionRecyclerView);
+    RecyclerView.LayoutManager venueLayoutManager = new LinearLayoutManager(AppController.context);
+    venueRecyclerView.setLayoutManager(venueLayoutManager);
     venueRecyclerView.setHasFixedSize(true);
     venueRecyclerView.setNestedScrollingEnabled(false);
   }

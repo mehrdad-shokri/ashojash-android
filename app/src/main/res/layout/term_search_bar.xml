@@ -19,8 +19,10 @@
       android:background="@android:color/transparent"
       android:ellipsize="end"
       android:gravity="right"
-      android:imeOptions="actionSearch"
       android:hint="@string/search_ashojash"
+      android:imeOptions="actionSearch"
+      android:inputType="text"
+      android:maxLines="1"
       android:textColor="@color/gray_300"
       android:textSize="16sp"
       />
