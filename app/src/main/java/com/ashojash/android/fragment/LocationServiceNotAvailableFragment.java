@@ -30,8 +30,8 @@ public class LocationServiceNotAvailableFragment extends Fragment {
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    status = getArguments().getParcelable(STATUS_KEY);
     super.onActivityCreated(savedInstanceState);
+    status = getArguments().getParcelable(STATUS_KEY);
     button = (Button) getView().findViewById(R.id.button);
     button.setOnClickListener(new View.OnClickListener() {
       @Override

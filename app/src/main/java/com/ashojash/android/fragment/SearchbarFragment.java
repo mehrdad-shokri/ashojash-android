@@ -13,24 +13,25 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.ashojash.android.R;
+import com.ashojash.android.helper.AppController;
 
 public class SearchBarFragment extends Fragment {
   private EditText edtTermSearch;
   private EditText edtLocationSearch;
   private OnTermChanged onTermChanged;
+  public static final String NEAR_ME =
+      AppController.context.getResources().getString(R.string.near_me);
 
   public interface OnTermChanged {
     void onTermChanged(String term);
 
     void onTermFocusChanged(boolean hasFocus);
 
-    void onLocationChanged(String term);
+    void onLocationTermChanged(String term);
 
-    void onLocationFocusChanged(boolean hasFocus);
+    void onLocationFocusChanged(boolean hasFocus, EditText edittext);
 
-    void onTermSubmitted(String term);
-
-    void onLocationSubmitted(String term);
+    void onSubmit(String term, String location);
   }
 
   public void setOnTermChanged(OnTermChanged onTermChanged) {
@@ -53,9 +54,7 @@ public class SearchBarFragment extends Fragment {
     edtLocationSearch = (EditText) getView().findViewById(R.id.edtLocationSearch);
     edtTermSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override public void onFocusChange(View view, boolean hasFocus) {
-        if (hasFocus) {
-          onTermChanged.onTermFocusChanged(hasFocus);
-        }
+        onTermChanged.onTermFocusChanged(hasFocus);
       }
     });
     edtTermSearch.addTextChangedListener(new TextWatcher() {
@@ -75,8 +74,9 @@ public class SearchBarFragment extends Fragment {
     edtTermSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-          String term = v.getText().toString();
-          if (onTermChanged != null && !term.isEmpty()) onTermChanged.onTermSubmitted(term);
+          String term = edtTermSearch.getText().toString();
+          String location = edtLocationSearch.getText().toString();
+          if (onTermChanged != null) onTermChanged.onSubmit(term, location);
           return true;
         }
         return false;
@@ -85,9 +85,7 @@ public class SearchBarFragment extends Fragment {
 
     edtLocationSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override public void onFocusChange(View view, boolean hasFocus) {
-        if (hasFocus) {
-          onTermChanged.onLocationFocusChanged(hasFocus);
-        }
+        onTermChanged.onLocationFocusChanged(hasFocus, (EditText) view);
       }
     });
     edtLocationSearch.addTextChangedListener(new TextWatcher() {
@@ -100,15 +98,16 @@ public class SearchBarFragment extends Fragment {
       @Override public void afterTextChanged(Editable s) {
         String term = s.toString();
         if (onTermChanged != null) {
-          onTermChanged.onLocationChanged(term);
+          onTermChanged.onLocationTermChanged(term);
         }
       }
     });
     edtLocationSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-          String term = v.getText().toString();
-          if (onTermChanged != null && !term.isEmpty()) onTermChanged.onLocationSubmitted(term);
+          String term = edtTermSearch.getText().toString();
+          String location = edtLocationSearch.getText().toString();
+          if (onTermChanged != null) onTermChanged.onSubmit(term, location);
           return true;
         }
         return false;

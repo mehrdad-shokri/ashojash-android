@@ -17,20 +17,22 @@ public class LocationRequestUtil
     implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
   public static final int REQUEST_CODE = 1000;
   private GoogleApiClient googleApiClient;
+  private static final String TAG = "LocationRequestUtil";
 
   public LocationRequestUtil(Activity activity) {
     googleApiClient = new GoogleApiClient.Builder(activity)
         .addApi(LocationServices.API)
         .addConnectionCallbacks(this)
-        .addOnConnectionFailedListener(this).build();
+        .addOnConnectionFailedListener(this)
+        .build();
   }
 
   public void settingsRequest() {
     googleApiClient.connect();
     LocationRequest locationRequest = LocationRequest.create();
     locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    locationRequest.setInterval(1000L);
-    locationRequest.setFastestInterval(5 * 1000L);
+    locationRequest.setInterval(5 * 1000L);
+    locationRequest.setFastestInterval(1000L);
     LocationSettingsRequest.Builder builder =
         new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
 
@@ -48,7 +50,8 @@ public class LocationRequestUtil
         Log.d("TAG", "onResult: " + result.getStatus());
         switch (status.getStatusCode()) {
           case LocationSettingsStatusCodes.SUCCESS:
-            BusProvider.getInstance().post(new LocationEvents.OnLocationServiceAvailable());
+            BusProvider.getInstance()
+                .post(new LocationEvents.OnLocationServiceAvailable());
             break;
           case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
             BusProvider.getInstance()
@@ -63,6 +66,7 @@ public class LocationRequestUtil
 
   @Override
   public void onConnected(@Nullable Bundle bundle) {
+    Log.d(TAG, "onConnected: ");
         /*try {
             PendingIntent pendingIntent = PendingIntent.getService(activity, 0,
                     new Intent(activity, LocationHandler.class),
@@ -76,9 +80,11 @@ public class LocationRequestUtil
 
   @Override
   public void onConnectionSuspended(int i) {
+    Log.d(TAG, "onConnectionSuspended: ");
   }
 
   @Override
   public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    Log.d(TAG, "onConnectionFailed: ");
   }
 }

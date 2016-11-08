@@ -1,14 +1,17 @@
 package com.ashojash.android.webserver;
 
 import com.ashojash.android.event.VenueApiEvents;
-import com.ashojash.android.model.*;
+import com.ashojash.android.model.Menu;
+import com.ashojash.android.model.Photo;
+import com.ashojash.android.model.Review;
+import com.ashojash.android.model.Venue;
+import com.ashojash.android.model.VenuePaginated;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
-import java.util.List;
 
 public final class VenueApi extends BaseApi {
   private final static Endpoints API;
@@ -98,7 +101,7 @@ public final class VenueApi extends BaseApi {
   }
 
   private interface Endpoints {
-    @GET("venue/search/city/{citySlug}") Call<VenuePaginated> search(
+    @GET("venue/suggestVenueTag/city/{citySlug}") Call<VenuePaginated> search(
         @Path("citySlug") String citySlug, @Query("q") String query, @Query("l") int limit);
 
     @GET("venue/{venueSlug}?include=menus,photos,reviews") Call<Venue> index(

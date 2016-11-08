@@ -9,6 +9,7 @@
   <color name="gray_300">#353535</color>
   <color name="gray_600">#616161</color>
   <color name="gray_700">#757575</color>
+  <color name="gray_800">#aaa</color>
   <color name="gray_900">#eee</color>
   <color name="green">#1aca07</color>
   <color name="transparentGray">#5b777777</color>
@@ -98,4 +99,5 @@
   <color name="color_dark_material_reviews">#4e8c2e</color>
   <color name="color_dark_material_special_offers">#BF360C</color>
   <color name="color_dark_material_white">#ccc</color>
+  <color name="blue_300">#2020ec</color>
 </resources>

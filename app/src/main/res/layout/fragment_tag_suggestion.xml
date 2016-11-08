@@ -23,8 +23,8 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textSize="14sp"
           android:text="@string/quick_access"
+          android:textSize="14sp"
           />
     </LinearLayout>
     <com.wang.avi.AVLoadingIndicatorView
