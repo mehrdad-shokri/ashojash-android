@@ -4,7 +4,7 @@ android {
     dev {
       minSdkVersion 21
       applicationIdSuffix '.debug'
-      buildConfigField 'String', 'BASE_URL', '"http://192.168.1.5/api/"'
+      buildConfigField 'String', 'BASE_URL', '"http://192.168.43.10/api/"'
       resValue "string", "google_maps_api_key", GOOGLE_MAPS_API_KEY_DEV
       resValue "string", "server_client_id", SERVER_CLIENT_ID_DEV
     }

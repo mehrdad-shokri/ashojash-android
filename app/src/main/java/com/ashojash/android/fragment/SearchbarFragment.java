@@ -22,6 +22,10 @@ public class SearchBarFragment extends Fragment {
   public static final String NEAR_ME =
       AppController.context.getResources().getString(R.string.near_me);
 
+  public void setTermText(String query) {
+    edtTermSearch.setText(query);
+  }
+
   public interface OnTermChanged {
     void onTermChanged(String term);
 

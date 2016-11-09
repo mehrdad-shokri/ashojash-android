@@ -9,21 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.ashojash.android.R;
+import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.adapter.TagSuggestionAdapter;
-import com.ashojash.android.event.TagApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Tag;
-import com.ashojash.android.util.BusUtil;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.util.List;
-import org.greenrobot.eventbus.Subscribe;
 
 public class TagsSuggestionFragment extends Fragment {
   private RecyclerView recyclerView;
-  private List<Tag> tags;
   private TagSuggestionAdapter adapter;
+  private OnCardClickListener onCardClickListener;
 
   public TagsSuggestionFragment() {
+  }
+
+  public void setOnCardClickListener(OnCardClickListener onCardClickListener) {
+    this.onCardClickListener = onCardClickListener;
   }
 
   @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,20 +39,10 @@ public class TagsSuggestionFragment extends Fragment {
     setupViews();
   }
 
-  @Override public void onStart() {
-    super.onStart();
-    BusUtil.getInstance().register(this);
-  }
-
-  @Override public void onStop() {
-    super.onStop();
-    BusUtil.getInstance().unregister(this);
-  }
-
-  @Subscribe public void onEvent(TagApiEvents.OnTagsSuggestionsReady e) {
-    tags = e.tags;
+  public void setTags(List<Tag> tags) {
     ((AVLoadingIndicatorView) getView().findViewById(R.id.progressbar)).smoothToHide();
     adapter = new TagSuggestionAdapter(tags);
+    adapter.setOnCardClickListener(onCardClickListener);
     recyclerView.setAdapter(adapter);
     recyclerView.setVisibility(View.VISIBLE);
     recyclerView.setNestedScrollingEnabled(false);

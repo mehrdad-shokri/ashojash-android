@@ -17,8 +17,8 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 
-import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_face;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_home;
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_person;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_search;
 
 public class BottomToolbarActivity extends BaseActivity {
@@ -27,7 +27,6 @@ public class BottomToolbarActivity extends BaseActivity {
   private static final int PROFILE_ACTIVITY_BOTTOMBAR_POSITION = 2;
   public BottomBar mBottomBar;
   private static final int ICON_SIZE = 26;
-  private int SELECTED_TAB_COLOR;
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
@@ -87,7 +86,7 @@ public class BottomToolbarActivity extends BaseActivity {
         .color(mapColor)
         .sizeDp(ICON_SIZE);
     final IconicsDrawable profileDrawable =
-        new IconicsDrawable(AppController.context).icon(gmd_face)
+        new IconicsDrawable(AppController.context).icon(gmd_person)
             .color(profileColor)
             .sizeDp(ICON_SIZE);
     BottomBarTab mainTab = new BottomBarTab(mainDrawable, null);

@@ -2,26 +2,35 @@ package com.ashojash.android.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.ashojash.android.R;
+import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.event.LocationEvents;
 import com.ashojash.android.event.PermissionEvents;
 import com.ashojash.android.event.SearchApiEvents;
+import com.ashojash.android.event.TagApiEvents;
 import com.ashojash.android.fragment.LocationPermissionNotAvailableFragment;
 import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.fragment.NearbyVenuesFragment;
 import com.ashojash.android.fragment.SearchBarFragment;
+import com.ashojash.android.fragment.SearchResultFragment;
 import com.ashojash.android.fragment.StreetSuggestionFragment;
 import com.ashojash.android.fragment.TagsSuggestionFragment;
 import com.ashojash.android.fragment.VenueTagFragment;
 import com.ashojash.android.model.Street;
+import com.ashojash.android.model.Tag;
+import com.ashojash.android.model.Venue;
 import com.ashojash.android.model.VenueTagCombined;
 import com.ashojash.android.util.BusProvider;
 import com.ashojash.android.util.LocationRequestUtil;
@@ -42,25 +51,31 @@ import static android.view.View.VISIBLE;
 public class SearchActivity extends BottomToolbarActivity {
 
   private ViewGroup errorView;
-  private ViewGroup tagSuggestion;
+  private ViewGroup tagSuggestionView;
   private ViewGroup venueTagView;
   private ViewGroup streetsView;
-  private ViewGroup nearbyVenues;
+  private ViewGroup nearbyVenuesView;
+  private ViewGroup searchResultsView;
   private AVLoadingIndicatorView progressbar;
   private LatLng lastKnownLatLng;
-  private VenueTagFragment venueTagFragment;
   private double DEFAULT_SEARCH_DISTANCE;
   private int NEARBY_SEARCH_LIMIT;
   private String lastSearchedTerm = "";
-  private String lastSearchedStreetTerm = "";
+  private String lastSearchedLocationTerm = "";
   private boolean searchedForStreetWhileLocationUnknown;
   private boolean searchedForTermWhileLocationUnknown;
   private boolean performedSearchWhileLocationUnknown;
+
   private TagsSuggestionFragment tagsSuggestionFragment;
   private NearbyVenuesFragment nearbyVenuesFragment;
   private StreetSuggestionFragment streetSuggestFragment;
+  private SearchResultFragment searchResultFragment;
   private SearchBarFragment searchBarFragment;
+  private VenueTagFragment venueTagFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
+  private boolean isLocationUnknown = true;
+  private EditText edtTermSearch;
+  private EditText edtLocationSearch;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -68,14 +83,11 @@ public class SearchActivity extends BottomToolbarActivity {
     setupViews(savedInstanceState);
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+      resetView();
       setupErrors(new LocationPermissionNotAvailableFragment());
     } else {
       requestLocationService();
     }
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
   }
 
   @Subscribe public void onEvent(PermissionEvents.OnPermissionGranted e) {
@@ -85,10 +97,11 @@ public class SearchActivity extends BottomToolbarActivity {
     }
   }
 
-  private static final String TAG = "SearchActivity";
-
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
     resetView();
+    nearbyVenuesView.setVisibility(VISIBLE);
+    tagSuggestionView.setVisibility(VISIBLE);
+    isLocationUnknown = false;
     LocationUtil util = new LocationUtil();
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
@@ -105,34 +118,41 @@ public class SearchActivity extends BottomToolbarActivity {
               lastKnownLatLng.longitude);
         }
         if (searchedForStreetWhileLocationUnknown
-            && !lastSearchedStreetTerm.isEmpty()) {
+            && !lastSearchedLocationTerm.isEmpty()) {
           SearchApi.cancelStreetSuggest();
-          SearchApi.suggestStreet(lastSearchedStreetTerm, lastKnownLatLng.latitude,
+          SearchApi.suggestStreet(lastSearchedLocationTerm, lastKnownLatLng.latitude,
               lastKnownLatLng.longitude);
         }
         if (performedSearchWhileLocationUnknown) {
           performSearch(lastSearchedTerm,
-              lastSearchedStreetTerm);
+              lastSearchedLocationTerm);
         }
       }
     });
   }
 
   private void performSearch(String term, String location) {
-    tagSuggestion.setVisibility(GONE);
-    nearbyVenues.setVisibility(GONE);
-    streetsView.setVisibility(GONE);
-    venueTagView.setVisibility(GONE);
+    resetView();
     setPending(true);
+    //findViewById(R.id.edtTermSearch).clearFocus();
+    findViewById(R.id.searchResultFramelayout).requestFocus();
+    View view = this.getCurrentFocus();
+    if (view != null) {
+      InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+      imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    searchResultsView.setVisibility(VISIBLE);
     if (lastKnownLatLng == null) return;
     SearchApi.performSearch(lastKnownLatLng.latitude, lastKnownLatLng.longitude, term, location);
   }
 
   @Subscribe public void onEvent(SearchApiEvents.onSearchResultsReady e) {
     setPending(false);
+    searchResultFragment.setVenues(e.venues);
   }
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
+    resetView();
     Fragment fragment = new LocationServiceNotAvailableFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelable(LocationServiceNotAvailableFragment.STATUS_KEY, e.status);
@@ -156,24 +176,27 @@ public class SearchActivity extends BottomToolbarActivity {
   }
 
   private void setupErrors(Fragment fragment) {
-    resetView();
     errorView.setVisibility(VISIBLE);
     addFragment(R.id.error, fragment);
   }
 
   private void setPending(boolean showProgress) {
     if (showProgress) {
-      progressbar.show();
+      progressbar.setVisibility(VISIBLE);
     } else {
-      progressbar.hide();
+      progressbar.setVisibility(GONE);
     }
   }
 
   private void resetView() {
     removeFragment(getSupportFragmentManager().findFragmentById(R.id.error));
+    setPending(false);
     errorView.setVisibility(GONE);
-    tagSuggestion.setVisibility(VISIBLE);
-    nearbyVenues.setVisibility(VISIBLE);
+    tagSuggestionView.setVisibility(GONE);
+    nearbyVenuesView.setVisibility(GONE);
+    venueTagView.setVisibility(GONE);
+    streetsView.setVisibility(GONE);
+    searchResultsView.setVisibility(GONE);
   }
 
   private void requestLocationService() {
@@ -183,28 +206,55 @@ public class SearchActivity extends BottomToolbarActivity {
 
   private void setupViews(Bundle savedInstanceState) {
     attach(this, savedInstanceState);
-    errorView = (ViewGroup) findViewById(R.id.error);
-    tagSuggestion = (ViewGroup) findViewById(R.id.tagSuggestionFramelayout);
-    venueTagView = (ViewGroup) findViewById(R.id.venueTagFramelayout);
-    streetsView = (ViewGroup) findViewById(R.id.streetSuggestFrameLayout);
-    nearbyVenues = (ViewGroup) findViewById(R.id.nearbyVenuesFramelayout);
-    progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
+    lastSearchedLocationTerm = getString(R.string.near_me);
     searchBarFragment = new SearchBarFragment();
+    searchResultFragment = new SearchResultFragment();
     tagsSuggestionFragment = new TagsSuggestionFragment();
     nearbyVenuesFragment = new NearbyVenuesFragment();
     streetSuggestFragment = new StreetSuggestionFragment();
     venueTagFragment = new VenueTagFragment();
-    searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
+    addFragment(R.id.termFrameLayout, searchBarFragment);
+    addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);
+    addFragment(R.id.nearbyVenuesFramelayout, nearbyVenuesFragment);
+    addFragment(R.id.venueTagFramelayout, venueTagFragment);
+    addFragment(R.id.streetSuggestFrameLayout, streetSuggestFragment);
+    addFragment(R.id.searchResultFramelayout, searchResultFragment);
+    errorView = (ViewGroup) findViewById(R.id.error);
+    tagSuggestionView = (ViewGroup) findViewById(R.id.tagSuggestionFramelayout);
+    venueTagView = (ViewGroup) findViewById(R.id.venueTagFramelayout);
+    streetsView = (ViewGroup) findViewById(R.id.streetSuggestFrameLayout);
+    nearbyVenuesView = (ViewGroup) findViewById(R.id.nearbyVenuesFramelayout);
+    searchResultsView = (ViewGroup) findViewById(R.id.searchResultFramelayout);
+    progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
+    edtTermSearch = (EditText) findViewById(R.id.edtTermSearch);
+    edtLocationSearch = (EditText) findViewById(R.id.edtLocationSearch);
+    tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {
+      @Override public void onClick(Object model) {
+        Tag tag = (Tag) model;
+        //edtTermSearch.setText(tag.name);
+        ((EditText) findViewById(R.id.edtTermSearch)).setText(tag.name);
+        performSearch(tag.name, lastSearchedLocationTerm);
+      }
+    });
+    venueTagFragment.setOnItemClickListener(new VenueTagFragment.OnItemClickListener() {
+      @Override public void onTagItemClickListener(Tag tag) {
+        searchBarFragment.setTermText(tag.name);
+        performSearch(tag.name, lastSearchedTerm);
+      }
 
+      @Override public void onVenueItemClickListener(Venue venue) {
+      }
+    });
+    searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
       @Override public void onTermChanged(String term) {
+        if (isLocationUnknown) return;
         lastSearchedTerm = term;
         if (lastSearchedTerm.isEmpty()) {
-          nearbyVenues.setVisibility(VISIBLE);
-          tagSuggestion.setVisibility(VISIBLE);
-          venueTagView.setVisibility(GONE);
+          resetView();
+          nearbyVenuesView.setVisibility(VISIBLE);
+          tagSuggestionView.setVisibility(VISIBLE);
         } else {
-          nearbyVenues.setVisibility(GONE);
-          tagSuggestion.setVisibility(GONE);
+          resetView();
           venueTagView.setVisibility(VISIBLE);
           if (lastKnownLatLng != null) {
             SearchApi.suggestVenueTag(lastSearchedTerm, lastKnownLatLng.latitude,
@@ -216,9 +266,12 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onLocationTermChanged(String term) {
-        lastSearchedStreetTerm = term;
+        if (isLocationUnknown) return;
+        lastSearchedLocationTerm = term;
         String nearMe = getResources().getString(R.string.near_me);
-        if (lastSearchedStreetTerm.equals(nearMe) || lastSearchedStreetTerm.isEmpty()) {
+        resetView();
+        streetsView.setVisibility(VISIBLE);
+        if (lastSearchedLocationTerm.equals(nearMe) || lastSearchedLocationTerm.isEmpty()) {
           SearchApi.cancelStreetSuggest();
           streetSuggestFragment.setStreets(nearbyStreets);
         } else {
@@ -232,22 +285,27 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onTermFocusChanged(boolean hasFocus) {
+        if (isLocationUnknown) return;
         if (hasFocus) {
-          streetsView.setVisibility(GONE);
+          resetView();
+          tagSuggestionView.setVisibility(VISIBLE);
+          nearbyVenuesView.setVisibility(VISIBLE);
           if (!lastSearchedTerm.isEmpty()) {
-            tagSuggestion.setVisibility(GONE);
-            nearbyVenues.setVisibility(GONE);
             venueTagView.setVisibility(VISIBLE);
           } else {
-            tagSuggestion.setVisibility(VISIBLE);
-            nearbyVenues.setVisibility(VISIBLE);
-            venueTagView.setVisibility(GONE);
+            tagSuggestionView.setVisibility(VISIBLE);
+            nearbyVenuesView.setVisibility(VISIBLE);
           }
         }
       }
 
       @Override public void onLocationFocusChanged(boolean hasFocus, EditText editText) {
+        if (isLocationUnknown) {
+          return;
+        }
         if (hasFocus) {
+          resetView();
+          streetsView.setVisibility(VISIBLE);
           if (editText.getText().toString().equals(
               getResources().getString(R.string.near_me))) {
             editText.selectAll();
@@ -255,10 +313,6 @@ public class SearchActivity extends BottomToolbarActivity {
           } else {
             editText.setSelectAllOnFocus(false);
           }
-          streetsView.setVisibility(VISIBLE);
-          nearbyVenues.setVisibility(GONE);
-          venueTagView.setVisibility(GONE);
-          tagSuggestion.setVisibility(GONE);
         }
       }
 
@@ -266,17 +320,14 @@ public class SearchActivity extends BottomToolbarActivity {
         performSearch(term, location);
       }
     });
-    streetSuggestFragment.setOnChangesListener(new StreetSuggestionFragment.ChangesListener() {
-      @Override public void onSearchActionRequested(String term) {
-        ((EditText) findViewById(R.id.edtLocationSearch)).setText(term);
-        performSearch(lastSearchedTerm, term);
+    streetSuggestFragment.setOnCardClickListener(new OnCardClickListener() {
+      @Override public void onClick(Object model) {
+        Log.d("Ashojash", "setStreets: onStreet card click");
+        Street street = (Street) model;
+        ((EditText) findViewById(R.id.edtLocationSearch)).setText(street.name);
+        performSearch(lastSearchedTerm, street.name);
       }
     });
-    addFragment(R.id.termFrameLayout, searchBarFragment);
-    addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);
-    addFragment(R.id.nearbyVenuesFramelayout, nearbyVenuesFragment);
-    addFragment(R.id.venueTagFramelayout, venueTagFragment);
-    addFragment(R.id.streetSuggestFrameLayout, streetSuggestFragment);
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -296,5 +347,9 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(SearchApiEvents.OnStreetSuggestResultsReady e) {
     streetSuggestFragment.setStreets(e.streets);
+  }
+
+  @Subscribe public void onEvent(TagApiEvents.OnTagsSuggestionsReady e) {
+    tagsSuggestionFragment.setTags(e.tags);
   }
 }

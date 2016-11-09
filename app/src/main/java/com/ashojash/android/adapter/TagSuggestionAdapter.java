@@ -19,9 +19,14 @@ import static com.ashojash.android.helper.AppController.context;
 public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdapter.ViewHolder> {
 
   List<Tag> tagList;
+  private OnCardClickListener onCardClickListener;
 
   public TagSuggestionAdapter(List<Tag> tagList) {
     this.tagList = tagList;
+  }
+
+  public void setOnCardClickListener(OnCardClickListener onCardClickListener) {
+    this.onCardClickListener = onCardClickListener;
   }
 
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,6 +40,13 @@ public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdap
   public void onBindViewHolder(final TagSuggestionAdapter.ViewHolder holder, int position) {
     final Tag tag = tagList.get(position);
     holder.txtTagName.setText(tag.name);
+    if (onCardClickListener != null) {
+      holder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          onCardClickListener.onClick(tag);
+        }
+      });
+    }
     if (tag.photo != null) {
       holder.imgTagPhoto.post(new Runnable() {
         @Override public void run() {
@@ -58,11 +70,13 @@ public class TagSuggestionAdapter extends RecyclerView.Adapter<TagSuggestionAdap
   class ViewHolder extends RecyclerView.ViewHolder {
     public TextView txtTagName;
     public ImageView imgTagPhoto;
+    public ViewGroup rootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       txtTagName = (TextView) itemView.findViewById(R.id.txtTagName);
       imgTagPhoto = (ImageView) itemView.findViewById(R.id.imgTagPhoto);
+      rootView = (ViewGroup) itemView.findViewById(R.id.rootView);
     }
   }
 

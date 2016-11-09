@@ -13,6 +13,7 @@ import java.util.List;
 public class NearbyStreetAdapter extends RecyclerView.Adapter<NearbyStreetAdapter.ViewHolder> {
 
   List<Street> streetList;
+  private OnCardClickListener listener;
 
   public NearbyStreetAdapter(List<Street> streetList) {
     this.streetList = streetList;
@@ -30,6 +31,13 @@ public class NearbyStreetAdapter extends RecyclerView.Adapter<NearbyStreetAdapte
   public void onBindViewHolder(final NearbyStreetAdapter.ViewHolder holder, int position) {
     final Street street = streetList.get(position);
     holder.txtStreetName.setText(street.name);
+    if (listener != null) {
+      holder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          listener.onClick(street);
+        }
+      });
+    }
     if (street.distance == 0) {
       holder.txtDistance.setVisibility(View.GONE);
     } else {
@@ -40,19 +48,25 @@ public class NearbyStreetAdapter extends RecyclerView.Adapter<NearbyStreetAdapte
       } else if (street.distance < 500) {
         holder.txtDistance.setText(lessThan + " 500 متر");
       } else {
-        holder.txtDistance.setText(more_than+" 500 متر");
+        holder.txtDistance.setText(more_than + " 500 متر");
       }
     }
+  }
+
+  public void setOnItemSelectionListener(OnCardClickListener listener) {
+    this.listener = listener;
   }
 
   class ViewHolder extends RecyclerView.ViewHolder {
     public TextView txtStreetName;
     public TextView txtDistance;
+    public ViewGroup rootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       txtStreetName = (TextView) itemView.findViewById(R.id.txtStreetName);
       txtDistance = (TextView) itemView.findViewById(R.id.txtStreetDistance);
+      rootView = (ViewGroup) itemView.findViewById(R.id.rootView);
     }
   }
 

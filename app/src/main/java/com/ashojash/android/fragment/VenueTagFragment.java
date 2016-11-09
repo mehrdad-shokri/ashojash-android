@@ -21,6 +21,17 @@ public class VenueTagFragment extends Fragment {
 
   private RecyclerView tagRecyclerView;
   private RecyclerView venueRecyclerView;
+  private OnItemClickListener onItemClickListener;
+
+  public interface OnItemClickListener {
+    void onTagItemClickListener(Tag tag);
+
+    void onVenueItemClickListener(Venue venue);
+  }
+
+  public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
+  }
 
   @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -37,7 +48,8 @@ public class VenueTagFragment extends Fragment {
     List<Tag> tagList = venueTagCombined.tags;
     TagSearchSuggestionAdapter tagSuggestionAdapter = new TagSearchSuggestionAdapter(tagList);
     tagRecyclerView.setAdapter(tagSuggestionAdapter);
-    VenueSearchSuggestionAdapter venueSearchSuggestionAdapter = new VenueSearchSuggestionAdapter(venueList);
+    VenueSearchSuggestionAdapter venueSearchSuggestionAdapter =
+        new VenueSearchSuggestionAdapter(venueList);
     venueRecyclerView.setAdapter(venueSearchSuggestionAdapter);
   }
 

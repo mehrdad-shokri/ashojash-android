@@ -19,7 +19,7 @@
       android:background="@android:color/transparent"
       android:ellipsize="end"
       android:gravity="right"
-      android:hint="@string/search_ashojash"
+      android:hint="@string/term_searchbar_hint"
       android:imeOptions="actionSearch"
       android:inputType="text"
       android:maxLines="1"
