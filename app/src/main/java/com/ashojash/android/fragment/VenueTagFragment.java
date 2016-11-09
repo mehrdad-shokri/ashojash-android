@@ -47,9 +47,11 @@ public class VenueTagFragment extends Fragment {
     List<Venue> venueList = venueTagCombined.venues;
     List<Tag> tagList = venueTagCombined.tags;
     TagSearchSuggestionAdapter tagSuggestionAdapter = new TagSearchSuggestionAdapter(tagList);
+    tagSuggestionAdapter.setOnCardClickListener(onItemClickListener);
     tagRecyclerView.setAdapter(tagSuggestionAdapter);
     VenueSearchSuggestionAdapter venueSearchSuggestionAdapter =
         new VenueSearchSuggestionAdapter(venueList);
+    venueSearchSuggestionAdapter.setOnCardClickListener(onItemClickListener);
     venueRecyclerView.setAdapter(venueSearchSuggestionAdapter);
   }
 

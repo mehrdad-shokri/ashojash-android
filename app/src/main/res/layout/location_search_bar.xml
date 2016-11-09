@@ -6,7 +6,7 @@
     android:layout_height="50dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    android:background="#fff"
+    android:background="@drawable/search_initiator_background"
     android:gravity="center_vertical|end"
     >
   <EditText
@@ -21,7 +21,8 @@
       android:imeOptions="actionSearch"
       android:inputType="text"
       android:maxLines="1"
-      android:text="@string/near_me"
+      android:text=""
+      android:hint="@string/street_name"
       android:textColor="@color/gray_300"
       android:textSize="16sp"
       />

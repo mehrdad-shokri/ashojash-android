@@ -7,8 +7,8 @@
     android:layout_marginBottom="1dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    android:background="#fff"
     android:gravity="center_vertical|end"
+    android:background="@drawable/search_initiator_background"
     >
   <EditText
       android:id="@+id/edtTermSearch"

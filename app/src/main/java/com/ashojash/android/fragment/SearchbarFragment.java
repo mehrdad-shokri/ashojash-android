@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,7 @@ public class SearchBarFragment extends Fragment {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
           String term = edtTermSearch.getText().toString();
           String location = edtLocationSearch.getText().toString();
+          Log.d("SearchActivity", "onEditorAction: " + term + " " + location);
           if (onTermChanged != null) onTermChanged.onSubmit(term, location);
           return true;
         }

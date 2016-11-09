@@ -27,12 +27,12 @@ public class SearchApi extends BaseApi {
   }
 
   private SearchApi() {
+    throw new IllegalAccessError();
   }
 
   private static final String TAG = "SearchApi";
 
   public static void suggestVenueTag(String query, double lat, double lng) {
-    Log.d(TAG, "suggestVenueTag: " + query + " " + lat + " " + lng);
 
     suggestCall = API.suggestVenueTag(query, lat, lng);
     suggestCall.enqueue(new ApiCallback<VenueTagCombined>() {
@@ -73,6 +73,8 @@ public class SearchApi extends BaseApi {
   }
 
   public static void performSearch(double lat, double lng, String query, String streetName) {
+    Log.d(TAG, "performSearch: "+query);
+    Log.d(TAG, "performSearch: "+streetName);
     if (streetName.equals(AppController.context.getResources().getString(R.string.near_me))) {
       streetName = null;
     }

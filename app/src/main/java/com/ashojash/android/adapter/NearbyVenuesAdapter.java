@@ -20,6 +20,7 @@ import static com.ashojash.android.helper.AppController.context;
 public class NearbyVenuesAdapter extends RecyclerView.Adapter<NearbyVenuesAdapter.ViewHolder> {
 
   List<Venue> venueList;
+  private OnCardClickListener onCardClickListener;
 
   public NearbyVenuesAdapter(List<Venue> venueList) {
     this.venueList = venueList;
@@ -35,12 +36,19 @@ public class NearbyVenuesAdapter extends RecyclerView.Adapter<NearbyVenuesAdapte
   @Override
   public void onBindViewHolder(final NearbyVenuesAdapter.ViewHolder holder, int position) {
     final Venue venue = venueList.get(position);
+    if (onCardClickListener != null) {
+      holder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          onCardClickListener.onClick(venue);
+        }
+      });
+    }
     holder.txtVenueName.setText(venue.name);
     holder.imgVenuePhoto.post(new Runnable() {
       @Override public void run() {
         int itemHeight = holder.imgVenuePhoto.getHeight();
         Glide.with(context)
-            .load(UiUtil.setUrlWidth(venue.photo.url, itemHeight ))
+            .load(UiUtil.setUrlWidth(venue.photo.url, itemHeight))
             .bitmapTransform(new CropSquareTransformation(context),
                 new RoundedCornersTransformation(context, 4, 0))
             .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -49,14 +57,20 @@ public class NearbyVenuesAdapter extends RecyclerView.Adapter<NearbyVenuesAdapte
     });
   }
 
+  public void setonCardClickListener(OnCardClickListener onCardClickListener) {
+    this.onCardClickListener = onCardClickListener;
+  }
+
   class ViewHolder extends RecyclerView.ViewHolder {
     public TextView txtVenueName;
     public ImageView imgVenuePhoto;
+    public ViewGroup rootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       txtVenueName = (TextView) itemView.findViewById(R.id.txtVenueName);
       imgVenuePhoto = (ImageView) itemView.findViewById(R.id.imgVenuePhoto);
+      rootView = (ViewGroup) itemView.findViewById(R.id.rootView);
     }
   }
 

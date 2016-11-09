@@ -10,20 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.NearbyVenuesAdapter;
-import com.ashojash.android.event.VenueApiEvents;
+import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import com.ashojash.android.util.BusProvider;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.util.List;
-import org.greenrobot.eventbus.Subscribe;
 
 public class NearbyVenuesFragment extends Fragment {
   private RecyclerView recyclerView;
   private List<Venue> venues;
   private NearbyVenuesAdapter adapter;
+  private OnCardClickListener onCardClickListener;
 
   public NearbyVenuesFragment() {
+  }
+
+  public void setOnCardClickListener(OnCardClickListener onCardClickListener) {
+    this.onCardClickListener = onCardClickListener;
   }
 
   @Nullable @Override
@@ -46,19 +49,10 @@ public class NearbyVenuesFragment extends Fragment {
     recyclerView.setNestedScrollingEnabled(false);
   }
 
-  @Override public void onStart() {
-    super.onStart();
-    BusProvider.getInstance().register(this);
-  }
-
-  @Override public void onStop() {
-    super.onStop();
-    BusProvider.getInstance().unregister(this);
-  }
-
-  @Subscribe public void onEvent(VenueApiEvents.OnNearbyVenuesResult e) {
-    this.venues = e.venueList;
+  public void setVenues(List<Venue> venues) {
+    this.venues = venues;
     adapter = new NearbyVenuesAdapter(this.venues);
+    adapter.setonCardClickListener(onCardClickListener);
     recyclerView.setAdapter(adapter);
     ((AVLoadingIndicatorView) getView().findViewById(R.id.progressbar)).smoothToHide();
     recyclerView.setVisibility(View.VISIBLE);

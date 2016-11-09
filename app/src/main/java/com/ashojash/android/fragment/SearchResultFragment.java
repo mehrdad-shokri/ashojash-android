@@ -9,16 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.ashojash.android.R;
+import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.adapter.VenueSearchResultAdapter;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultFragment extends Fragment {
-  private List<Venue> venues = new ArrayList<>();
   private RecyclerView recyclerView;
+  private OnCardClickListener onCardClickListener;
 
+  public void setOnCardClickListener(OnCardClickListener onCardClickListener)
+  {
+    this.onCardClickListener = onCardClickListener;
+  }
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class SearchResultFragment extends Fragment {
 
   public void setVenues(List<Venue> venues) {
     VenueSearchResultAdapter adapter = new VenueSearchResultAdapter(venues);
+    adapter.setOnCardClickListener(onCardClickListener);
     recyclerView.setAdapter(adapter);
     recyclerView.setNestedScrollingEnabled(false);
   }

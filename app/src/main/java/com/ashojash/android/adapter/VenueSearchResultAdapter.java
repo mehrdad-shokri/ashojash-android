@@ -21,6 +21,7 @@ public class VenueSearchResultAdapter
     extends RecyclerView.Adapter<VenueSearchResultAdapter.ViewHolder> {
 
   List<Venue> venueList;
+  private OnCardClickListener onCardClickListener;
 
   public VenueSearchResultAdapter(List<Venue> venueList) {
     this.venueList = venueList;
@@ -37,6 +38,13 @@ public class VenueSearchResultAdapter
   public void onBindViewHolder(final VenueSearchResultAdapter.ViewHolder holder, int position) {
     final Venue venue = venueList.get(position);
     double distance = venue.distance;
+    if (onCardClickListener != null) {
+      holder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          onCardClickListener.onClick(venue);
+        }
+      });
+    }
     holder.txtVenueName.setText(venue.name);
     holder.txtVenueDistance.setText(String.valueOf(distance));
     holder.imgVenuePhoto.post(new Runnable() {
@@ -52,16 +60,22 @@ public class VenueSearchResultAdapter
     });
   }
 
+  public void setOnCardClickListener(OnCardClickListener onCardClickListener) {
+    this.onCardClickListener = onCardClickListener;
+  }
+
   class ViewHolder extends RecyclerView.ViewHolder {
     public TextView txtVenueName;
     public TextView txtVenueDistance;
     public ImageView imgVenuePhoto;
+    public ViewGroup rootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       txtVenueName = (TextView) itemView.findViewById(R.id.txtVenueName);
       txtVenueDistance = (TextView) itemView.findViewById(R.id.txtVenueDistance);
       imgVenuePhoto = (ImageView) itemView.findViewById(R.id.imgVenuePhoto);
+      rootView = (ViewGroup) itemView.findViewById(R.id.rootView);
     }
   }
 

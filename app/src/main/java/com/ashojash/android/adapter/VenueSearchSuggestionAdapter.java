@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.ashojash.android.R;
+import com.ashojash.android.fragment.VenueTagFragment;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.util.UiUtil;
 import com.bumptech.glide.Glide;
@@ -21,6 +22,7 @@ public class VenueSearchSuggestionAdapter
     extends RecyclerView.Adapter<VenueSearchSuggestionAdapter.ViewHolder> {
 
   List<Venue> venueList;
+  private VenueTagFragment.OnItemClickListener onItemClickListener;
 
   public VenueSearchSuggestionAdapter(List<Venue> venueList) {
     this.venueList = venueList;
@@ -29,7 +31,8 @@ public class VenueSearchSuggestionAdapter
   @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     View v = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.card_venue_search_suggestion, parent, false);
-    VenueSearchSuggestionAdapter.ViewHolder viewHolder = new VenueSearchSuggestionAdapter.ViewHolder(v);
+    VenueSearchSuggestionAdapter.ViewHolder viewHolder =
+        new VenueSearchSuggestionAdapter.ViewHolder(v);
     return viewHolder;
   }
 
@@ -37,6 +40,13 @@ public class VenueSearchSuggestionAdapter
   public void onBindViewHolder(final VenueSearchSuggestionAdapter.ViewHolder holder, int position) {
     final Venue venue = venueList.get(position);
     holder.txtVenueName.setText(venue.name);
+    if (onItemClickListener != null) {
+      holder.rootView.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          onItemClickListener.onVenueItemClickListener(venue);
+        }
+      });
+    }
     holder.imgVenuePhoto.post(new Runnable() {
       @Override public void run() {
         int itemHeight = holder.imgVenuePhoto.getHeight();
@@ -50,14 +60,20 @@ public class VenueSearchSuggestionAdapter
     });
   }
 
+  public void setOnCardClickListener(VenueTagFragment.OnItemClickListener onItemClickListener) {
+    this.onItemClickListener = onItemClickListener;
+  }
+
   class ViewHolder extends RecyclerView.ViewHolder {
     public TextView txtVenueName;
     public ImageView imgVenuePhoto;
+    public ViewGroup rootView;
 
     public ViewHolder(View itemView) {
       super(itemView);
       txtVenueName = (TextView) itemView.findViewById(R.id.txtVenueName);
       imgVenuePhoto = (ImageView) itemView.findViewById(R.id.imgVenuePhoto);
+      rootView = (ViewGroup) itemView.findViewById(R.id.rootView);
     }
   }
 
