@@ -379,4 +379,8 @@ public class SearchActivity extends BottomToolbarActivity {
   @Subscribe public void onEvent(VenueApiEvents.OnNearbyVenuesResult e) {
     nearbyVenuesFragment.setVenues(e.venueList);
   }
+
+  @Override protected void onResume() {
+    super.onResume();
+  }
 }
