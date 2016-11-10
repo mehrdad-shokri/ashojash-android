@@ -89,3 +89,7 @@
 }
 #Gson models
 -keep class com.ashojash.android.model.** {*; }
+
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }
+-keep class com.ashojash.android.ui.AggressivePacmanIndicator { *; }

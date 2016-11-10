@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationMenu;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.event.LocationEvents;
+import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.PermissionEvents;
 import com.ashojash.android.event.SearchApiEvents;
 import com.ashojash.android.event.TagApiEvents;
@@ -51,7 +53,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SearchActivity extends BottomToolbarActivity {
-
+  private BottomNavigationMenu a;
   private ViewGroup errorView;
   private ViewGroup tagSuggestionView;
   private ViewGroup venueTagView;
@@ -135,12 +137,12 @@ public class SearchActivity extends BottomToolbarActivity {
   private static final String TAG = "SearchActivity";
 
   private void performSearch(String query, String location) {
-    Log.d(TAG, "performSearch: " + query);
-    Log.d(TAG, "performSearch: " + location);
+    if (lastSearchedLocationTerm.isEmpty()) {
+      ((EditText) findViewById(R.id.edtLocationSearch)).setText(R.string.near_me);
+    }
+    findViewById(R.id.searchResultFramelayout).requestFocus();
     resetView();
     setPending(true);
-    //findViewById(R.id.edtTermSearch).clearFocus();
-    findViewById(R.id.searchResultFramelayout).requestFocus();
     View view = this.getCurrentFocus();
     if (view != null) {
       InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -292,7 +294,7 @@ public class SearchActivity extends BottomToolbarActivity {
           streetSuggestFragment.setStreets(nearbyStreets);
         } else {
           if (lastKnownLatLng != null) {
-            SearchApi.cancelStreetSuggest();
+            //SearchApi.cancelStreetSuggest();
             SearchApi.suggestStreet(term, lastKnownLatLng.latitude, lastKnownLatLng.longitude);
           } else {
             searchedForStreetWhileLocationUnknown = true;
@@ -336,7 +338,6 @@ public class SearchActivity extends BottomToolbarActivity {
     });
     streetSuggestFragment.setOnCardClickListener(new OnCardClickListener() {
       @Override public void onClick(Object model) {
-        Log.d("Ashojash", "setStreets: onStreet card click");
         Street street = (Street) model;
         ((EditText) findViewById(R.id.edtLocationSearch)).setText(street.name);
         performSearch(lastSearchedTerm, street.name);
@@ -380,7 +381,7 @@ public class SearchActivity extends BottomToolbarActivity {
     nearbyVenuesFragment.setVenues(e.venueList);
   }
 
-  @Override protected void onResume() {
-    super.onResume();
+  @Subscribe public void onEvent(OnApiRequestErrorEvent e) {
+    Log.d(TAG, "onEvent: " + e.error.message);
   }
 }

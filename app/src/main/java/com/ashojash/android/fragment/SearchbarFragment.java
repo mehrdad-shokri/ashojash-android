@@ -14,14 +14,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.ashojash.android.R;
-import com.ashojash.android.helper.AppController;
 
 public class SearchBarFragment extends Fragment {
   private EditText edtTermSearch;
   private EditText edtLocationSearch;
   private OnTermChanged onTermChanged;
-  public static final String NEAR_ME =
-      AppController.context.getResources().getString(R.string.near_me);
 
   public void setTermText(String query) {
     edtTermSearch.setText(query);
