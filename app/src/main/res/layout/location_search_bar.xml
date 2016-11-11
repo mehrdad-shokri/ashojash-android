@@ -22,7 +22,7 @@
       android:imeOptions="actionSearch"
       android:inputType="text"
       android:maxLines="1"
-      android:text=""
+      android:text="@string/near_me"
       android:textColor="@color/gray_300"
       android:textSize="16sp"
       />

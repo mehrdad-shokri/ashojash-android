@@ -95,7 +95,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         if (AppController.ANDROID_VERSION >= Build.VERSION_CODES.M) {
             int hasGetAccountsPermission = ContextCompat.checkSelfPermission(getActivity(), GET_ACCOUNTS_PERMISSION);
             final Activity currentActivity = getActivity();
-            // Should we show an explanation?
+            // Should we showBottombar an explanation?
             if (hasGetAccountsPermission != PackageManager.PERMISSION_GRANTED) {
                 showRationale();
             } else {

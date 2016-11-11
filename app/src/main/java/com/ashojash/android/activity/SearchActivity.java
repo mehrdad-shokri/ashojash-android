@@ -7,18 +7,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.internal.BottomNavigationMenu;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.ashojash.android.R;
 import com.ashojash.android.adapter.OnCardClickListener;
 import com.ashojash.android.event.LocationEvents;
-import com.ashojash.android.event.OnApiRequestErrorEvent;
 import com.ashojash.android.event.PermissionEvents;
 import com.ashojash.android.event.SearchApiEvents;
 import com.ashojash.android.event.TagApiEvents;
@@ -39,6 +38,7 @@ import com.ashojash.android.util.BusProvider;
 import com.ashojash.android.util.LocationRequestUtil;
 import com.ashojash.android.util.LocationUtil;
 import com.ashojash.android.util.PermissionUtil;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.webserver.SearchApi;
 import com.ashojash.android.webserver.TagApi;
 import com.ashojash.android.webserver.VenueApi;
@@ -51,9 +51,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.ashojash.android.R.id.edtLocationSearch;
+import static com.ashojash.android.R.id.edtTermSearch;
 
 public class SearchActivity extends BottomToolbarActivity {
-  private BottomNavigationMenu a;
   private ViewGroup errorView;
   private ViewGroup tagSuggestionView;
   private ViewGroup venueTagView;
@@ -61,9 +62,10 @@ public class SearchActivity extends BottomToolbarActivity {
   private ViewGroup nearbyVenuesView;
   private ViewGroup searchResultsView;
   private AVLoadingIndicatorView progressbar;
+  private FloatingActionButton fab;
   private LatLng lastKnownLatLng;
-  private double DEFAULT_SEARCH_DISTANCE;
-  private int NEARBY_SEARCH_LIMIT;
+  private double DEFAULT_SEARCH_DISTANCE = .5;
+  private int NEARBY_SEARCH_LIMIT = 8;
   private String lastSearchedTerm = "";
   private String lastSearchedLocationTerm = "";
   private boolean searchedForStreetWhileLocationUnknown;
@@ -78,8 +80,6 @@ public class SearchActivity extends BottomToolbarActivity {
   private VenueTagFragment venueTagFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
   private boolean isLocationUnknown = true;
-  private EditText edtTermSearch;
-  private EditText edtLocationSearch;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -92,6 +92,20 @@ public class SearchActivity extends BottomToolbarActivity {
     } else {
       requestLocationService();
     }
+    final View activityRootView = findViewById(R.id.rootView);
+    activityRootView.getViewTreeObserver()
+        .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override
+          public void onGlobalLayout() {
+            int heightDiff =
+                activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+            if (heightDiff > UiUtil.dp2px(200)) {
+              hideBottombar();
+            } else {
+              showBottombar();
+            }
+          }
+        });
   }
 
   @Subscribe public void onEvent(PermissionEvents.OnPermissionGranted e) {
@@ -110,8 +124,6 @@ public class SearchActivity extends BottomToolbarActivity {
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        DEFAULT_SEARCH_DISTANCE = .5;
-        NEARBY_SEARCH_LIMIT = 8;
         VenueApi.nearby(location.getLatitude(), location.getLongitude(), DEFAULT_SEARCH_DISTANCE,
             NEARBY_SEARCH_LIMIT);
         TagApi.suggestions();
@@ -134,11 +146,9 @@ public class SearchActivity extends BottomToolbarActivity {
     });
   }
 
-  private static final String TAG = "SearchActivity";
-
   private void performSearch(String query, String location) {
     if (lastSearchedLocationTerm.isEmpty()) {
-      ((EditText) findViewById(R.id.edtLocationSearch)).setText(R.string.near_me);
+      ((EditText) findViewById(edtLocationSearch)).setText(R.string.near_me);
     }
     findViewById(R.id.searchResultFramelayout).requestFocus();
     resetView();
@@ -148,7 +158,10 @@ public class SearchActivity extends BottomToolbarActivity {
       InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
       imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-    if (lastKnownLatLng == null) return;
+    if (lastKnownLatLng == null) {
+      performedSearchWhileLocationUnknown = true;
+      return;
+    }
     SearchApi.performSearch(lastKnownLatLng.latitude, lastKnownLatLng.longitude, query, location);
   }
 
@@ -233,12 +246,20 @@ public class SearchActivity extends BottomToolbarActivity {
     nearbyVenuesView = (ViewGroup) findViewById(R.id.nearbyVenuesFramelayout);
     searchResultsView = (ViewGroup) findViewById(R.id.searchResultFramelayout);
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
-    edtTermSearch = (EditText) findViewById(R.id.edtTermSearch);
-    edtLocationSearch = (EditText) findViewById(R.id.edtLocationSearch);
+    fab = (FloatingActionButton) findViewById(R.id.fabMapView);
+    fab.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        Intent intent = new Intent(SearchActivity.this, MapsActivity.class);
+        intent.putExtra("last_searched_term", lastSearchedTerm);
+        intent.putExtra("last_searched_location", lastSearchedLocationTerm);
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+      }
+    });
     tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {
       @Override public void onClick(Object model) {
         Tag tag = (Tag) model;
-        ((EditText) findViewById(R.id.edtTermSearch)).setText(tag.name);
+        ((EditText) findViewById(edtTermSearch)).setText(tag.name);
         performSearch(tag.name, lastSearchedLocationTerm);
       }
     });
@@ -249,7 +270,6 @@ public class SearchActivity extends BottomToolbarActivity {
     });
     searchResultFragment.setOnCardClickListener(new OnCardClickListener() {
       @Override public void onClick(Object model) {
-        Log.d(TAG, "onClick:");
         startVenueActivity((Venue) model);
       }
     });
@@ -339,7 +359,7 @@ public class SearchActivity extends BottomToolbarActivity {
     streetSuggestFragment.setOnCardClickListener(new OnCardClickListener() {
       @Override public void onClick(Object model) {
         Street street = (Street) model;
-        ((EditText) findViewById(R.id.edtLocationSearch)).setText(street.name);
+        ((EditText) findViewById(edtLocationSearch)).setText(street.name);
         performSearch(lastSearchedTerm, street.name);
       }
     });
@@ -379,9 +399,5 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(VenueApiEvents.OnNearbyVenuesResult e) {
     nearbyVenuesFragment.setVenues(e.venueList);
-  }
-
-  @Subscribe public void onEvent(OnApiRequestErrorEvent e) {
-    Log.d(TAG, "onEvent: " + e.error.message);
   }
 }

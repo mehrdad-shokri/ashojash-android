@@ -46,6 +46,18 @@ public class BottomToolbarActivity extends BaseActivity {
     setupBottomBar(position, activity);
   }
 
+  protected void hideBottombar() {
+    if (mBottomBar != null) {
+      mBottomBar.hide();
+    }
+  }
+
+  protected void showBottombar() {
+    if (mBottomBar != null) {
+      mBottomBar.show();
+    }
+  }
+
   private int getActivityPosition(Activity activity) {
     int position = 0;
     if (activity instanceof GuestProfileActivity) {

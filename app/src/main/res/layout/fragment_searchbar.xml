@@ -3,10 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:paddingBottom="4dp"
-    android:elevation="10dp"
     android:layout_marginBottom="10dp"
+    android:background="@color/colorPrimary"
+    android:elevation="5dp"
     android:paddingTop="4dp"
     >
   <LinearLayout
