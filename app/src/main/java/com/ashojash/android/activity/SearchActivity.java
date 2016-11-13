@@ -26,6 +26,7 @@ import com.ashojash.android.fragment.LocationPermissionNotAvailableFragment;
 import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.fragment.NearbyVenuesFragment;
 import com.ashojash.android.fragment.SearchBarFragment;
+import com.ashojash.android.fragment.SearchMapFragment;
 import com.ashojash.android.fragment.SearchResultFragment;
 import com.ashojash.android.fragment.StreetSuggestionFragment;
 import com.ashojash.android.fragment.TagsSuggestionFragment;
@@ -61,8 +62,9 @@ public class SearchActivity extends BottomToolbarActivity {
   private ViewGroup streetsView;
   private ViewGroup nearbyVenuesView;
   private ViewGroup searchResultsView;
+  private ViewGroup mapsView;
   private AVLoadingIndicatorView progressbar;
-  private FloatingActionButton fab;
+  private FloatingActionButton mapFab;
   private LatLng lastKnownLatLng;
   private double DEFAULT_SEARCH_DISTANCE = .5;
   private int NEARBY_SEARCH_LIMIT = 8;
@@ -80,6 +82,7 @@ public class SearchActivity extends BottomToolbarActivity {
   private VenueTagFragment venueTagFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
   private boolean isLocationUnknown = true;
+  private SearchMapFragment mapFragment;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -142,6 +145,10 @@ public class SearchActivity extends BottomToolbarActivity {
         if (performedSearchWhileLocationUnknown) {
           performSearch(lastSearchedTerm, lastSearchedLocationTerm);
         }
+        Bundle bundle = new Bundle();
+        bundle.putDouble("lat", location.getLatitude());
+        bundle.putDouble("lng", location.getLongitude());
+        mapFragment.setArguments(bundle);
       }
     });
   }
@@ -217,6 +224,7 @@ public class SearchActivity extends BottomToolbarActivity {
     venueTagView.setVisibility(GONE);
     streetsView.setVisibility(GONE);
     searchResultsView.setVisibility(GONE);
+    mapsView.setVisibility(GONE);
   }
 
   private void requestLocationService() {
@@ -233,27 +241,27 @@ public class SearchActivity extends BottomToolbarActivity {
     nearbyVenuesFragment = new NearbyVenuesFragment();
     streetSuggestFragment = new StreetSuggestionFragment();
     venueTagFragment = new VenueTagFragment();
+    mapFragment = new SearchMapFragment();
     addFragment(R.id.termFrameLayout, searchBarFragment);
     addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);
     addFragment(R.id.nearbyVenuesFramelayout, nearbyVenuesFragment);
     addFragment(R.id.venueTagFramelayout, venueTagFragment);
     addFragment(R.id.streetSuggestFrameLayout, streetSuggestFragment);
     addFragment(R.id.searchResultFramelayout, searchResultFragment);
+    addFragment(R.id.searchResultFramelayout, mapFragment);
     errorView = (ViewGroup) findViewById(R.id.error);
     tagSuggestionView = (ViewGroup) findViewById(R.id.tagSuggestionFramelayout);
     venueTagView = (ViewGroup) findViewById(R.id.venueTagFramelayout);
     streetsView = (ViewGroup) findViewById(R.id.streetSuggestFrameLayout);
     nearbyVenuesView = (ViewGroup) findViewById(R.id.nearbyVenuesFramelayout);
     searchResultsView = (ViewGroup) findViewById(R.id.searchResultFramelayout);
+    mapsView = (ViewGroup) findViewById(R.id.mapsFramelayout);
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
-    fab = (FloatingActionButton) findViewById(R.id.fabMapView);
-    fab.setOnClickListener(new View.OnClickListener() {
+    mapFab = (FloatingActionButton) findViewById(R.id.fabMapView);
+    mapFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        Intent intent = new Intent(SearchActivity.this, MapsActivity.class);
-        intent.putExtra("last_searched_term", lastSearchedTerm);
-        intent.putExtra("last_searched_location", lastSearchedLocationTerm);
-        overridePendingTransition(0, 0);
-        startActivity(intent);
+        resetView();
+        mapsView.setVisibility(VISIBLE);
       }
     });
     tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {

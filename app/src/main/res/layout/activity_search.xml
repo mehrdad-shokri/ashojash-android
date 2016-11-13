@@ -81,11 +81,33 @@
               android:visibility="gone"
               >
           </FrameLayout>
+          <FrameLayout
+              android:id="@+id/mapsFramelayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              >
+          </FrameLayout>
         </LinearLayout>
       </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabMapView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:src="@drawable/map_view"
+        app:backgroundTint="#fff"
+        app:elevation="4dp"
+        app:fabSize="normal"
+        app:rippleColor="#eee"
+        app:useCompatPadding="true"
+        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
