@@ -18,13 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.activity.VenueActivity;
-import com.ashojash.android.event.LocationEvents;
 import com.ashojash.android.event.OnApiResponseErrorEvent;
 import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.util.BusProvider;
 import com.ashojash.android.util.LocationUtil;
 import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.webserver.VenueApi;
@@ -33,6 +31,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -54,7 +53,7 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   public static final int NEARBY_DEFAULT_DISTANCE = 3;
   public static final int NEARBY_DEFAULT_LIMIT = 30;
   private GoogleMap mMap;
-  private View mapView;
+  private MapView mapView;
   private SupportMapFragment mapFragment;
   private FloatingActionButton myLocationFab;
   private LatLng lastKnownLatLng;
@@ -63,16 +62,22 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   private ViewGroup progressView;
   private ViewGroup searchAreaView;
   final Marker[] lastTouchedMarker = { null };
+  private Location location;
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.activity_maps, container, false);
+
+    View v = inflater.inflate(R.layout.activity_maps, container, false);
+    mapView.onCreate(savedInstanceState);
+
+    return v;
   }
 
   @Override public void onResume() {
     super.onResume();
     setupViews();
+    mapView.onResume();
     String TAG = "Ashojash";
     Log.d(TAG, "onResume: ");
     if (getArguments() != null) {
@@ -81,10 +86,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
     }
     mapFragment.getMapAsync(this);
     setPending(true);
-  }
-
-  @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
-    resetView();
   }
 
   HashMap<LatLng, Venue> venueHashMap = new HashMap<>();
@@ -134,10 +135,11 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
 
   @Override public void onMapReady(GoogleMap googleMap) {
     mMap = googleMap;
+    String TAG = "Ashojash";
+    Log.d(TAG, "onMapReady: ");
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.4279, 53.6880), 5));
     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    final LocationUtil util = new LocationUtil();
-    getLocation(util, true);
+    //getLocation(util, true);
     try {
       mMap.setMyLocationEnabled(true);
     } catch (SecurityException e) {
@@ -226,10 +228,8 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
                     0));
             counter = 0;
           }
-          getLocation(util, false);
-        } else {
-          getLocation(util, true);
         }
+        //getLocation(util, true);
       }
     });
   }
@@ -306,20 +306,10 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
     }, 3000);
   }
 
-  @Override public void onStart() {
-    super.onStart();
-    BusProvider.getInstance().register(this);
-  }
-
-  @Override public void onStop() {
-    super.onStop();
-    BusProvider.getInstance().unregister(this);
-  }
-
   private void setupViews() {
     mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
     searchAreaView = (ViewGroup) getView().findViewById(R.id.btnSearchArea);
-    mapView = getView().findViewById(R.id.map);
+    mapView = (MapView) getView().findViewById(R.id.map);
     myLocationFab = (FloatingActionButton) getView().findViewById(R.id.myLocationFab);
     myLocationFab.setImageDrawable(
         new IconicsDrawable(AppController.context, GoogleMaterial.Icon.gmd_my_location).sizeDp(22)
@@ -337,7 +327,11 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
     }
   }
 
-  private void resetView() {
-    mapView.setVisibility(VISIBLE);
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
+  public Location getLocation() {
+    return location;
   }
 }

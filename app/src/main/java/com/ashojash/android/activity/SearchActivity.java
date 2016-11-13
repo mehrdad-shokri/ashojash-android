@@ -65,6 +65,7 @@ public class SearchActivity extends BottomToolbarActivity {
   private ViewGroup mapsView;
   private AVLoadingIndicatorView progressbar;
   private FloatingActionButton mapFab;
+  private FloatingActionButton listFab;
   private LatLng lastKnownLatLng;
   private double DEFAULT_SEARCH_DISTANCE = .5;
   private int NEARBY_SEARCH_LIMIT = 8;
@@ -145,10 +146,7 @@ public class SearchActivity extends BottomToolbarActivity {
         if (performedSearchWhileLocationUnknown) {
           performSearch(lastSearchedTerm, lastSearchedLocationTerm);
         }
-        Bundle bundle = new Bundle();
-        bundle.putDouble("lat", location.getLatitude());
-        bundle.putDouble("lng", location.getLongitude());
-        mapFragment.setArguments(bundle);
+        mapFragment.setLocation(location);
       }
     });
   }
@@ -258,10 +256,22 @@ public class SearchActivity extends BottomToolbarActivity {
     mapsView = (ViewGroup) findViewById(R.id.mapsFramelayout);
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
     mapFab = (FloatingActionButton) findViewById(R.id.fabMapView);
+    listFab = (FloatingActionButton) findViewById(R.id.fabListView);
     mapFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         resetView();
         mapsView.setVisibility(VISIBLE);
+        listFab.setVisibility(VISIBLE);
+        mapFab.setVisibility(GONE);
+      }
+    });
+    listFab.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        resetView();
+        mapFab.setVisibility(VISIBLE);
+        listFab.setVisibility(GONE);
+        venueTagView.setVisibility(VISIBLE);
+        nearbyVenuesView.setVisibility(VISIBLE);
       }
     });
     tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {

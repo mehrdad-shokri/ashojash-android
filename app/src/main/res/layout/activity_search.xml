@@ -15,6 +15,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
+
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressbar"
         android:layout_width="60dp"
@@ -107,18 +108,19 @@
         app:useCompatPadding="true"
         />
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabList"
+        android:id="@+id/fabListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
-        android:src="@drawable/map_view"
+        android:src="@drawable/list_view"
         app:backgroundTint="#fff"
         app:elevation="4dp"
         app:fabSize="normal"
         app:rippleColor="#eee"
+        android:visibility="gone"
         app:useCompatPadding="true"
         />
   </RelativeLayout>
