@@ -116,11 +116,11 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:src="@drawable/list_view"
+        android:visibility="gone"
         app:backgroundTint="#fff"
         app:elevation="4dp"
         app:fabSize="normal"
         app:rippleColor="#eee"
-        android:visibility="gone"
         app:useCompatPadding="true"
         />
   </RelativeLayout>

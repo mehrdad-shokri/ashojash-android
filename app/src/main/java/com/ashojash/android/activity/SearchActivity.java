@@ -246,7 +246,7 @@ public class SearchActivity extends BottomToolbarActivity {
     addFragment(R.id.venueTagFramelayout, venueTagFragment);
     addFragment(R.id.streetSuggestFrameLayout, streetSuggestFragment);
     addFragment(R.id.searchResultFramelayout, searchResultFragment);
-    addFragment(R.id.searchResultFramelayout, mapFragment);
+    addFragment(R.id.mapsFramelayout, mapFragment);
     errorView = (ViewGroup) findViewById(R.id.error);
     tagSuggestionView = (ViewGroup) findViewById(R.id.tagSuggestionFramelayout);
     venueTagView = (ViewGroup) findViewById(R.id.venueTagFramelayout);
@@ -257,6 +257,7 @@ public class SearchActivity extends BottomToolbarActivity {
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
     mapFab = (FloatingActionButton) findViewById(R.id.fabMapView);
     listFab = (FloatingActionButton) findViewById(R.id.fabListView);
+    final String TAG = "ashojash";
     mapFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         resetView();
@@ -270,7 +271,7 @@ public class SearchActivity extends BottomToolbarActivity {
         resetView();
         mapFab.setVisibility(VISIBLE);
         listFab.setVisibility(GONE);
-        venueTagView.setVisibility(VISIBLE);
+        tagSuggestionView.setVisibility(VISIBLE);
         nearbyVenuesView.setVisibility(VISIBLE);
       }
     });
