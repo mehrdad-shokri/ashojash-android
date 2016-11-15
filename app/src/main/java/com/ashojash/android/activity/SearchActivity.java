@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.ashojash.android.R;
@@ -31,6 +31,7 @@ import com.ashojash.android.fragment.SearchResultFragment;
 import com.ashojash.android.fragment.StreetSuggestionFragment;
 import com.ashojash.android.fragment.TagsSuggestionFragment;
 import com.ashojash.android.fragment.VenueTagFragment;
+import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Street;
 import com.ashojash.android.model.Tag;
 import com.ashojash.android.model.Venue;
@@ -45,6 +46,8 @@ import com.ashojash.android.webserver.TagApi;
 import com.ashojash.android.webserver.VenueApi;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.wang.avi.AVLoadingIndicatorView;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,7 @@ public class SearchActivity extends BottomToolbarActivity {
   private AVLoadingIndicatorView progressbar;
   private FloatingActionButton mapFab;
   private FloatingActionButton listFab;
+  private FloatingActionButton myLocationFab;
   private LatLng lastKnownLatLng;
   private double DEFAULT_SEARCH_DISTANCE = .5;
   private int NEARBY_SEARCH_LIMIT = 8;
@@ -89,7 +93,7 @@ public class SearchActivity extends BottomToolbarActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
     setupViews(savedInstanceState);
-    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
       resetView();
       setupErrors(new LocationPermissionNotAvailableFragment());
@@ -218,8 +222,8 @@ public class SearchActivity extends BottomToolbarActivity {
     setPending(false);
     errorView.setVisibility(GONE);
     tagSuggestionView.setVisibility(GONE);
-    nearbyVenuesView.setVisibility(GONE);
     venueTagView.setVisibility(GONE);
+    nearbyVenuesView.setVisibility(GONE);
     streetsView.setVisibility(GONE);
     searchResultsView.setVisibility(GONE);
     mapsView.setVisibility(GONE);
@@ -257,7 +261,7 @@ public class SearchActivity extends BottomToolbarActivity {
     progressbar = (AVLoadingIndicatorView) findViewById(R.id.progressbar);
     mapFab = (FloatingActionButton) findViewById(R.id.fabMapView);
     listFab = (FloatingActionButton) findViewById(R.id.fabListView);
-    final String TAG = "ashojash";
+    myLocationFab = (FloatingActionButton) findViewById(R.id.myLocationFab);
     mapFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         resetView();
@@ -273,6 +277,14 @@ public class SearchActivity extends BottomToolbarActivity {
         listFab.setVisibility(GONE);
         tagSuggestionView.setVisibility(VISIBLE);
         nearbyVenuesView.setVisibility(VISIBLE);
+      }
+    });
+    myLocationFab.setImageDrawable(
+        new IconicsDrawable(AppController.context, GoogleMaterial.Icon.gmd_my_location).sizeDp(22)
+            .color(Color.parseColor("#666666")));
+    myLocationFab.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        mapFragment.onFabClick();
       }
     });
     tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {

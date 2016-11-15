@@ -26,12 +26,11 @@
       android:textColor="@color/gray_300"
       android:textSize="16sp"
       />
-  <com.mikepenz.iconics.view.IconicsImageView
+  <ImageView
       android:layout_width="20dp"
       android:layout_height="20dp"
       android:layout_marginRight="7dp"
-      app:iiv_color="@color/gray_700"
-      app:iiv_icon="gmd-search"
-      app:iiv_size="18dp"
+      android:id="@+id/imgSearchCross"
       />
+
 </LinearLayout>

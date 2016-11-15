@@ -2,13 +2,10 @@ package com.ashojash.android.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 import java.util.HashMap;
 
 import static android.view.View.GONE;
@@ -41,7 +36,6 @@ import static android.view.View.VISIBLE;
 public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   public static final int NEARBY_DEFAULT_DISTANCE = 3;
   public static final int NEARBY_DEFAULT_LIMIT = 30;
-  private FloatingActionButton myLocationFab;
   private ViewGroup progressView;
   private ViewGroup searchAreaView;
   private Location location;
@@ -56,17 +50,9 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
       @Nullable Bundle savedInstanceState) {
     View v = inflater.inflate(R.layout.fragment_search_maps, container, false);
     mMapView = (MapView) v.findViewById(R.id.map);
-    String TAG = "Ashojash";
-    Log.d(TAG, "onCreateView: " + (mMapView == null));
     mMapView.onCreate(savedInstanceState);
     mMapView.onResume();
-    try{
-      MapsInitializer.initialize(getActivity().getApplicationContext());
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
+    MapsInitializer.initialize(getActivity().getApplicationContext());
     return v;
   }
 
@@ -89,10 +75,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
 
   private void setupViews() {
     searchAreaView = (ViewGroup) getView().findViewById(R.id.btnSearchArea);
-    myLocationFab = (FloatingActionButton) getView().findViewById(R.id.myLocationFab);
-    myLocationFab.setImageDrawable(
-        new IconicsDrawable(AppController.context, GoogleMaterial.Icon.gmd_my_location).sizeDp(22)
-            .color(Color.parseColor("#666666")));
     progressView = (ViewGroup) getView().findViewById(R.id.progressbar);
     mMapView.getMapAsync(this);
   }
@@ -100,10 +82,8 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   private void setPending(boolean isPending) {
     if (isPending) {
       progressView.setVisibility(VISIBLE);
-      myLocationFab.setVisibility(GONE);
     } else {
       progressView.setVisibility(GONE);
-      myLocationFab.setVisibility(VISIBLE);
     }
   }
 
@@ -185,29 +165,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
         lastTouchedMarker[0] = null;
       }
     });
-    myLocationFab.setOnClickListener(new View.OnClickListener() {
-      byte counter = 0;
-
-      @Override public void onClick(View v) {
-        if (lastKnownLatLng != null) {
-          if (counter == 0) {
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(lastKnownLatLng, 18, 75, lastKnownBearing)));
-            counter++;
-          } else if (counter == 1) {
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(lastKnownLatLng, 19, 0, 0)));
-            counter++;
-          } else if (counter == 2) {
-            mMap.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(LocationUtil.toBounds(lastKnownLatLng, 2000),
-                    0));
-            counter = 0;
-          }
-        }
-        //getLocation(util, true);
-      }
-    });
   }
 
   @Override
@@ -226,5 +183,26 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   public void onLowMemory() {
     super.onLowMemory();
     mMapView.onLowMemory();
+  }
+
+  byte counter = 0;
+
+  public void onFabClick() {
+    if (lastKnownLatLng != null) {
+      if (counter == 0) {
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+            new CameraPosition(lastKnownLatLng, 18, 75, lastKnownBearing)));
+        counter++;
+      } else if (counter == 1) {
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+            new CameraPosition(lastKnownLatLng, 19, 0, 0)));
+        counter++;
+      } else if (counter == 2) {
+        mMap.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(LocationUtil.toBounds(lastKnownLatLng, 2000),
+                0));
+        counter = 0;
+      }
+    }
   }
 }

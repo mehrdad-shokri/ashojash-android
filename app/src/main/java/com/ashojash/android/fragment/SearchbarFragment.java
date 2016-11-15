@@ -12,8 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.ashojash.android.R;
+import com.ashojash.android.helper.AppController;
+import com.mypopsy.drawable.SearchCrossDrawable;
+import com.mypopsy.drawable.ToggleDrawable;
 
 public class SearchBarFragment extends Fragment {
   private EditText edtTermSearch;
@@ -54,6 +58,16 @@ public class SearchBarFragment extends Fragment {
   private void setupViews() {
     edtTermSearch = (EditText) getView().findViewById(R.id.edtTermSearch);
     edtLocationSearch = (EditText) getView().findViewById(R.id.edtLocationSearch);
+    final ToggleDrawable drawable = new SearchCrossDrawable(getActivity());
+    ImageView imgSearchCross = (ImageView) getView().findViewById(R.id.imgSearchCross);
+    imgSearchCross.setImageDrawable(drawable);
+    imgSearchCross.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        if (!edtTermSearch.getText().toString().isEmpty()) {
+          edtTermSearch.getText().clear();
+        }
+      }
+    });
     edtTermSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override public void onFocusChange(View view, boolean hasFocus) {
         onTermChanged.onTermFocusChanged(hasFocus);
@@ -65,9 +79,66 @@ public class SearchBarFragment extends Fragment {
 
       @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
       }
+      boolean isCross = false;
 
       @Override public void afterTextChanged(Editable s) {
         String term = s.toString();
+        if (term.isEmpty()) {
+          if (isCross) {
+            Thread thread = new Thread(new Runnable() {
+              @Override public void run() {
+                for (float i = 1; i >= 0; i -= .01) {
+                  try {
+                    Thread.sleep(1);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                  final float finalI = i;
+                  AppController.HANDLER.post(new Runnable() {
+                    @Override public void run() {
+                      drawable.setProgress(finalI);
+                    }
+                  });
+                }
+                AppController.HANDLER.post(new Runnable() {
+                  @Override public void run() {
+                    drawable.setProgress(0);
+                  }
+                });
+              }
+            });
+            thread.start();
+            isCross = false;
+          }
+        } else {
+          if(!isCross)
+          {
+            Thread thread = new Thread(new Runnable() {
+              @Override public void run() {
+                for (float i = 0; i <= 1; i += .01) {
+                  try {
+                    Thread.sleep(1);
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                  final float finalI = i;
+                  AppController.HANDLER.post(new Runnable() {
+                    @Override public void run() {
+                      drawable.setProgress(finalI);
+                    }
+                  });
+                }
+                AppController.HANDLER.post(new Runnable() {
+                  @Override public void run() {
+                    drawable.setProgress(1);
+                  }
+                });
+              }
+            });
+            thread.start();
+            isCross = true;
+          }
+        }
         if (onTermChanged != null) {
           onTermChanged.onTermChanged(term);
         }

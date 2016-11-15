@@ -6,28 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="hello"
-      android:gravity="center"
-      android:layout_gravity="center"
-      />
   <com.google.android.gms.maps.MapView
       android:id="@+id/map"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      />
-  <android.support.design.widget.FloatingActionButton
-      android:id="@+id/myLocationFab"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="right|bottom"
-      android:layout_margin="16dp"
-      android:clickable="true"
-      android:visibility="visible"
-      app:backgroundTint="#fff"
-      app:elevation="4dp"
       />
   <LinearLayout
       android:id="@+id/btnSearchArea"
@@ -51,7 +33,7 @@
   <LinearLayout
       android:id="@id/progressbar"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:background="#8f000000"
       android:gravity="center"
@@ -60,14 +42,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/map_packman_background"
+        android:background="@drawable/map_pacman_background"
         android:gravity="center"
         >
       <com.wang.avi.AVLoadingIndicatorView
           android:id="@+id/progressbar"
           android:layout_width="50dp"
           android:layout_height="50dp"
-          android:layout_centerInParent="true"
           app:indicatorColor="@color/colorPrimary"
           app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
           app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"

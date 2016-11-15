@@ -62,7 +62,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/map_packman_background"
+        android:background="@drawable/map_pacman_background"
         android:gravity="center"
         >
       <com.wang.avi.AVLoadingIndicatorView
