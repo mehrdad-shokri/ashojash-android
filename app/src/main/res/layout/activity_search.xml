@@ -136,7 +136,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:clickable="true"
         android:padding="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:backgroundTint="#fff"
         app:elevation="4dp"
         app:fabSize="normal"
