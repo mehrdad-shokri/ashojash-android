@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -78,21 +79,28 @@ public class SearchActivity extends BottomToolbarActivity {
   private boolean searchedForStreetWhileLocationUnknown;
   private boolean searchedForTermWhileLocationUnknown;
   private boolean performedSearchWhileLocationUnknown;
-
+  private static final String TAG = "SearchActivity";
   private TagsSuggestionFragment tagsSuggestionFragment;
   private NearbyVenuesFragment nearbyVenuesFragment;
   private StreetSuggestionFragment streetSuggestFragment;
   private SearchResultFragment searchResultFragment;
   private SearchBarFragment searchBarFragment;
   private VenueTagFragment venueTagFragment;
+  private SearchMapFragment mapFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
   private boolean isLocationUnknown = true;
-  private SearchMapFragment mapFragment;
+
+  private static final int SEARCH_LIST_STATE = 1;
+  private static final int SEARCH_MAP_STATE = 2;
+
+  private int searchState = 1;
+  private boolean performedSearch = false;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
     setupViews(savedInstanceState);
+    Log.d(TAG, "onCreate: ");
     //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
       resetView();
@@ -116,6 +124,21 @@ public class SearchActivity extends BottomToolbarActivity {
         });
   }
 
+  @Override protected void onResume() {
+    super.onResume();
+    resetView();
+    if (!performedSearch) {
+      tagSuggestionView.setVisibility(VISIBLE);
+      nearbyVenuesView.setVisibility(VISIBLE);
+    } else {
+      if (searchState == SEARCH_LIST_STATE) {
+        venueTagView.setVisibility(VISIBLE);
+      } else if (searchState == SEARCH_MAP_STATE) {
+        mapsView.setVisibility(VISIBLE);
+      }
+    }
+  }
+
   @Subscribe public void onEvent(PermissionEvents.OnPermissionGranted e) {
     if (e.permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
       resetView();
@@ -127,10 +150,11 @@ public class SearchActivity extends BottomToolbarActivity {
     resetView();
     nearbyVenuesView.setVisibility(VISIBLE);
     tagSuggestionView.setVisibility(VISIBLE);
-    isLocationUnknown = false;
     LocationUtil util = new LocationUtil();
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
+        isLocationUnknown = false;
+        mapFragment.setLocation(location);
         lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         VenueApi.nearby(location.getLatitude(), location.getLongitude(), DEFAULT_SEARCH_DISTANCE,
             NEARBY_SEARCH_LIMIT);
@@ -150,9 +174,28 @@ public class SearchActivity extends BottomToolbarActivity {
         if (performedSearchWhileLocationUnknown) {
           performSearch(lastSearchedTerm, lastSearchedLocationTerm);
         }
-        mapFragment.setLocation(location);
       }
     });
+  }
+
+  @Override protected void onStart() {
+    super.onStart();
+    BusProvider.getInstance().register(this);
+  }
+
+  @Override protected void onStop() {
+    super.onStop();
+    BusProvider.getInstance().unregister(this);
+  }
+
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == LocationRequestUtil.REQUEST_CODE) {
+      switch (resultCode) {
+        case Activity.RESULT_OK:
+          BusProvider.getInstance().post(new LocationEvents.OnLocationServiceAvailable());
+      }
+    }
   }
 
   private void performSearch(String query, String location) {
@@ -172,36 +215,6 @@ public class SearchActivity extends BottomToolbarActivity {
       return;
     }
     SearchApi.performSearch(lastKnownLatLng.latitude, lastKnownLatLng.longitude, query, location);
-  }
-
-  @Subscribe public void onEvent(SearchApiEvents.onSearchResultsReady e) {
-    setPending(false);
-    searchResultsView.setVisibility(VISIBLE);
-    searchResultFragment.setVenues(e.venues);
-  }
-
-  @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
-    resetView();
-    Fragment fragment = new LocationServiceNotAvailableFragment();
-    Bundle bundle = new Bundle();
-    bundle.putParcelable(LocationServiceNotAvailableFragment.STATUS_KEY, e.status);
-    fragment.setArguments(bundle);
-    setupErrors(fragment);
-  }
-
-  @Subscribe public void onEvent(SearchApiEvents.OnSuggestResultsReady e) {
-    VenueTagCombined combined = e.venueTagCombined;
-    venueTagFragment.setVenueTags(combined);
-  }
-
-  @Override protected void onStart() {
-    super.onStart();
-    BusProvider.getInstance().register(this);
-  }
-
-  @Override protected void onStop() {
-    super.onStop();
-    BusProvider.getInstance().unregister(this);
   }
 
   private void setupErrors(Fragment fragment) {
@@ -244,6 +257,12 @@ public class SearchActivity extends BottomToolbarActivity {
     streetSuggestFragment = new StreetSuggestionFragment();
     venueTagFragment = new VenueTagFragment();
     mapFragment = new SearchMapFragment();
+    mapFragment.setOnSearchRequested(new SearchMapFragment.onSearchRequested() {
+      @Override public void onSearchRequested(Location location, double distance) {
+        VenueApi.nearby(location.getLatitude(), location.getLongitude(), distance,
+            NEARBY_SEARCH_LIMIT);
+      }
+    });
     addFragment(R.id.termFrameLayout, searchBarFragment);
     addFragment(R.id.tagSuggestionFramelayout, tagsSuggestionFragment);
     addFragment(R.id.nearbyVenuesFramelayout, nearbyVenuesFragment);
@@ -265,9 +284,11 @@ public class SearchActivity extends BottomToolbarActivity {
     mapFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         resetView();
+        myLocationFab.setVisibility(VISIBLE);
         mapsView.setVisibility(VISIBLE);
         listFab.setVisibility(VISIBLE);
         mapFab.setVisibility(GONE);
+        searchState = SEARCH_MAP_STATE;
       }
     });
     listFab.setOnClickListener(new View.OnClickListener() {
@@ -275,8 +296,10 @@ public class SearchActivity extends BottomToolbarActivity {
         resetView();
         mapFab.setVisibility(VISIBLE);
         listFab.setVisibility(GONE);
+        myLocationFab.setVisibility(GONE);
         tagSuggestionView.setVisibility(VISIBLE);
         nearbyVenuesView.setVisibility(VISIBLE);
+        searchState = SEARCH_LIST_STATE;
       }
     });
     myLocationFab.setImageDrawable(
@@ -284,7 +307,7 @@ public class SearchActivity extends BottomToolbarActivity {
             .color(Color.parseColor("#666666")));
     myLocationFab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        mapFragment.onFabClick();
+        mapFragment.updateMapView();
       }
     });
     tagsSuggestionFragment.setOnCardClickListener(new OnCardClickListener() {
@@ -384,6 +407,7 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onSubmit(String term, String location) {
+
         performSearch(term, location);
       }
     });
@@ -405,14 +429,29 @@ public class SearchActivity extends BottomToolbarActivity {
     startActivity(intent);
   }
 
-  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == LocationRequestUtil.REQUEST_CODE) {
-      switch (resultCode) {
-        case Activity.RESULT_OK:
-          BusProvider.getInstance().post(new LocationEvents.OnLocationServiceAvailable());
-      }
+  @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
+    resetView();
+    Fragment fragment = new LocationServiceNotAvailableFragment();
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(LocationServiceNotAvailableFragment.STATUS_KEY, e.status);
+    fragment.setArguments(bundle);
+    setupErrors(fragment);
+  }
+
+  @Subscribe public void onEvent(SearchApiEvents.onSearchResultsReady e) {
+    setPending(false);
+    searchResultFragment.setVenues(e.venues);
+    mapFragment.setVenues(e.venues);
+    if (searchState == SEARCH_LIST_STATE) {
+      searchResultsView.setVisibility(VISIBLE);
+    } else {
+      mapsView.setVisibility(VISIBLE);
     }
+  }
+
+  @Subscribe public void onEvent(SearchApiEvents.OnSuggestResultsReady e) {
+    VenueTagCombined combined = e.venueTagCombined;
+    venueTagFragment.setVenueTags(combined);
   }
 
   @Subscribe public void onEvent(SearchApiEvents.OnNearbyStreetsResultsReady e) {
@@ -430,5 +469,6 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(VenueApiEvents.OnNearbyVenuesResult e) {
     nearbyVenuesFragment.setVenues(e.venueList);
+    mapFragment.setVenues(e.venueList);
   }
 }

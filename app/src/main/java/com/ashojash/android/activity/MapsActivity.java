@@ -74,10 +74,6 @@ public class MapsActivity extends BottomToolbarActivity implements OnMapReadyCal
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_maps);
     setupViews(savedInstanceState);
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
       setupErrors(new LocationPermissionNotAvailableFragment());
     } else {

@@ -3,9 +3,11 @@ package com.ashojash.android.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,40 +27,57 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
-  public static final int NEARBY_DEFAULT_DISTANCE = 3;
-  public static final int NEARBY_DEFAULT_LIMIT = 30;
+  String TAG = "SearchMapFragment";
   private ViewGroup progressView;
+  //private LatLng lastRequestedVenuesLatLng;
   private ViewGroup searchAreaView;
-  private Location location;
   final Marker[] lastTouchedMarker = { null };
   MapView mMapView;
   private GoogleMap mMap;
   private LatLng lastKnownLatLng;
   private float lastKnownBearing;
+  private SearchMapFragment.onSearchRequested onSearchRequested;
+
+  public interface onSearchRequested {
+    void onSearchRequested(Location location, double distance);
+  }
 
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
+    Log.d(TAG, "onCreateView: ");
     View v = inflater.inflate(R.layout.fragment_search_maps, container, false);
     mMapView = (MapView) v.findViewById(R.id.map);
     mMapView.onCreate(savedInstanceState);
     mMapView.onResume();
-    MapsInitializer.initialize(getActivity().getApplicationContext());
+    try {
+      MapsInitializer.initialize(getActivity().getApplicationContext());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    mMapView.getMapAsync(this);
+    searchAreaView = (ViewGroup) v.findViewById(R.id.btnSearchArea);
+    progressView = (ViewGroup) v.findViewById(R.id.progressbar);
+
     return v;
   }
 
   @Override public void onResume() {
     super.onResume();
-    setupViews();
+    mMapView.onResume();
   }
 
   HashMap<LatLng, Venue> venueHashMap = new HashMap<>();
@@ -73,12 +92,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
     startActivity(intent);
   }
 
-  private void setupViews() {
-    searchAreaView = (ViewGroup) getView().findViewById(R.id.btnSearchArea);
-    progressView = (ViewGroup) getView().findViewById(R.id.progressbar);
-    mMapView.getMapAsync(this);
-  }
-
   private void setPending(boolean isPending) {
     if (isPending) {
       progressView.setVisibility(VISIBLE);
@@ -88,22 +101,25 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   }
 
   public void setLocation(Location location) {
-    this.location = location;
+    lastKnownBearing = location.getBearing();
+    lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+    Log.d(TAG, "setLocation: set location");
+    updateMapView();
   }
 
   @Override public void onMapReady(GoogleMap googleMap) {
+    Log.d(TAG, "onMapReady: ");
     mMap = googleMap;
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.4279, 53.6880), 5));
     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    //getLocation(util, true);
-    try {
+    /*try {
       mMap.setMyLocationEnabled(true);
     } catch (SecurityException e) {
       //            no need to catch, permissions already handled onCreate
-    }
+    }*/
     mMap.getUiSettings().setMyLocationButtonEnabled(false);
     mMap.getUiSettings().setMapToolbarEnabled(false);
-    mMap.getUiSettings().setCompassEnabled(true);
+    mMap.getUiSettings().setCompassEnabled(false);
     mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
       @Override public View getInfoWindow(final Marker marker) {
         LatLng position = marker.getPosition();
@@ -165,6 +181,43 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
         lastTouchedMarker[0] = null;
       }
     });
+    AppController.HANDLER.postDelayed(new Runnable() {
+      @Override public void run() {
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+          @Override public void onCameraChange(final CameraPosition cameraPosition) {
+            searchAreaView.setVisibility(VISIBLE);
+            final LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            searchAreaView.setOnClickListener(new View.OnClickListener() {
+              @Override public void onClick(View v) {
+                if (onSearchRequested != null) {
+
+                  LatLng southWestLatLng = bounds.southwest;
+                  LatLng northEastLatLng = bounds.northeast;
+                  LatLng centerLatLng = cameraPosition.target;
+                  Location centerLocation = new Location("center");
+                  centerLocation.setLatitude(centerLatLng.latitude);
+                  centerLocation.setLongitude(centerLatLng.longitude);
+                  Location northEastLocation = new Location("north east");
+                  northEastLocation.setLatitude(northEastLatLng.latitude);
+                  northEastLocation.setLongitude(northEastLatLng.longitude);
+                  Location southWestLocation = new Location("south west location");
+                  southWestLocation.setLatitude(southWestLatLng.latitude);
+                  southWestLocation.setLongitude(southWestLatLng.longitude);
+                  float northEastDistance = centerLocation.distanceTo(northEastLocation);
+                  float southWestDistance = centerLocation.distanceTo(southWestLocation);
+                  double farthestDistance =
+                      (northEastDistance > southWestDistance) ? northEastDistance
+                          : southWestDistance;
+                  onSearchRequested.onSearchRequested(centerLocation, farthestDistance);
+                  searchAreaView.setVisibility(GONE);
+                  setPending(true);
+                }
+              }
+            });
+          }
+        });
+      }
+    }, 3000);
   }
 
   @Override
@@ -187,22 +240,55 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
 
   byte counter = 0;
 
-  public void onFabClick() {
-    if (lastKnownLatLng != null) {
-      if (counter == 0) {
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-            new CameraPosition(lastKnownLatLng, 18, 75, lastKnownBearing)));
-        counter++;
-      } else if (counter == 1) {
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-            new CameraPosition(lastKnownLatLng, 19, 0, 0)));
-        counter++;
-      } else if (counter == 2) {
-        mMap.animateCamera(
-            CameraUpdateFactory.newLatLngBounds(LocationUtil.toBounds(lastKnownLatLng, 2000),
-                0));
-        counter = 0;
+  public void updateMapView() {
+    AppController.HANDLER.post(new Runnable() {
+      @Override public void run() {
+        if (lastKnownLatLng != null) {
+          if (counter == 0) {
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(lastKnownLatLng, 18, 75, lastKnownBearing)));
+            counter++;
+          } else if (counter == 1) {
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(lastKnownLatLng, 19, 0, 0)));
+            counter++;
+          } else if (counter == 2) {
+            mMap.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(LocationUtil.toBounds(lastKnownLatLng, 2000),
+                    0));
+            counter = 0;
+          }
+        }
       }
-    }
+    });
+  }
+
+  public void setVenues(final List<Venue> venues) {
+    searchAreaView.setVisibility(GONE);
+    mMap.clear();
+    AsyncTask.execute(new Runnable() {
+      int i = 1;
+
+      @Override public void run() {
+        for (final Venue venue : venues) {
+          LatLng position = new LatLng(venue.location.lat, venue.location.lng);
+          venueHashMap.put(position, venue);
+          AppController.HANDLER.post(new Runnable() {
+            @Override public void run() {
+              mMap.addMarker(
+                  new MarkerOptions().position(new LatLng(venue.location.lat, venue.location.lng))
+                      .icon(BitmapDescriptorFactory.fromBitmap(
+                          UiUtil.writeOnDrawable(R.drawable.ic_map_pin,
+                              UiUtil.toPersianNumber(String.valueOf(i))).getBitmap())));
+              i++;
+            }
+          });
+        }
+      }
+    });
+  }
+
+  public void setOnSearchRequested(onSearchRequested onSearchRequested) {
+    this.onSearchRequested = onSearchRequested;
   }
 }
