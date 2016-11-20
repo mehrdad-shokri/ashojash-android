@@ -15,7 +15,7 @@ import com.google.android.gms.common.api.Status;
 public class LocationServiceNotAvailableFragment extends Fragment {
 
   private Button button;
-  public static final String STATUS_KEY = "STATUS";
+  public static final String STATUS_KEY = "1";
   private Status status;
 
   public LocationServiceNotAvailableFragment() {

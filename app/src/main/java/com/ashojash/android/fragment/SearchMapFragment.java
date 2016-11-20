@@ -40,7 +40,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
-  String TAG = "SearchMapFragment";
+  private static final String TAG = "SearchActivityFAB";
   private ViewGroup progressView;
   //private LatLng lastRequestedVenuesLatLng;
   private ViewGroup searchAreaView;
@@ -58,16 +58,15 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   @Nullable @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    Log.d(TAG, "onCreateView: ");
     View v = inflater.inflate(R.layout.fragment_search_maps, container, false);
     mMapView = (MapView) v.findViewById(R.id.map);
-    mMapView.onCreate(savedInstanceState);
-    mMapView.onResume();
     try {
       MapsInitializer.initialize(getActivity().getApplicationContext());
+      mMapView.onCreate(savedInstanceState);
     } catch (Exception e) {
       e.printStackTrace();
     }
+    mMapView.onResume();
     mMapView.getMapAsync(this);
     searchAreaView = (ViewGroup) v.findViewById(R.id.btnSearchArea);
     progressView = (ViewGroup) v.findViewById(R.id.progressbar);
@@ -103,20 +102,13 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   public void setLocation(Location location) {
     lastKnownBearing = location.getBearing();
     lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-    Log.d(TAG, "setLocation: set location");
     updateMapView();
   }
 
   @Override public void onMapReady(GoogleMap googleMap) {
-    Log.d(TAG, "onMapReady: ");
     mMap = googleMap;
     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.4279, 53.6880), 5));
     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    /*try {
-      mMap.setMyLocationEnabled(true);
-    } catch (SecurityException e) {
-      //            no need to catch, permissions already handled onCreate
-    }*/
     mMap.getUiSettings().setMyLocationButtonEnabled(false);
     mMap.getUiSettings().setMapToolbarEnabled(false);
     mMap.getUiSettings().setCompassEnabled(false);
@@ -189,8 +181,10 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
             final LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
             searchAreaView.setOnClickListener(new View.OnClickListener() {
               @Override public void onClick(View v) {
+                Log.d(TAG, "onClick: ");
                 if (onSearchRequested != null) {
-
+                  searchAreaView.setVisibility(GONE);
+                  setPending(true);
                   LatLng southWestLatLng = bounds.southwest;
                   LatLng northEastLatLng = bounds.northeast;
                   LatLng centerLatLng = cameraPosition.target;
@@ -209,8 +203,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
                       (northEastDistance > southWestDistance) ? northEastDistance
                           : southWestDistance;
                   onSearchRequested.onSearchRequested(centerLocation, farthestDistance);
-                  searchAreaView.setVisibility(GONE);
-                  setPending(true);
                 }
               }
             });
@@ -264,7 +256,7 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
   }
 
   public void setVenues(final List<Venue> venues) {
-    searchAreaView.setVisibility(GONE);
+    setPending(false);
     mMap.clear();
     AsyncTask.execute(new Runnable() {
       int i = 1;

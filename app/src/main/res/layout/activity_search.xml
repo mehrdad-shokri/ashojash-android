@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+
   <FrameLayout
       android:id="@+id/termFrameLayout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       ></FrameLayout>
+
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -25,6 +27,7 @@
         app:indicatorColor="@color/colorPrimary"
         app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
         />
+
     <FrameLayout
         android:id="@+id/error"
         android:layout_width="match_parent"
@@ -32,6 +35,7 @@
         android:visibility="gone"
         >
     </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,11 +46,13 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             >
+
           <FrameLayout
               android:id="@+id/tagSuggestionFramelayout"
               android:layout_width="match_parent"
@@ -54,6 +60,7 @@
               android:visibility="gone"
               >
           </FrameLayout>
+
           <FrameLayout
               android:id="@+id/nearbyVenuesFramelayout"
               android:layout_width="match_parent"
@@ -61,6 +68,7 @@
               android:visibility="gone"
               >
           </FrameLayout>
+
           <FrameLayout
               android:id="@+id/streetSuggestFrameLayout"
               android:layout_width="match_parent"
@@ -68,6 +76,7 @@
               android:visibility="gone"
               >
           </FrameLayout>
+
           <FrameLayout
               android:id="@+id/searchResultFramelayout"
               android:layout_width="match_parent"
@@ -75,6 +84,7 @@
               android:visibility="gone"
               >
           </FrameLayout>
+
           <FrameLayout
               android:id="@+id/venueTagFramelayout"
               android:layout_width="match_parent"
@@ -82,10 +92,10 @@
               android:visibility="gone"
               >
           </FrameLayout>
-
         </LinearLayout>
       </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/mapsFramelayout"
         android:layout_width="match_parent"
@@ -93,6 +103,7 @@
         android:visibility="gone"
         >
     </FrameLayout>
+
     <LinearLayout
         android:id="@+id/fabContainer"
         android:layout_width="wrap_content"
@@ -101,6 +112,7 @@
         android:layout_alignParentRight="true"
         android:orientation="vertical"
         >
+
       <android.support.design.widget.FloatingActionButton
           android:id="@+id/fabMapView"
           android:layout_width="wrap_content"
@@ -113,6 +125,7 @@
           app:fabSize="normal"
           app:rippleColor="#eee"
           />
+
       <android.support.design.widget.FloatingActionButton
           android:id="@+id/fabListView"
           android:layout_width="wrap_content"
@@ -126,6 +139,7 @@
           app:fabSize="normal"
           />
     </LinearLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/myLocationFab"
         android:layout_width="wrap_content"

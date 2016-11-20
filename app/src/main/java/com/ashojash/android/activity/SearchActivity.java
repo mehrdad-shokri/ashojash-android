@@ -73,13 +73,13 @@ public class SearchActivity extends BottomToolbarActivity {
   private FloatingActionButton myLocationFab;
   private LatLng lastKnownLatLng;
   private double DEFAULT_SEARCH_DISTANCE = .5;
-  private int NEARBY_SEARCH_LIMIT = 8;
+  private int NEARBY_SEARCH_LIMIT = 30;
   private String lastSearchedTerm = "";
   private String lastSearchedLocationTerm = "";
   private boolean searchedForStreetWhileLocationUnknown;
   private boolean searchedForTermWhileLocationUnknown;
   private boolean performedSearchWhileLocationUnknown;
-  private static final String TAG = "SearchActivity";
+  private static final String TAG = "SearchActivityFAB";
   private TagsSuggestionFragment tagsSuggestionFragment;
   private NearbyVenuesFragment nearbyVenuesFragment;
   private StreetSuggestionFragment streetSuggestFragment;
@@ -89,10 +89,9 @@ public class SearchActivity extends BottomToolbarActivity {
   private SearchMapFragment mapFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
   private boolean isLocationUnknown = true;
-
+  private boolean isLocationServiceAvailable = false;
   private static final int SEARCH_LIST_STATE = 1;
   private static final int SEARCH_MAP_STATE = 2;
-
   private int searchState = 1;
   private boolean performedSearch = false;
 
@@ -100,8 +99,6 @@ public class SearchActivity extends BottomToolbarActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
     setupViews(savedInstanceState);
-    Log.d(TAG, "onCreate: ");
-    //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     if (!PermissionUtil.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
       resetView();
       setupErrors(new LocationPermissionNotAvailableFragment());
@@ -126,15 +123,15 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Override protected void onResume() {
     super.onResume();
-    resetView();
-    if (!performedSearch) {
-      tagSuggestionView.setVisibility(VISIBLE);
-      nearbyVenuesView.setVisibility(VISIBLE);
-    } else {
-      if (searchState == SEARCH_LIST_STATE) {
-        venueTagView.setVisibility(VISIBLE);
-      } else if (searchState == SEARCH_MAP_STATE) {
+    if (isLocationServiceAvailable) {
+      resetView();
+      if (searchState == SEARCH_MAP_STATE) {
         mapsView.setVisibility(VISIBLE);
+      } else if (!performedSearch) {
+        tagSuggestionView.setVisibility(VISIBLE);
+        nearbyVenuesView.setVisibility(VISIBLE);
+      } else {
+        venueTagView.setVisibility(VISIBLE);
       }
     }
   }
@@ -147,9 +144,11 @@ public class SearchActivity extends BottomToolbarActivity {
   }
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceAvailable e) {
+    isLocationServiceAvailable = true;
     resetView();
     nearbyVenuesView.setVisibility(VISIBLE);
     tagSuggestionView.setVisibility(VISIBLE);
+    mapFab.setVisibility(VISIBLE);
     LocationUtil util = new LocationUtil();
     util.getLocation(this, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
@@ -190,17 +189,23 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+    Log.d(TAG, "onActivityResult: " + requestCode);
+    Log.d(TAG, "onActivityResult: " + resultCode);
+    Log.d(TAG, "onActivityResult: " + (resultCode == Activity.RESULT_OK));
     if (requestCode == LocationRequestUtil.REQUEST_CODE) {
-      switch (resultCode) {
-        case Activity.RESULT_OK:
-          BusProvider.getInstance().post(new LocationEvents.OnLocationServiceAvailable());
+      if (resultCode == Activity.RESULT_OK) {
+        BusProvider.getInstance().post(new LocationEvents.OnLocationServiceAvailable());
       }
     }
   }
 
   private void performSearch(String query, String location) {
+    performedSearch = true;
     if (lastSearchedLocationTerm.isEmpty()) {
       ((EditText) findViewById(edtLocationSearch)).setText(R.string.near_me);
+    }
+    if (listFab.getVisibility() == VISIBLE) {
+      myLocationFab.setVisibility(VISIBLE);
     }
     findViewById(R.id.searchResultFramelayout).requestFocus();
     resetView();
@@ -210,7 +215,7 @@ public class SearchActivity extends BottomToolbarActivity {
       InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
       imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-    if (lastKnownLatLng == null) {
+    if (isLocationUnknown) {
       performedSearchWhileLocationUnknown = true;
       return;
     }
@@ -259,6 +264,12 @@ public class SearchActivity extends BottomToolbarActivity {
     mapFragment = new SearchMapFragment();
     mapFragment.setOnSearchRequested(new SearchMapFragment.onSearchRequested() {
       @Override public void onSearchRequested(Location location, double distance) {
+        Log.d(TAG, "onSearchRequested: "
+            + location.getLatitude()
+            + " "
+            + location.getLongitude()
+            + " "
+            + distance);
         VenueApi.nearby(location.getLatitude(), location.getLongitude(), distance,
             NEARBY_SEARCH_LIMIT);
       }
@@ -288,6 +299,7 @@ public class SearchActivity extends BottomToolbarActivity {
         mapsView.setVisibility(VISIBLE);
         listFab.setVisibility(VISIBLE);
         mapFab.setVisibility(GONE);
+        mapsView.requestFocus();
         searchState = SEARCH_MAP_STATE;
       }
     });
@@ -297,9 +309,9 @@ public class SearchActivity extends BottomToolbarActivity {
         mapFab.setVisibility(VISIBLE);
         listFab.setVisibility(GONE);
         myLocationFab.setVisibility(GONE);
-        tagSuggestionView.setVisibility(VISIBLE);
-        nearbyVenuesView.setVisibility(VISIBLE);
         searchState = SEARCH_LIST_STATE;
+        searchResultsView.requestFocus();
+        searchResultsView.setVisibility(VISIBLE);
       }
     });
     myLocationFab.setImageDrawable(
@@ -339,8 +351,10 @@ public class SearchActivity extends BottomToolbarActivity {
     });
     searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
       @Override public void onTermChanged(String term) {
+        performedSearch = false;
         if (isLocationUnknown) return;
         lastSearchedTerm = term;
+        myLocationFab.setVisibility(GONE);
         if (lastSearchedTerm.isEmpty()) {
           resetView();
           nearbyVenuesView.setVisibility(VISIBLE);
@@ -358,8 +372,10 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onLocationTermChanged(String term) {
+        performedSearch = false;
         if (isLocationUnknown) return;
         lastSearchedLocationTerm = term;
+        myLocationFab.setVisibility(GONE);
         String nearMe = getResources().getString(R.string.near_me);
         resetView();
         streetsView.setVisibility(VISIBLE);
@@ -379,6 +395,7 @@ public class SearchActivity extends BottomToolbarActivity {
       @Override public void onTermFocusChanged(boolean hasFocus) {
         if (isLocationUnknown) return;
         if (hasFocus) {
+          myLocationFab.setVisibility(GONE);
           resetView();
           if (!lastSearchedTerm.isEmpty()) {
             venueTagView.setVisibility(VISIBLE);
@@ -390,10 +407,9 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onLocationFocusChanged(boolean hasFocus, EditText editText) {
-        if (isLocationUnknown) {
-          return;
-        }
+        if (isLocationUnknown) return;
         if (hasFocus) {
+          myLocationFab.setVisibility(GONE);
           resetView();
           streetsView.setVisibility(VISIBLE);
           if (editText.getText().toString().equals(
@@ -407,8 +423,9 @@ public class SearchActivity extends BottomToolbarActivity {
       }
 
       @Override public void onSubmit(String term, String location) {
-
-        performSearch(term, location);
+        if (isLocationServiceAvailable) {
+          performSearch(term, location);
+        }
       }
     });
     streetSuggestFragment.setOnCardClickListener(new OnCardClickListener() {
@@ -431,6 +448,7 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(LocationEvents.OnLocationServiceNotAvailable e) {
     resetView();
+    mapFab.setVisibility(GONE);
     Fragment fragment = new LocationServiceNotAvailableFragment();
     Bundle bundle = new Bundle();
     bundle.putParcelable(LocationServiceNotAvailableFragment.STATUS_KEY, e.status);
@@ -469,6 +487,29 @@ public class SearchActivity extends BottomToolbarActivity {
 
   @Subscribe public void onEvent(VenueApiEvents.OnNearbyVenuesResult e) {
     nearbyVenuesFragment.setVenues(e.venueList);
+    searchResultFragment.setVenues(e.venueList);
     mapFragment.setVenues(e.venueList);
+  }
+
+  @Override public void onBackPressed() {
+    if (searchResultsView.getVisibility() == VISIBLE || mapsView.getVisibility() == VISIBLE) {
+      resetView();
+      nearbyVenuesView.setVisibility(VISIBLE);
+      tagSuggestionView.setVisibility(VISIBLE);
+      myLocationFab.setVisibility(GONE);
+      listFab.setVisibility(GONE);
+      mapFab.setVisibility(VISIBLE);
+    } else {
+      getBottombar().selectTabAtPosition(0, true);
+    }
+  }
+
+  public void onTabReselected() {
+    resetView();
+    nearbyVenuesView.setVisibility(VISIBLE);
+    tagSuggestionView.setVisibility(VISIBLE);
+    myLocationFab.setVisibility(GONE);
+    listFab.setVisibility(GONE);
+    mapFab.setVisibility(VISIBLE);
   }
 }

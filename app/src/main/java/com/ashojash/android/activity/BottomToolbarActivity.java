@@ -175,10 +175,16 @@ public class BottomToolbarActivity extends BaseActivity {
             } else if (activity instanceof CollectionActivity) {
               activity.finish();
               activity.overridePendingTransition(0, 0);
+            } else if (activity instanceof SearchActivity) {
+              ((SearchActivity) activity).onTabReselected();
             }
           }
         });
       }
     });
+  }
+
+  protected BottomBar getBottombar() {
+    return mBottomBar;
   }
 }
