@@ -26,7 +26,7 @@ import com.ashojash.android.event.VenueApiEvents;
 import com.ashojash.android.fragment.LocationPermissionNotAvailableFragment;
 import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.fragment.NearbyVenuesFragment;
-import com.ashojash.android.fragment.SearchBarFragment;
+import com.ashojash.android.fragment.SearchbarFragment;
 import com.ashojash.android.fragment.SearchMapFragment;
 import com.ashojash.android.fragment.SearchResultFragment;
 import com.ashojash.android.fragment.StreetSuggestionFragment;
@@ -84,7 +84,7 @@ public class SearchActivity extends BottomToolbarActivity {
   private NearbyVenuesFragment nearbyVenuesFragment;
   private StreetSuggestionFragment streetSuggestFragment;
   private SearchResultFragment searchResultFragment;
-  private SearchBarFragment searchBarFragment;
+  private SearchbarFragment searchBarFragment;
   private VenueTagFragment venueTagFragment;
   private SearchMapFragment mapFragment;
   private List<Street> nearbyStreets = new ArrayList<>();
@@ -255,7 +255,7 @@ public class SearchActivity extends BottomToolbarActivity {
   private void setupViews(Bundle savedInstanceState) {
     attach(this, savedInstanceState);
     //lastSearchedLocationTerm = getString(R.string.near_me);
-    searchBarFragment = new SearchBarFragment();
+    searchBarFragment = new SearchbarFragment();
     searchResultFragment = new SearchResultFragment();
     tagsSuggestionFragment = new TagsSuggestionFragment();
     nearbyVenuesFragment = new NearbyVenuesFragment();
@@ -343,7 +343,7 @@ public class SearchActivity extends BottomToolbarActivity {
         startVenueActivity(venue);
       }
     });
-    searchBarFragment.setOnTermChanged(new SearchBarFragment.OnTermChanged() {
+    searchBarFragment.setOnTermChanged(new SearchbarFragment.OnTermChanged() {
       @Override public void onTermChanged(String term) {
         performedSearch = false;
         if (isLocationUnknown) return;

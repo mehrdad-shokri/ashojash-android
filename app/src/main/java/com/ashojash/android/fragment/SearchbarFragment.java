@@ -20,7 +20,7 @@ import com.ashojash.android.helper.AppController;
 import com.mypopsy.drawable.SearchCrossDrawable;
 import com.mypopsy.drawable.ToggleDrawable;
 
-public class SearchBarFragment extends Fragment {
+public class SearchbarFragment extends Fragment {
   private EditText edtTermSearch;
   private EditText edtLocationSearch;
   private OnTermChanged onTermChanged;
