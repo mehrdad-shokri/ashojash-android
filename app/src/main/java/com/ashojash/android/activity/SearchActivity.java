@@ -264,12 +264,6 @@ public class SearchActivity extends BottomToolbarActivity {
     mapFragment = new SearchMapFragment();
     mapFragment.setOnSearchRequested(new SearchMapFragment.onSearchRequested() {
       @Override public void onSearchRequested(Location location, double distance) {
-        Log.d(TAG, "onSearchRequested: "
-            + location.getLatitude()
-            + " "
-            + location.getLongitude()
-            + " "
-            + distance);
         VenueApi.nearby(location.getLatitude(), location.getLongitude(), distance,
             NEARBY_SEARCH_LIMIT);
       }

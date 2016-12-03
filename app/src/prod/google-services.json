@@ -13,7 +13,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "346904023124-ngjsbqr4fcvgunc9llo1oc11penlpn9t.apps.googleusercontent.com",
+          "client_id": "346904023124-ut1c7rtc0hae5l0isgtak7vos5s0epk6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ashojash.android",
@@ -21,7 +21,7 @@
           }
         },
         {
-          "client_id": "346904023124-a2hdg3tiq71diuvtcsntti9e1cmrb1q0.apps.googleusercontent.com",
+          "client_id": "346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -55,13 +55,13 @@
       },
       "oauth_client": [
         {
-          "client_id": "346904023124-a2hdg3tiq71diuvtcsntti9e1cmrb1q0.apps.googleusercontent.com",
+          "client_id": "346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBH9vbMPOjCleQgGJmWA5WNcC_sC7dv4ws"
+          "current_key": "AIzaSyDlUBjljZTB2ieIH16-nyoE61jIs93OfRE"
         }
       ],
       "services": {
@@ -86,13 +86,21 @@
       },
       "oauth_client": [
         {
-          "client_id": "346904023124-a2hdg3tiq71diuvtcsntti9e1cmrb1q0.apps.googleusercontent.com",
+          "client_id": "346904023124-lehbs8510nibuq5ci125h8mu6u2ir4q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ashojash.android.debug",
+            "certificate_hash": "6253CC5DAD89FBFB1B9F24E1D05C9B89884FF67B"
+          }
+        },
+        {
+          "client_id": "346904023124-ls5v7m0d9m8u1tto7ql5u5ngpamaj06p.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBH9vbMPOjCleQgGJmWA5WNcC_sC7dv4ws"
+          "current_key": "AIzaSyDlUBjljZTB2ieIH16-nyoE61jIs93OfRE"
         }
       ],
       "services": {

@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="-3dp"
+    android:layout_marginRight="-3dp"
+    android:layout_marginTop="-4dp"
+    android:elevation="4dp"
+    app:cardCornerRadius="0dp"
+    app:cardUseCompatPadding="true">
+
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       tools:ignore="UselessParent"
       >
-    <LinearLayout
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|end"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/quick_access"
+        android:textColor="#555"
+        android:textSize="18sp"
+        tools:ignore="RtlHardcoded"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/tagSuggestionRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/gray_900"
-        android:gravity="center_vertical|end|right"
-        android:paddingRight="8dp"
-        tools:ignore="RtlHardcoded,RtlSymmetry"
-        >
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/quick_access"
-          android:textSize="14sp"
-          />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        ></android.support.v7.widget.RecyclerView>
+
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressbar"
         android:layout_width="35dp"
@@ -36,11 +47,6 @@
         app:indicatorColor="@color/colorPrimary"
         app:indicatorName="BallPulseIndicator"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/tagSuggestionRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        ></android.support.v7.widget.RecyclerView>
   </LinearLayout>
-</LinearLayout>
+
+</android.support.v7.widget.CardView>
