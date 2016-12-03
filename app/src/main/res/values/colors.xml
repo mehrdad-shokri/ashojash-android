@@ -6,8 +6,11 @@
   <color name="colorAccent">#5ec752</color>
   <color name="colorPrimaryLight">#ff11aa</color>
   <color name="colorPrimaryNavigationDrawer">#cb202e</color>
-  <color name="gray_600">#757575</color>
-  <color name="gray_700">#616161</color>
+  <color name="gray_300">#353535</color>
+  <color name="gray_600">#616161</color>
+  <color name="gray_700">#757575</color>
+  <color name="gray_800">#aaa</color>
+  <color name="gray_900">#eee</color>
   <color name="green">#1aca07</color>
   <color name="transparentGray">#5b777777</color>
   <color name="colorBottomMenu">#fbfbfb</color>
@@ -96,4 +99,7 @@
   <color name="color_dark_material_reviews">#4e8c2e</color>
   <color name="color_dark_material_special_offers">#BF360C</color>
   <color name="color_dark_material_white">#ccc</color>
+  <color name="blue_300">#2020ec</color>
+  <color name="red">#f00</color>
+  <color name="blue">#00f</color>
 </resources>

@@ -162,6 +162,13 @@
     <string name="permission_location_settings">برای دیدن رستورانهای اطراف\n به آشوجاش اجازه مکانیابی رو بدید.</string>
     <string name="no_permission_granted">مجوزی داده نشد</string>
     <string name="error_location_service_not_turned_on">برای پیشنهاد مکان های اطراف سرویس مکانیابی نیاز است.</string>
-    <string name="search_this_area">جستجوی این منطقه</string>
+    <string name="search_this_area">جستجوی اینجا</string>
     <string name="search_ashojash">جستجوی آشوجاش</string>
+    <string name="near_me">نزدیک من</string>
+    <string name="nearest_places">نزدیکترین مکان ها </string>
+    <string name="quick_access">دسترسی سریع</string>
+    <string name="less_than">کمتر از</string>
+    <string name="more_than">بیشتر از</string>
+    <string name="term_searchbar_hint">اسم رستوران، ذائقه ...</string>
+    <string name="street_name">اسم خیابان</string>
 </resources>

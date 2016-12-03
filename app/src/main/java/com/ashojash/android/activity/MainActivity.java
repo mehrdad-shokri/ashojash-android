@@ -68,7 +68,7 @@ public class MainActivity extends BottomToolbarActivity {
   }
 
   private void startSearchActivity() {
-    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
     startActivity(intent);
     overridePendingTransition(0, 0);
     finish();

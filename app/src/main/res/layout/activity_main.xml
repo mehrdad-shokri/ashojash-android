@@ -3,6 +3,7 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     >
 
   <RelativeLayout
@@ -15,8 +16,8 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerInParent="true"
-        app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
         app:indicatorColor="@color/colorPrimary"
+        app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
         app:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
         />
 
@@ -33,6 +34,7 @@
           android:focusableInTouchMode="true"
           android:orientation="vertical"
           >
+
         <include
             layout="@layout/toolbar_top"
             android:id="@+id/toolbarTopContainer"
@@ -40,6 +42,7 @@
             />
       </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
     <LinearLayout
         android:id="@+id/navigationBarBehind"
         android:layout_width="match_parent"
@@ -50,12 +53,14 @@
         >
     </LinearLayout>
   </RelativeLayout>
+
   <LinearLayout
       android:id="@+id/toolbarTop"
       android:layout_width="match_parent"
       android:layout_height="@dimen/toolbar_height"
       android:background="@color/colorPrimary"
       >
+
     <include
         layout="@layout/toolbar_search_initiator"
         android:id="@+id/searchBarInitiator"

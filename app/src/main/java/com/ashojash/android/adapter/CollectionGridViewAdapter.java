@@ -36,7 +36,7 @@ public class CollectionGridViewAdapter extends RecyclerView.Adapter<CollectionGr
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-//        final Venue venue = collectionList.get(position);
+//        final Venue venue = collectionList.getBottombar(position);
         final VenueCollection collection = collectionList.get(position);
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
