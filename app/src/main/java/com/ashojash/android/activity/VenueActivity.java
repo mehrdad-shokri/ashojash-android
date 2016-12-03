@@ -204,7 +204,7 @@ public class VenueActivity extends BaseActivity {
         final AlertDialog.Builder dialogBuilder =
                 new AlertDialog.Builder(AppController.currentActivity, R.style.AppCompatAlertDialogStyle);
         dialogBuilder.setView(R.layout.dialog_add_photo);
-        final AlertDialog registerCompleteDialog = dialogBuilder.show();
+        final AlertDialog registerCompleteDialog = dialogBuilder.showBottombar();
         TextView txtVenueTitle = (TextView) registerCompleteDialog.findViewById(R.id.txtAddPhotoTitle);
         txtVenueTitle.setText(getString(R.string.add_venue_photo_title).replace("{{venueName}}", venueOrm.name));
 
@@ -217,7 +217,7 @@ public class VenueActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (!(getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) || getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT))) {
-                    Snackbar.make(findViewById(R.id.venueActivityRootLayout), R.string.camera_not_supported, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.venueActivityRootLayout), R.string.camera_not_supported, Snackbar.LENGTH_LONG).showBottombar();
                     return;
                 }
                 dispatchTakePictureIntent();

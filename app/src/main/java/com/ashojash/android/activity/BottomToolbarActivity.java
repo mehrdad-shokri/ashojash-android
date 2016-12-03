@@ -17,17 +17,16 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabClickListener;
 
-import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_face;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_home;
+import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_person;
 import static com.mikepenz.google_material_typeface_library.GoogleMaterial.Icon.gmd_search;
 
 public class BottomToolbarActivity extends BaseActivity {
   private static final int MAIN_ACTIVITY_BOTTOMBAR_POSITION = 0;
-  private static final int MAPS_ACTIVITY_BOTTOMBAR_POSITION = 1;
+  private static final int SEARCH_ACTIVITY_BOTTOMBAR_POSITION = 1;
   private static final int PROFILE_ACTIVITY_BOTTOMBAR_POSITION = 2;
   public BottomBar mBottomBar;
   private static final int ICON_SIZE = 26;
-  private int SELECTED_TAB_COLOR;
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
@@ -47,13 +46,27 @@ public class BottomToolbarActivity extends BaseActivity {
     setupBottomBar(position, activity);
   }
 
+  protected void hideBottombar() {
+    if (mBottomBar != null) {
+      mBottomBar.hide();
+    }
+  }
+
+  protected void showBottombar() {
+    if (mBottomBar != null) {
+      mBottomBar.show();
+    }
+  }
+
   private int getActivityPosition(Activity activity) {
     int position = 0;
     if (activity instanceof GuestProfileActivity) {
       position = PROFILE_ACTIVITY_BOTTOMBAR_POSITION;
     } else if (activity instanceof CollectionActivity) {
       position = MAIN_ACTIVITY_BOTTOMBAR_POSITION;
-    } else if (activity instanceof MapsActivity) position = MAPS_ACTIVITY_BOTTOMBAR_POSITION;
+    } else if (activity instanceof SearchActivity || activity instanceof MapsActivity) {
+      position = SEARCH_ACTIVITY_BOTTOMBAR_POSITION;
+    }
     return position;
   }
 
@@ -69,7 +82,7 @@ public class BottomToolbarActivity extends BaseActivity {
         collectionColor = selectedColor;
         profileColor = mapColor = unselectedColor;
         break;
-      case MAPS_ACTIVITY_BOTTOMBAR_POSITION:
+      case SEARCH_ACTIVITY_BOTTOMBAR_POSITION:
         mapColor = selectedColor;
         collectionColor = profileColor = selectedColor;
         break;
@@ -85,7 +98,7 @@ public class BottomToolbarActivity extends BaseActivity {
         .color(mapColor)
         .sizeDp(ICON_SIZE);
     final IconicsDrawable profileDrawable =
-        new IconicsDrawable(AppController.context).icon(gmd_face)
+        new IconicsDrawable(AppController.context).icon(gmd_person)
             .color(profileColor)
             .sizeDp(ICON_SIZE);
     BottomBarTab mainTab = new BottomBarTab(mainDrawable, null);
@@ -117,8 +130,8 @@ public class BottomToolbarActivity extends BaseActivity {
                   activity.finish();
                 }
               });
-            } else if (position != MAPS_ACTIVITY_BOTTOMBAR_POSITION
-                && selectedTab == MAPS_ACTIVITY_BOTTOMBAR_POSITION) {
+            } else if (position != SEARCH_ACTIVITY_BOTTOMBAR_POSITION
+                && selectedTab == SEARCH_ACTIVITY_BOTTOMBAR_POSITION) {
               mapDrawable.color(selectedColor);
               AsyncTask.execute(new Runnable() {
                 @Override public void run() {
@@ -127,7 +140,7 @@ public class BottomToolbarActivity extends BaseActivity {
                   } catch (InterruptedException e) {
                     e.printStackTrace();
                   }
-                  Intent intent = new Intent(activity, MapsActivity.class);
+                  Intent intent = new Intent(activity, SearchActivity.class);
                   intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                   startActivity(intent);
                   overridePendingTransition(0, 0);
@@ -162,10 +175,16 @@ public class BottomToolbarActivity extends BaseActivity {
             } else if (activity instanceof CollectionActivity) {
               activity.finish();
               activity.overridePendingTransition(0, 0);
+            } else if (activity instanceof SearchActivity) {
+              ((SearchActivity) activity).onTabReselected();
             }
           }
         });
       }
     });
+  }
+
+  protected BottomBar getBottombar() {
+    return mBottomBar;
   }
 }

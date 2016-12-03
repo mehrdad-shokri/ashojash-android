@@ -86,7 +86,7 @@ public class VenuePhotosFragment extends Fragment {
             @Override
             public void onClick(Object model) {
 //                    Intent intent = new Intent(getActivity(), VenueReviewsActivity.class);
-//                    show image dmadet
+//                    showBottombar image dmadet
             }
         });
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(AppController.context, 2);

@@ -26,7 +26,11 @@ import com.ashojash.android.fragment.LocationServiceNotAvailableFragment;
 import com.ashojash.android.helper.AppController;
 import com.ashojash.android.model.Venue;
 import com.ashojash.android.ui.AshojashSnackbar;
-import com.ashojash.android.util.*;
+import com.ashojash.android.util.BusProvider;
+import com.ashojash.android.util.LocationRequestUtil;
+import com.ashojash.android.util.LocationUtil;
+import com.ashojash.android.util.PermissionUtil;
+import com.ashojash.android.util.UiUtil;
 import com.ashojash.android.webserver.VenueApi;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
@@ -35,13 +39,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import org.greenrobot.eventbus.Subscribe;
-
 import java.util.HashMap;
 import java.util.List;
+import org.greenrobot.eventbus.Subscribe;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -277,8 +285,7 @@ public class MapsActivity extends BottomToolbarActivity implements OnMapReadyCal
   private void getLocation(LocationUtil util, final boolean isLastKnownLocationUnknown) {
     util.getLocation(instance, new LocationUtil.LocationResult() {
       @Override public void gotLocation(Location location) {
-        LatLng temp = new LatLng(35.803279, 51.447910);
-        VenueApi.nearby(temp.latitude, temp.longitude, NEARBY_DEFAULT_DISTANCE,
+        VenueApi.nearby(location.getLatitude(), location.getLongitude(), NEARBY_DEFAULT_DISTANCE,
             NEARBY_DEFAULT_LIMIT);
         AppController.HANDLER.post(new Runnable() {
           @Override public void run() {

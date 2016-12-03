@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +94,7 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
         if (AppController.ANDROID_VERSION >= Build.VERSION_CODES.M) {
             int hasGetAccountsPermission = ContextCompat.checkSelfPermission(getActivity(), GET_ACCOUNTS_PERMISSION);
             final Activity currentActivity = getActivity();
-            // Should we show an explanation?
+            // Should we showBottombar an explanation?
             if (hasGetAccountsPermission != PackageManager.PERMISSION_GRANTED) {
                 showRationale();
             } else {
@@ -154,10 +153,6 @@ public class GoogleOauthFragment extends Fragment implements GoogleApiClient.OnC
                 UserApi.google(authCode);
             } else {
                 uiShowErrorConnectingToGoogleSnackbar();
-                String TAG = AppController.TAG;
-                Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusMessage());
-                Log.d(TAG, "onActivityResult: " + result.getStatus().getStatusCode());
-                Log.d(TAG, "onActivityResult: " + result.getStatus().toString());
             }
         }
     }

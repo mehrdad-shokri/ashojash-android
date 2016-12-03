@@ -1,48 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
-    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <FrameLayout
+      android:id="@+id/termFrameLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      ></FrameLayout>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progressbar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorPrimary"
+        app:indicatorName="com.ashojash.android.ui.AggressivePacmanIndicator"
+        />
+
+    <FrameLayout
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <android.support.v4.widget.NestedScrollView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          >
+
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/toolbarTopContainer"
-                android:orientation="vertical">
-            <include android:id="@+id/toolbarTop"
-                     layout="@layout/toolbar_top"/>
-        </LinearLayout>
-        <FrameLayout android:id="@+id/fragmentSearchContainer"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:layout_below="@id/toolbarTopContainer">
-        </FrameLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
-        <include
-                android:id="@+id/toolbarTop"
-                layout="@layout/toolbar_search_initiator"/>
+          <FrameLayout
+              android:id="@+id/tagSuggestionFramelayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginBottom="10dp"
+              android:visibility="gone"
+              >
+          </FrameLayout>
 
-        <com.mypopsy.widget.FloatingSearchView
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:fsv_cornerRadius="0dp"
-                android:paddingRight="2dp"
-                android:paddingLeft="2dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                app:contentInsetEnd="5dp"
-                app:contentInsetStart="5dp"
-                android:background="#90000000"
-                android:hint="@string/search_hint"
-                app:layout_behavior="com.ashojash.android.ui.ScrollingSearchViewBehavior"
-                app:fsv_menu="@menu/search"
-                app:theme="@style/AshojashFloatingSearchViewTheme"/>
-    </RelativeLayout>
-</FrameLayout>
+          <FrameLayout
+              android:id="@+id/nearbyVenuesFramelayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              >
+          </FrameLayout>
+
+          <FrameLayout
+              android:id="@+id/streetSuggestFrameLayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              >
+          </FrameLayout>
+
+          <FrameLayout
+              android:id="@+id/searchResultFramelayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              >
+          </FrameLayout>
+
+          <FrameLayout
+              android:id="@+id/venueTagFramelayout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:visibility="gone"
+              >
+          </FrameLayout>
+        </LinearLayout>
+      </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/mapsFramelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/fabContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        >
+
+      <android.support.design.widget.FloatingActionButton
+          android:id="@+id/fabMapView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/fab_margin"
+          android:clickable="true"
+          android:src="@drawable/map_view"
+          app:backgroundTint="#fff"
+          app:elevation="4dp"
+          app:fabSize="normal"
+          app:rippleColor="#eee"
+          />
+
+      <android.support.design.widget.FloatingActionButton
+          android:id="@+id/fabListView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/fab_margin"
+          android:clickable="true"
+          android:src="@drawable/list_view"
+          android:visibility="gone"
+          app:backgroundTint="#fff"
+          app:elevation="4dp"
+          app:fabSize="normal"
+          />
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/myLocationFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fabContainer"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:clickable="true"
+        android:padding="0dp"
+        android:visibility="gone"
+        app:backgroundTint="#fff"
+        app:elevation="4dp"
+        app:fabSize="normal"
+        />
+  </RelativeLayout>
+</LinearLayout>
