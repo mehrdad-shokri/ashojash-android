@@ -39,9 +39,6 @@ import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import org.greenrobot.eventbus.Subscribe;
 
-/*
-* IN progress
-* */
 public class VenueActivity extends BaseActivity {
     private ImageView imgHeroCollapsingToolbarLayout;
     private Toolbar toolbar;
