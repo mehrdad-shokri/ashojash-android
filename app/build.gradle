@@ -4,7 +4,7 @@ android {
     dev {
       minSdkVersion 21
       applicationIdSuffix '.debug'
-      buildConfigField 'String', 'BASE_URL', '"http://192.168.43.10/api/"'
+      buildConfigField 'String', 'BASE_URL', '"https://ashojash.com/api/"'
       resValue "string", "google_maps_api_key", GOOGLE_MAPS_API_KEY_DEV
       resValue "string", "server_client_id", SERVER_CLIENT_ID_DEV
     }
@@ -18,8 +18,8 @@ android {
     applicationId "com.ashojash.android"
     minSdkVersion 15
     targetSdkVersion 25
-    versionCode 22
-    versionName "0.12.1"
+    versionCode 23
+    versionName "0.12.2"
     multiDexEnabled true
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }

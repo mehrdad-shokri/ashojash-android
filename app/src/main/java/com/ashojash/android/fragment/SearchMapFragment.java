@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
-  private static final String TAG = "SearchActivityFAB";
   private ViewGroup progressView;
   //private LatLng lastRequestedVenuesLatLng;
   private ViewGroup searchAreaView;
@@ -70,7 +68,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
     mMapView.getMapAsync(this);
     searchAreaView = (ViewGroup) v.findViewById(R.id.btnSearchArea);
     progressView = (ViewGroup) v.findViewById(R.id.progressbar);
-
     return v;
   }
 
@@ -181,7 +178,6 @@ public class SearchMapFragment extends Fragment implements OnMapReadyCallback {
             final LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
             searchAreaView.setOnClickListener(new View.OnClickListener() {
               @Override public void onClick(View v) {
-                Log.d(TAG, "onClick: ");
                 if (onSearchRequested != null) {
                   searchAreaView.setVisibility(GONE);
                   setPending(true);

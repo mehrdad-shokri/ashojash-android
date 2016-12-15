@@ -7,9 +7,6 @@ import android.widget.TextView;
 import com.ashojash.android.R;
 import com.ashojash.android.fragment.VenueInfoFragment;
 import com.ashojash.android.fragment.VenueMapFragment;
-/*
-* Completed
-* */
 public class VenueInfoActivity extends BaseActivity {
     protected Toolbar toolbar;
     private String slug;
