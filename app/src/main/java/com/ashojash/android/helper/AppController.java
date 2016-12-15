@@ -12,7 +12,6 @@ import android.support.multidex.MultiDexApplication;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
-import com.ashojash.android.util.EventProvider;
 import com.ashojash.android.util.ObscuredSharedPrefs;
 import com.ashojash.android.util.UiUtil;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -106,6 +105,4 @@ public class AppController extends MultiDexApplication {
         }
         return mTracker;
     }
-
-    public static EventProvider eventProvider = new EventProvider();
 }
